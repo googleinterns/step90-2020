@@ -54,7 +54,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
-          <deploy.projectId>elfel-spring</deploy.projectId>
+          <deploy.projectId></deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
