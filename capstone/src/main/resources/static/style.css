@@ -1,0 +1,133 @@
+body {
+  background-color: #aed1d6;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #314570;
+}
+ 
+nav li {
+  float: left;
+}
+ 
+li a {
+  display: block;
+  color: #ffffff;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-family: Helvetica, Arial, sans-serif;
+}
+ 
+li a:hover {
+  background-color: #808080;
+}
+ 
+.active {
+  background-color: #7584ad;
+}
+ 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+ 
+div.row {
+  padding-left:3%;
+  padding-bottom: 0;
+  margin-bottom: 1em;
+}
+
+.left {
+  float: left;
+  width: 10%;
+  
+}
+
+.profile-container {
+  float: left;
+  margin-left: 5%;
+  width: 35%;
+}
+
+img {
+  max-width: 300px;
+  width: 70%;
+}
+
+.intro {
+  display: inline-block;
+  float: left;
+  width: 45%;
+  padding: 15px;
+}
+ 
+.profile {
+  border-radius: 20px;
+  width: 100%;
+  height: auto;
+}
+
+.button {
+  background-color: #bfbfbf;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-bottom: 1em;
+}
+ 
+.profile {
+  border-radius: 20px;
+  width: 100%;
+  height: auto;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.profile-form {
+  border-radius: 5px;
+  padding: 3%;
+  width: 40%;
+  float: right;
+}
+
+.item-container {
+  background-color: #f2f2f2;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 950px;
+  margin-left: auto;
+  margin-right: auto;
+}
+ 
+ 

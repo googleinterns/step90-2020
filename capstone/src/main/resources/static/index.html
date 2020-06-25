@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta>
+    <title>My Account</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body onload="checkAuth('index');getUser();">
+    <nav>
+        <ul>
+            <li class="active"><a href="index.html">College Activity Finder</a></li>
+            <li><a href="about.html">Find Events</a></li>
+            <li><a href="projects.html">Find Organizations</a></li>
+            <li><a href="experiences.html">My Account</a></li>
+            <li><a href="gallery.html">About Us</a></li>
+        </ul>
+    </nav>
+    <br/>
+    <div class="left">
+        <ul>
+            <li class="active"><a href="index.html">My Profile</a></li>
+            <li><a href="">Calendar of Events</a></li>
+            <li><a href="savedevents.html">Saved Events</a></li>
+            <li><a href="savedorganizations.html">Saved Organizations</a></li>
+        </ul>
+    </div>
+    <div class="profile-container">
+        <div id="auth-container"></div>
+        <div class="row">
+            <h1>My Profile</h1>
+            <div class="container">
+                <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col intro">
+                <div id="firstname"></div>
+                <div id="lastname"></div>
+                <div id="email"></div>
+                <div id="user-type"></div>
+                <div id="university"></div>
+                <div id="description"></div>
+            </div>
+        </div>
+    </div>
+    <div class="profile-form">
+        <form action="save-user" method="POST">
+            <label>First Name</label>
+            <input type="text" name="firstname" placeholder="Your first name..">
+            <label>Last Name</label>
+            <input type="text" name="lastname" placeholder="Your last name..">
+            <label>Your Email</label>
+            <input type="text" name="email" placeholder="Your email..">
+            <label>Are you an individual or a club/organization?</label>
+            <select name="user-type">
+                <option value="individual">Individual</option>
+                <option value="organization">Club or Organization</option>
+            </select>
+            <label>Your University</label>
+            <input type="text" name="university" placeholder="Your university..">
+            <label>Short Bio</label>
+            <input type="text" name="description" placeholder="Your bio..">
+            <input class="button submit" type="submit" value="Submit">
+        </form>
+    </div>
+  </body>
+</html>
