@@ -12,6 +12,7 @@ function checkAuth(){
   });
 }
 
+/* gets the user information from Datastore and display them in profile */
 function getUser() {
     var userEmail = "";
     fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
