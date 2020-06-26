@@ -1,83 +1,75 @@
 
 /** checks whether the user is authenticated and adjust elements 
 according to whether the user is logged in or logged out */
-function checkAuth(redirect){
+function checkAuth(){
   // send request for information on login status
-  fetch('authenticate?redirect=' + redirect).then(response => response.json()).then((data) => {
-    const commentDivElement = document.getElementById('auth-container');
-    const hElement = document.createElement('h1');
-    const navElement = document.getElementById("nav");
-    const liElement = document.createElement('li');
-    const aElement = document.createElement("a");
-    
-    // adjust visibility and login/logout button according to 
-    // whether user is logged in or not
-    if (data["user"] != "Stranger") {
-      hElement.innerHTML = "Hello " + data["user"];
-      aElement.href = data["url"];
-      aElement.innerText = "Logout";
-      liElement.appendChild(aElement);
-      
-    
-    } else {
-      hElement.innerHTML = "Hello! Please login";
-      aElement.href = data["url"];
-      aElement.innerText = "Login";
-      liElement.appendChild(aElement);
-    }
-    commentDivElement.appendChild(hElement);
-    navElement.appendChild(liElement);
+  fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
+    const userEmail = document.getElementById('email-form');
+    // default value set for testing on dev server
+    const email = "accounts.google.com:jennysheng@google.com";
+    userEmail.innerText = email.substring(20);
     
   });
 }
 
 function getUser() {
-    fetch('get-user?email=' + 'js112@princeton.edu').then(response => response.json()).then((data) => {
+    var userEmail = "";
+    fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
+      email = "accounts.google.com:jennysheng@google.com".substring(20);
+    });
+    fetch('get-user?email=' + "jennysheng@google.com").then(response => response.json()).then((data) => {
+      createProfile(data);
+  });
+}
+
+function createProfile(data) {
+  const emailFormContainer = document.getElementById("email-form");
+    emailFormContainer.innerText = data[0].email;
     const firstNameContainer = document.getElementById("firstname");
     const pElementFirstName = document.createElement('p');
-    pElementFirstName.innerText = "First Name: " + data.firstName;
+    pElementFirstName.innerText = "First Name: " + data[0].firstName;
     firstNameContainer.appendChild(pElementFirstName);
 
     const lastNameContainer = document.getElementById("lastname");
     const pElementLastName = document.createElement('p');
-    pElementLastName.innerText = "Last Name: " + data.lastName;
+    pElementLastName.innerText = "Last Name: " + data[0].lastName;
     lastNameContainer.appendChild(pElementLastName);
 
     const emailContainer = document.getElementById("email");
     const pElementEmail = document.createElement('p');
-    pElementEmail.innerText = "Email: " + data.email;
+    pElementEmail.innerText = "Email: " + data[0].email;
     emailContainer.appendChild(pElementEmail);
 
     const userTypeContainer = document.getElementById("user-type");
     const pElementUserType = document.createElement('p');
-    pElementUserType.innerText = "User Type: " + data.userType;
+    pElementUserType.innerText = "User Type: individual";
     userTypeContainer.appendChild(pElementUserType);
 
     const universityContainer = document.getElementById("university");
     const pElementUniversity = document.createElement('p');
-    pElementUniversity.innerText = "University: " + data.university;
+    pElementUniversity.innerText = "University: " + data[0].university;
     universityContainer.appendChild(pElementUniversity);
 
     const descriptionContainer = document.getElementById("description");
     const pElementDescription = document.createElement('p');
-    pElementDescription.innerText = "Bio: " + data.description;
+    pElementDescription.innerText = "Bio: " + data[0].description;
     descriptionContainer.appendChild(pElementDescription);
 
+    // going to be implemented in the future
     // const savedEventsContainer = document.getElementById("saved-events");
     // savedEventsContainer.innerHTML = '';
-    // for (var i = 0; i < data.savedEvents.length; i++) {
+    // for (var i = 0; i < data["saved-events"].length; i++) {
     //   savedEventsContainer.appendChild(
-    //   createDivElement(data.savedEvents[i]));
+    //   createDivElement(data["saved-events"][i]));
     // }
-  });
 }
 
-// function createDivElement(event) {
-//   const divElement = document.createElement('div');
-//   divElement.setAttribute("class", "item-container");
+function createDivElement(event) {
+  const divElement = document.createElement('div');
+  divElement.setAttribute("class", "item-container");
  
-//   const h3ElementName = document.createElement('h3');
-//   h3ElementName.innerText = event;
-//   divElement.appendChild(h3ElementName);
+  const h3ElementName = document.createElement('h3');
+  h3ElementName.innerText = event;
+  divElement.appendChild(h3ElementName);
 
-// }
+}

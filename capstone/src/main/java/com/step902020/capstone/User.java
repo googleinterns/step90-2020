@@ -18,13 +18,25 @@ public class User {
   @Field(name="lastname")
   String lastName;
 
+  @Field(name="email")
   String email;
 
+  @Field(name="university")
   String university;
+
+  @Field(name="description")
   String description;
+
+  @Field(name="image")
   String image;
-  ArrayList<String> savedEvents;
-  ArrayList<Organization> savedOrganizations;
+
+// these fields are going to be implemented in the future.
+
+//   @Field(name="saved-events")
+//   HashSet<String> savedEvents;
+
+//   @Field(name="saved-organizations")
+//   HashSet<String> savedOrganizations;
 
   public User(Long timestamp, String firstName, String lastName, String email, String university, String description, String image) {
     this.timestamp = timestamp;
@@ -34,11 +46,14 @@ public class User {
     this.university = university;
     this.description = description;
     this.image = image;
-    // savedEvents = new ArrayList<Event>(Arrays.asList({"event1", "event2", "event3"}));
-    // savedOrganizations = new ArrayList<Organization>();
-    // savedOrganizations.add(new Organization(System.currentTimeMillis(), "ACM", "acm@gmail.com", "university", "hello", ""); 
-    // savedOrganizations.add(new Organization(System.currentTimeMillis(), "ACM2", "acm@gmail.com", "university2", "hello2", "");
-    // savedOrganizations.add(new Organization(System.currentTimeMillis(), "ACM3", "acm@gmail.com", "university3", "hello3", "");
+    // savedEvents = new HashSet<String>();
+    // savedEvents.add("event1");
+    // savedEvents.add("event2");
+    // savedEvents.add("event3");
+    // savedOrganizations = new HashSet<String>();
+    // savedOrganizations.add("ACM"); 
+    // savedOrganizations.add("ACM2");
+    // savedOrganizations.add("ACM3");
   }
   
   public Long getDatastoreId() {
@@ -72,12 +87,24 @@ public class User {
   public String getImage() {
     return image;
   }
-  
-  public ArrayList<String> getSavedEvents() {
-      return savedEvents;
-  }
 
-  public ArrayList<Organization> getSavedOrganizations() {
-      return savedOrganizations;
-  }
+//   public String toString() {
+//       StringBuilder s = new StringBuilder();
+//       s.append(firstName + "\n");
+//       s.append(lastName + "\n");
+//       s.append(email + "\n");
+//       s.append(description + "\n");
+//       s.append(university + "\n");
+//       s.append(image + "\n");
+
+//       return s.toString();
+//   }
+  
+//   public HashSet<String> getSavedEvents() {
+//       return savedEvents;
+//   }
+
+//   public HashSet<String> getSavedOrganizations() {
+//       return savedOrganizations;
+//   }
 }

@@ -14,6 +14,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 
+
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @RestController
 public class UserServlet {
@@ -22,10 +23,8 @@ public class UserServlet {
   private UserRepository userRepository;
 
   @GetMapping("get-user")
-  public User getUser(@RequestParam("email") String email) {
-    User curr = this.userRepository.findByEmail("jennysheng@google.com").get(0);
-    // User curr = new User(System.currentTimeMillis(), "Jenny", "Sheng", "js112@princeton.edu", "princeton", "hello world", "");
-    return curr;
+  public List<User> getUser(@RequestParam("email") String email) {
+    return this.userRepository.findByEmail(email);
   }
 
   @PostMapping("save-user")
@@ -36,28 +35,13 @@ public class UserServlet {
       @RequestParam("user-type") String userType,
       @RequestParam("university") String university,
       @RequestParam("description") String description) throws IOException {
-          
-    this.userRepository.save(new User(System.currentTimeMillis(), firstname, lastname, email, university, description, ""));
 
-    return new RedirectView("/");
+    // first delete the old entry the add the new one
+    this.userRepository.deleteByEmail(email);
+    User current = new User(System.currentTimeMillis(), firstname, lastname, email, university, description, "");
+    this.userRepository.save(current);
+    return new RedirectView("/profile.html", true);
   }
 
-  @GetMapping("authenticate")
-  public HashMap<String, String> authenticate(@RequestParam("redirect") String redirect) {
-    UserService userService = UserServiceFactory.getUserService();
-    HashMap<String, String> result = new HashMap<String, String>();
-    if (userService.isUserLoggedIn()) {
-      String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = "/" + redirect + ".html";
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-      result.put("user", userEmail);
-      result.put("url", logoutUrl);
-    } else {
-      String urlToRedirectToAfterUserLogsIn = "/" + redirect + ".html";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-      result.put("user", "Stranger");
-      result.put("url", loginUrl);
-    }
-    return result;
-  }
+  
 }

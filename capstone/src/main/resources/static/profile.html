@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
-<body onload="checkAuth('index');getUser();">
+<body onload="getUser();">
     <nav>
         <ul>
             <li class="active"><a href="index.html">College Activity Finder</a></li>
@@ -51,7 +51,7 @@
             <label>Last Name</label>
             <input type="text" name="lastname" placeholder="Your last name..">
             <label>Your Email</label>
-            <input type="text" name="email" placeholder="Your email..">
+            <input type="text" name="email" id="email-form">
             <label>Are you an individual or a club/organization?</label>
             <select name="user-type">
                 <option value="individual">Individual</option>
