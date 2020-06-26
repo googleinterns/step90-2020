@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+    <link rel="stylesheet" href="style1.css">
+    <script src="script.js"></script>
+  </head>
+
+  <body>
+    <h1>Events</h1>
+    <div id="filters">
+      <p>Filters</p>
+      <label for="free">Free</label>
+      <input type="checkbox" id="free" name="free" value="free">
+      <label for="food">Food Provided</label>
+      <input type="checkbox" id="food" name="food" value="food">
+        
+        <label for="type">Event Type</label>
+        <select name="type" id="type">
+          <option disabled selected> -- select an option -- </option>
+          <option value="forum">Forum</option>
+          <option value="game">Game</option>
+          <option value="movie">Movie Screening</option>
+          <option value="party">Party</option>
+          <option value="performance">Performance</option>
+          <option value="speaker">Speaker</option>
+          <option value="volunteer">Volunteer</option>
+          <option value="workshop">Workshop</option>
+        </select>
+
+        <button onclick="showMore()" id="filterButton">Show more</button>
+
+        <div id="additionalFilters" style="display:none">
+          <label for="energy">Energy Level</label>
+          <select name="energy" id="energy">
+            <option disabled selected> -- select an option -- </option>
+            <option value="1">1 (lowest)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (highest)</option>
+          </select>
+
+          <label for="location">Indoor/Outdoor</label>
+          <select name="location" id="location">
+            <option disabled selected> -- select an option -- </option>
+            <option value="indoor">Indoor</option>
+            <option value="outdoor">Outdoor</option>=
+          </select>
+
+          <label for="vistor">Visitors Allowed</label>
+          <input type="checkbox" id="vistor" name="vistor" value="vistor">
+        </div>
+
+        <label for="sort">SORT BY</label>
+        <select name="sort" id="sort" class="button smallDefaultButton">
+            <option value="descending">NEWEST</option>
+            <option value="ascending">OLDEST</option>
+        </select>
+        <label for="searchEvent">Search Event</label>
+        <input type="text" id="searchEvent" name="searchEvent">
+        <button onclick="getEvents()">Search</button>
+    </div>
+    <button onclick="newEvent()">make event (temp use)</button>
+
+    <div id="events"></div>
+
+  </body>
+</html>
