@@ -38,6 +38,9 @@ public class User {
 //   @Field(name="saved-organizations")
 //   HashSet<String> savedOrganizations;
 
+  public User() {
+  }
+
   public User(Long timestamp, String firstName, String lastName, String email, String university, String description, String image) {
     this.timestamp = timestamp;
     this.firstName = firstName;

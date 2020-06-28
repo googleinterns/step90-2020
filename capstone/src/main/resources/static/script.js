@@ -14,10 +14,10 @@ function checkAuth(){
 
 /* gets the user information from Datastore and display them in profile */
 function getUser() {
-    var userEmail = "";
-    fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
-      email = "accounts.google.com:jennysheng@google.com".substring(20);
-    });
+    var userEmail = "jennysheng@google.com";
+    // fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
+    //   email = "accounts.google.com:jennysheng@google.com".substring(20);
+    // });
     fetch('get-user?email=' + "jennysheng@google.com").then(response => response.json()).then((data) => {
       createProfile(data);
   });
