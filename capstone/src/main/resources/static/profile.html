@@ -7,17 +7,17 @@
     <script src="script.js"></script>
 </head>
 <body onload="getUser();">
-    <nav>
+    <nav class="nav-bar">
         <ul>
-            <li class="active"><a href="index.html">College Activity Finder</a></li>
+            <li class="home"><a href="index.html">College Activity Finder</a></li>
             <li><a href="">Events</a></li>
             <li><a href="">Organizations</a></li>
-            <li><a href="">My Account</a></li>
+            <li class="active"><a href="">My Account</a></li>
             <li><a href="=">About Us</a></li>
         </ul>
     </nav>
     <br/>
-    <div class="left">
+    <div class="left nav-bar">
         <ul>
             <li class="active"><a href="profile.html">My Profile</a></li>
             <li><a href="">Calendar of Events</a></li>
@@ -25,7 +25,7 @@
             <li><a href="">Saved Organizations</a></li>
         </ul>
     </div>
-    <div class="profile-container">
+    <div class="profile-container general-container">
         <div id="auth-container"></div>
         <div class="row">
             <h1>My Profile</h1>
@@ -49,7 +49,7 @@
             <p>You have not build your profile yet, please submit a profile </p>
         </div>
     </div>
-    <div class="profile-form" id="user">
+    <div class="profile-form general-container" id="user">
         <form action="save-individual" method="POST" id="user-form">
             <label>Are you an individual or a club/organization?</label>
             <select  id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
@@ -70,7 +70,7 @@
         </form>
     </div>
 
-    <div class="profile-form" id="organization">
+    <div class="profile-form general-container" id="organization">
         <form action="save-organization" method="POST" id="organization-form">
             <label>Are you an individual or a club/organization?</label>
             <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
