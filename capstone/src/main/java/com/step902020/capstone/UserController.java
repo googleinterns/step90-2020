@@ -18,32 +18,64 @@ import java.io.IOException;
 public class UserController {
 
   @Autowired
-  private UserRepository userRepository;
+  private IndividualRepository individualRepository;
 
-  @GetMapping("get-user")
-  public List<User> getUser(@RequestParam("email") String email) {
-    return this.userRepository.findByEmail(email);
+  @Autowired
+  private OrganizationRepository organizationRepository;
+
+  @GetMapping("get-individual")
+  public List<Individual> getIndividual(@RequestParam("email") String email) {
+    return this.individualRepository.findByEmail(email);
   }
 
-  @PostMapping("save-user")
-  public RedirectView saveUser(
+  @GetMapping("get-organization")
+  public List<Organization> getOrganization(@RequestParam("email") String email) {
+    return this.organizationRepository.findByEmail(email);
+  }
+
+  @PostMapping("save-individual")
+  public RedirectView saveIndividual(
       @RequestParam("id") String id,
       @RequestParam("firstname") String firstname,
       @RequestParam("lastname") String lastname, 
       @RequestParam("email") String email, 
       @RequestParam("user-type") String userType,
       @RequestParam("university") String university) throws IOException {
+
+    // each email can only exist as either an individual or a user, not both
+    this.organizationRepository.deleteByEmail(email);
     
-    User current = null;
+    Individual current = null;
     // depending on whether there is an id, either update or insert a new entity
     if (id.length() == 0) {
-      current = new User(System.currentTimeMillis(), firstname, lastname, email, university, userType, "");
+      current = new Individual(System.currentTimeMillis(), firstname, lastname, email, university, userType, "");
     } else {
-      current = new User(Long.parseLong(id), System.currentTimeMillis(), firstname, lastname, email, university, userType, "");
+      current = new Individual(Long.parseLong(id), System.currentTimeMillis(), firstname, lastname, email, university, userType, "");
     }
-    this.userRepository.save(current);
+    this.individualRepository.save(current);
     return new RedirectView("profile.html", true);
   }
 
-  
+  @PostMapping("save-organization")
+  public RedirectView saveOrganization(
+      @RequestParam("id") String id,
+      @RequestParam("name") String name,
+      @RequestParam("email") String email, 
+      @RequestParam("user-type") String userType,
+      @RequestParam("university") String university,
+      @RequestParam("description") String description) throws IOException {
+    
+    // each email can only exist as either an individual or a user, not both
+    this.individualRepository.deleteByEmail(email);
+
+    Organization current = null;
+    // depending on whether there is an id, either update or insert a new entity
+    if (id.length() == 0) {
+      current = new Organization(System.currentTimeMillis(), name, email, university, userType, description, "");
+    } else {
+      current = new Organization(Long.parseLong(id), System.currentTimeMillis(), name, email, university, userType, description, "");
+    }
+    this.organizationRepository.save(current);
+    return new RedirectView("profile.html", true);
+  }
 }

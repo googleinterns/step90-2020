@@ -36,15 +36,15 @@ public class UserDatastoreTest {
 	private int port;
 
   @Autowired
-  private UserRepository userRepository;
+  private IndividualRepository individualRepository;
 
   @Autowired
 	private TestRestTemplate restTemplate;
 
-  User expected;
+  Individual expected;
 
   @Test
-  public void testGetUser() throws URISyntaxException {
+  public void testGetIndividual() throws URISyntaxException {
 
     // getting the actual result
     restTemplate = new TestRestTemplate();
@@ -52,7 +52,7 @@ public class UserDatastoreTest {
     final String baseUrl = "http://localhost:"+ port + "/get-user?email=" + expected.getEmail();
     URI uri = new URI(baseUrl);
  
-    User[] result = restTemplate.getForObject(uri, User[].class);
+    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
     System.out.println(result[0]);
 
     String expectedEmail = expected.getEmail();  
@@ -62,19 +62,12 @@ public class UserDatastoreTest {
   @Before
   public void setUp() {
     // append a random number to email to make a new user
-    expected = this.userRepository.save(new User(System.currentTimeMillis(), "Jenny", "Sheng", "jennysheng@google.com" + new Random().nextInt(), "Princeton", "hello", ""));    
+    expected = this.individualRepository.save(new Individual(System.currentTimeMillis(), "Jenny", "Sheng", "jennysheng@google.com" + new Random().nextInt(), "Princeton", "hello", ""));    
   }
 
   @After
   public void tearDown() {
-    this.userRepository.deleteByEmail(expected.getEmail());
+    this.individualRepository.deleteByEmail(expected.getEmail());
   }
-
-  public String convertToJson(List<User> users) {
-    Gson gson = new Gson();
-    String json = gson.toJson(users);
-    return json;
-  }
-
 
 }

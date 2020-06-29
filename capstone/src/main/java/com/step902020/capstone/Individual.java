@@ -5,8 +5,8 @@ import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
 import java.util.*;
 
-@Entity(name = "user")
-public class User {
+@Entity(name = "individual")
+public class Individual {
   @Id
   Long datastoreId;
 
@@ -30,10 +30,10 @@ public class User {
   @Field(name="image")
   String image;
 
-  public User() {
+  public Individual() {
   }
 
-  public User(Long timestamp, String firstName, String lastName, String email, String university, String userType, String image) {
+  public Individual(Long timestamp, String firstName, String lastName, String email, String university, String userType, String image) {
     this.timestamp = timestamp;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -43,7 +43,7 @@ public class User {
     this.image = image;
   }
 
-  public User(long datastoreId, Long timestamp, String firstName, String lastName, String email, String university, String userType, String image) {
+  public Individual(long datastoreId, Long timestamp, String firstName, String lastName, String email, String university, String userType, String image) {
     this.datastoreId = datastoreId;
     this.timestamp = timestamp;
     this.firstName = firstName;
@@ -85,24 +85,4 @@ public class User {
   public String getImage() {
     return image;
   }
-
-//   public String toString() {
-//       StringBuilder s = new StringBuilder();
-//       s.append(firstName + "\n");
-//       s.append(lastName + "\n");
-//       s.append(email + "\n");
-//       s.append(description + "\n");
-//       s.append(university + "\n");
-//       s.append(image + "\n");
-
-//       return s.toString();
-//   }
-  
-//   public HashSet<String> getSavedEvents() {
-//       return savedEvents;
-//   }
-
-//   public HashSet<String> getSavedOrganizations() {
-//       return savedOrganizations;
-//   }
 }

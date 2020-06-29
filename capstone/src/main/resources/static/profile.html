@@ -37,9 +37,11 @@
             <div class="col intro">
                 <div id="firstname"></div>
                 <div id="lastname"></div>
+                <div id="org-name"></div>
                 <div id="email"></div>
                 <div id="user-type"></div>
                 <div id="university"></div>
+                <div id="description"></div>
             </div>
         </div>
 
@@ -48,13 +50,13 @@
         </div>
     </div>
     <div class="profile-form" id="user">
-        <form action="save-user" method="POST" id="user-form">
+        <form action="save-individual" method="POST" id="user-form">
             <label>Are you an individual or a club/organization?</label>
             <select  id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
                 <option value="individual">Individual</option>
                 <option value="organization">Organization</option>
             </select>
-            <input type="hidden" name="id" id="datastore-id">
+            <input type="hidden" name="id" id="datastore-id-org">
             <label>First Name</label>
             <input type="text" name="firstname" placeholder="Your first name..">
             <label>Last Name</label>
@@ -79,7 +81,8 @@
             <label>Organization Name</label>
             <input type="text" name="name" placeholder="Your organization name..">
             <label>Email</label>
-            <input type="hidden" name="email" id="email-form">
+            <p id="org-email-form-display"></p>
+            <input type="hidden" name="email" id="org-email-form">
             <label>Affiliated University</label>
             <input type="text" name="university" placeholder="Your university..">
             <label>Description</label>
