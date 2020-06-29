@@ -62,4 +62,11 @@ function showMore() {
     filterElement.style.display = 'block';
     button.innerText = 'Show less';
   }
-} 
+}
+
+function createMap() {
+  var nycLatLng = {lat: 40.730610, lng: -73.935242};
+  const map = new google.maps.Map(
+      document.getElementById('map'),
+      {center: nycLatLng, zoom: 11});
+}
