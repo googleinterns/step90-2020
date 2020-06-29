@@ -24,39 +24,34 @@ public class User {
   @Field(name="university")
   String university;
 
-  @Field(name="description")
-  String description;
+  @Field(name="user-type")
+  String userType;
 
   @Field(name="image")
   String image;
 
-// these fields are going to be implemented in the future.
-
-//   @Field(name="saved-events")
-//   HashSet<String> savedEvents;
-
-//   @Field(name="saved-organizations")
-//   HashSet<String> savedOrganizations;
-
   public User() {
   }
 
-  public User(Long timestamp, String firstName, String lastName, String email, String university, String description, String image) {
+  public User(Long timestamp, String firstName, String lastName, String email, String university, String userType, String image) {
     this.timestamp = timestamp;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
     this.university = university;
-    this.description = description;
+    this.userType = userType;
     this.image = image;
-    // savedEvents = new HashSet<String>();
-    // savedEvents.add("event1");
-    // savedEvents.add("event2");
-    // savedEvents.add("event3");
-    // savedOrganizations = new HashSet<String>();
-    // savedOrganizations.add("ACM"); 
-    // savedOrganizations.add("ACM2");
-    // savedOrganizations.add("ACM3");
+  }
+
+  public User(long datastoreId, Long timestamp, String firstName, String lastName, String email, String university, String userType, String image) {
+    this.datastoreId = datastoreId;
+    this.timestamp = timestamp;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.university = university;
+    this.userType = userType;
+    this.image = image;
   }
   
   public Long getDatastoreId() {
@@ -83,8 +78,8 @@ public class User {
     return university;
   }
 
-  public String getDescription() {
-    return description;
+  public String getUserType() {
+    return userType;
   }
 
   public String getImage() {

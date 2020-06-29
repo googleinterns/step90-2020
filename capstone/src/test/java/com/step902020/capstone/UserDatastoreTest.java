@@ -26,6 +26,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import java.util.Random;
 import org.junit.Before;
+import org.junit.After;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = 
@@ -54,25 +55,20 @@ public class UserDatastoreTest {
     User[] result = restTemplate.getForObject(uri, User[].class);
     System.out.println(result[0]);
 
-    // mocking the expected result (should usually be hard coded - change to hard coded)
-    // look into @Before and @After
-    String expectedEmail = expected.getEmail();
-
-    
+    String expectedEmail = expected.getEmail();  
     Assert.assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
   }
 
   @Before
   public void setUp() {
-    // can append a random number to a property
+    // append a random number to email to make a new user
     expected = this.userRepository.save(new User(System.currentTimeMillis(), "Jenny", "Sheng", "jennysheng@google.com" + new Random().nextInt(), "Princeton", "hello", ""));    
   }
 
-  // @After
-  // public void tearDown() {
-  //   // look into deleting
-  //   User expected = this.userRepository.delete(new User(System.currentTimeMillis(), "Jenny", "Sheng", "jennysheng@google.com", "Princeton", "hello", ""));    
-  // }
+  @After
+  public void tearDown() {
+    this.userRepository.deleteByEmail(expected.getEmail());
+  }
 
   public String convertToJson(List<User> users) {
     Gson gson = new Gson();

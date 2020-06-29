@@ -3,29 +3,42 @@
 according to whether the user is logged in or logged out */
 function checkAuth(){
   // send request for information on login status
+  var email = "";
   fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
-    const userEmail = document.getElementById('email-form');
-    // default value set for testing on dev server
-    const email = "accounts.google.com:jennysheng@google.com";
-    userEmail.innerText = email.substring(20);
-    
+      email = data["email"].substring(20);
+      document.getElementById("email-form-display").innerText = data[0].email;
   });
+  if (email == "") {
+      email = "jennysheng@google.com";
+  }
+  return email;
 }
 
 /* gets the user information from Datastore and display them in profile */
 function getUser() {
-    var userEmail = "jennysheng@google.com";
-    // fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
-    //   email = "accounts.google.com:jennysheng@google.com".substring(20);
-    // });
-    fetch('get-user?email=' + "jennysheng@google.com").then(response => response.json()).then((data) => {
-      createProfile(data);
+    var email = checkAuth();
+    fetch('get-user?email=' + email).then(response => response.json()).then((data) => {
+      if (data.length != 0) {
+          createProfile(data);
+          displayForm(data[0].userType);
+          document.getElementById("profile-section").style.display = "block";
+          document.getElementById("no-profile").style.display = "none";
+      } else {
+          document.getElementById("profile-section").style.display = "none";
+          document.getElementById("no-profile").style.display = "block";
+      }
+
   });
 }
 
 function createProfile(data) {
-  const emailFormContainer = document.getElementById("email-form");
-    emailFormContainer.innerText = data[0].email;
+    const emailFormContainer = document.getElementById("email-form");
+    emailFormContainer.value = data[0].email;
+    document.getElementById("email-form-display").innerText = data[0].email;
+
+    const idFormContainer = document.getElementById("datastore-id");
+    idFormContainer.value = data[0].datastoreId;
+
     const firstNameContainer = document.getElementById("firstname");
     const pElementFirstName = document.createElement('p');
     pElementFirstName.innerText = "First Name: " + data[0].firstName;
@@ -51,19 +64,22 @@ function createProfile(data) {
     pElementUniversity.innerText = "University: " + data[0].university;
     universityContainer.appendChild(pElementUniversity);
 
-    const descriptionContainer = document.getElementById("description");
-    const pElementDescription = document.createElement('p');
-    pElementDescription.innerText = "Bio: " + data[0].description;
-    descriptionContainer.appendChild(pElementDescription);
-
-    // going to be implemented in the future
-    // const savedEventsContainer = document.getElementById("saved-events");
-    // savedEventsContainer.innerHTML = '';
-    // for (var i = 0; i < data["saved-events"].length; i++) {
-    //   savedEventsContainer.appendChild(
-    //   createDivElement(data["saved-events"][i]));
-    // }
 }
+
+// function to toggle between the two different forms
+function displayForm(userType) {
+  if (userType == "individual") {
+    document.getElementById("user").style.display = "block";
+    document.getElementById("organization").style.display = "none";
+    document.getElementById("user-type-toggle").value = "individual";
+
+  } else if (userType == "organization") {
+    document.getElementById("user").style.display = "none";
+    document.getElementById("organization").style.display = "block";
+    document.getElementById("org-user-type").value = "organization";
+  }
+}
+
 
 function createDivElement(event) {
   const divElement = document.createElement('div');
@@ -73,4 +89,10 @@ function createDivElement(event) {
   h3ElementName.innerText = event;
   divElement.appendChild(h3ElementName);
 
+}
+
+// function used to toggle after a change in the selected user type input
+function toggleForm(formUserType) {
+  var userType = document.getElementById(formUserType).value;
+  displayForm(userType);
 }

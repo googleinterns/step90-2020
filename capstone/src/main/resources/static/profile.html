@@ -10,19 +10,19 @@
     <nav>
         <ul>
             <li class="active"><a href="index.html">College Activity Finder</a></li>
-            <li><a href="about.html">Find Events</a></li>
-            <li><a href="projects.html">Find Organizations</a></li>
-            <li><a href="experiences.html">My Account</a></li>
-            <li><a href="gallery.html">About Us</a></li>
+            <li><a href="">Events</a></li>
+            <li><a href="">Organizations</a></li>
+            <li><a href="">My Account</a></li>
+            <li><a href="=">About Us</a></li>
         </ul>
     </nav>
     <br/>
     <div class="left">
         <ul>
-            <li class="active"><a href="index.html">My Profile</a></li>
+            <li class="active"><a href="profile.html">My Profile</a></li>
             <li><a href="">Calendar of Events</a></li>
             <li><a href="savedevents.html">Saved Events</a></li>
-            <li><a href="savedorganizations.html">Saved Organizations</a></li>
+            <li><a href="">Saved Organizations</a></li>
         </ul>
     </div>
     <div class="profile-container">
@@ -33,34 +33,57 @@
                 <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
             </div>
         </div>
-        <div class="row">
+        <div class="row" id="profile-section">
             <div class="col intro">
                 <div id="firstname"></div>
                 <div id="lastname"></div>
                 <div id="email"></div>
                 <div id="user-type"></div>
                 <div id="university"></div>
-                <div id="description"></div>
             </div>
         </div>
+
+        <div class="row" id="no-profile">
+            <p>You have not build your profile yet, please submit a profile </p>
+        </div>
     </div>
-    <div class="profile-form">
-        <form action="save-user" method="POST">
+    <div class="profile-form" id="user">
+        <form action="save-user" method="POST" id="user-form">
+            <label>Are you an individual or a club/organization?</label>
+            <select  id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
+                <option value="individual">Individual</option>
+                <option value="organization">Organization</option>
+            </select>
+            <input type="hidden" name="id" id="datastore-id">
             <label>First Name</label>
             <input type="text" name="firstname" placeholder="Your first name..">
             <label>Last Name</label>
             <input type="text" name="lastname" placeholder="Your last name..">
             <label>Your Email</label>
-            <input type="text" name="email" id="email-form">
-            <label>Are you an individual or a club/organization?</label>
-            <select name="user-type">
-                <option value="individual">Individual</option>
-                <option value="organization">Club or Organization</option>
-            </select>
+            <p id="email-form-display"></p>
+            <input type="hidden" name="email" id="email-form">
             <label>Your University</label>
             <input type="text" name="university" placeholder="Your university..">
-            <label>Short Bio</label>
-            <input type="text" name="description" placeholder="Your bio..">
+            <input class="button submit" type="submit" value="Submit">
+        </form>
+    </div>
+
+    <div class="profile-form" id="organization">
+        <form action="save-organization" method="POST" id="organization-form">
+            <label>Are you an individual or a club/organization?</label>
+            <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
+                <option value="individual">Individual</option>
+                <option value="organization">Organization</option>
+            </select>
+            <input type="hidden" name="id" id="datastore-id">
+            <label>Organization Name</label>
+            <input type="text" name="name" placeholder="Your organization name..">
+            <label>Email</label>
+            <input type="hidden" name="email" id="email-form">
+            <label>Affiliated University</label>
+            <input type="text" name="university" placeholder="Your university..">
+            <label>Description</label>
+            <input type="text" name="description" placeholder="Description of your organization..">
             <input class="button submit" type="submit" value="Submit">
         </form>
     </div>
