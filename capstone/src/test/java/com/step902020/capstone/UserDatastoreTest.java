@@ -39,35 +39,55 @@ public class UserDatastoreTest {
   private IndividualRepository individualRepository;
 
   @Autowired
+  private OrganizationRepository organizationRepository;
+
+  @Autowired
 	private TestRestTemplate restTemplate;
 
-  Individual expected;
+  Individual expectedIndividual;
+  Organization expectedOrganization;
 
   @Test
   public void testGetIndividual() throws URISyntaxException {
 
     // getting the actual result
     restTemplate = new TestRestTemplate();
+    String expectedEmail = expectedIndividual.getEmail();  
      
-    final String baseUrl = "http://localhost:"+ port + "/get-user?email=" + expected.getEmail();
+    final String baseUrl = "http://localhost:"+ port + "/get-individual?email=" + expectedEmail;
     URI uri = new URI(baseUrl);
  
     Individual[] result = restTemplate.getForObject(uri, Individual[].class);
-    System.out.println(result[0]);
 
-    String expectedEmail = expected.getEmail();  
+    Assert.assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
+  }
+
+  @Test
+  public void testGetOrganization() throws URISyntaxException {
+
+    restTemplate = new TestRestTemplate();
+    String expectedEmail = expectedOrganization.getEmail();  
+     
+    final String baseUrl = "http://localhost:"+ port + "/get-organization?email=" + expectedEmail;
+    URI uri = new URI(baseUrl);
+ 
+    Organization[] result = restTemplate.getForObject(uri, Organization[].class);
+
     Assert.assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
   }
 
   @Before
   public void setUp() {
     // append a random number to email to make a new user
-    expected = this.individualRepository.save(new Individual(System.currentTimeMillis(), "Jenny", "Sheng", "jennysheng@google.com" + new Random().nextInt(), "Princeton", "hello", ""));    
+    expectedIndividual = this.individualRepository.save(new Individual(System.currentTimeMillis(), "Jenny", "Sheng", "jennysheng@google.com" + new Random().nextInt(), "Princeton", "individual", ""));   
+    expectedOrganization = this.organizationRepository.save(new Organization(System.currentTimeMillis(), "new organization", "newOrganization@google.com" + new Random().nextInt(), "Princeton", "organization", "hello world!", ""));    
+ 
   }
 
   @After
   public void tearDown() {
-    this.individualRepository.deleteByEmail(expected.getEmail());
+    this.individualRepository.deleteByEmail(expectedIndividual.getEmail());
+    this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
   }
 
 }
