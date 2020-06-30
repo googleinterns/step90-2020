@@ -84,9 +84,12 @@ function checkAuth(){
   return email;
 }
 
+document.cookie = "";
+
 /* gets the user information from Datastore and display them in profile */
-function getUser() {
-    var email = checkAuth();
+function getUser(page) {
+    // var email = checkAuth();
+    var email = "jennysheng@google.com";
 
     /* Since there is no way to know beforehand whether the user is an organization 
     or an individual, we have to do two fetches to check the organization entities and
@@ -100,10 +103,14 @@ function getUser() {
       } else {
           fetch('get-individual?email=' + email).then(response => response.json()).then((newData) => {
             if (newData.length != 0) {
-                createProfile(newData, false);
-                displayForm(newData[0].userType);
-                document.getElementById("profile-section").style.display = "block";
-                document.getElementById("no-profile").style.display = "none";
+                if (page == "profile") {
+                  createProfile(newData, false);
+                  displayForm(newData[0].userType);
+                  document.getElementById("profile-section").style.display = "block";
+                  document.getElementById("no-profile").style.display = "none";
+                } else if (page == "saved-events") {
+                  newData[0].savedEvents.forEach((element) => createEventElement(element));
+                }
             } else {
                 // user does not exist at all, prompt them to submit a profile
                 document.getElementById("profile-section").style.display = "none";
@@ -192,13 +199,15 @@ function displayForm(userType) {
   }
 }
 
-function createDivElement(event) {
+
+function createEventElement(event) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container");
  
   const h3ElementName = document.createElement('h3');
   h3ElementName.innerText = event;
   divElement.appendChild(h3ElementName);
+  document.getElementById("saved-events").appendChild(divElement);
 
 }
 

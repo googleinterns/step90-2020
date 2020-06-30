@@ -30,6 +30,9 @@ public class Individual {
   @Field(name="image")
   String image;
 
+  @Field(name="saved-events")
+  Set<String> savedEvents;
+
   public Individual() {
   }
 
@@ -41,6 +44,10 @@ public class Individual {
     this.university = university;
     this.userType = userType;
     this.image = image;
+    savedEvents = new HashSet<String>();
+    savedEvents.add("hello 1");
+    savedEvents.add("hello 2");
+    savedEvents.add("hello 3");
   }
 
   public Individual(long datastoreId, Long timestamp, String firstName, String lastName, String email, String university, String userType, String image) {
@@ -84,5 +91,9 @@ public class Individual {
 
   public String getImage() {
     return image;
+  }
+
+  public Set<String> getSavedEvents() {
+    return savedEvents;
   }
 }

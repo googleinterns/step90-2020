@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
-<body onload="getUser();">
-    <nav>
+<body onload="getUser('saved-events');">
+    <nav class="nav-bar">
         <ul>
             <li class="active"><a href="index.html">College Activity Finder</a></li>
             <li><a href="about.html">Find Events</a></li>
@@ -17,7 +17,7 @@
         </ul>
     </nav>
     <br/>
-    <div class="left">
+    <div class="left nav-bar">
         <ul>
             <li><a href="index.html">My Profile</a></li>
             <li><a href="">Calendar of Events</a></li>
@@ -26,15 +26,6 @@
         </ul>
     </div>
     <div id="saved-events" class="right">
-        <div class="item-container">
-            <h3>Event 1<h3>
-        </div>
-        <div class="item-container">
-            <h3>Event 2<h3>
-        </div>
-        <div class="item-container">
-            <h3>Event 3<h3>
-        </div>
     </div>
     
   </body>

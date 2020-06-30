@@ -45,7 +45,7 @@
     </dependency>
 
     <dependency>
-      <scope>test<scope>
+      <scope>test</scope>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-test</artifactId>
       <version>2.2.2.RELEASE</version>
