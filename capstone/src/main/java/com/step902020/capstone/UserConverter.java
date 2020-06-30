@@ -8,7 +8,7 @@ public class UserConverter {
             new Converter<List<String>, Set<String>>() {
                 @Override
                 public Set<String> convert(List<String> source) {
-                    return Collections.unmodifiableSet(new HashSet<>(source));
+                    return new HashSet<>(source);
                 }
             };
 }

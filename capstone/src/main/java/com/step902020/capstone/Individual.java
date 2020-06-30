@@ -49,17 +49,6 @@ public class Individual {
     savedEvents.add("hello 2");
     savedEvents.add("hello 3");
   }
-
-  public Individual(long datastoreId, Long timestamp, String firstName, String lastName, String email, String university, String userType, String image) {
-    this.datastoreId = datastoreId;
-    this.timestamp = timestamp;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.university = university;
-    this.userType = userType;
-    this.image = image;
-  }
   
   public Long getDatastoreId() {
     return datastoreId;
@@ -95,5 +84,29 @@ public class Individual {
 
   public Set<String> getSavedEvents() {
     return savedEvents;
+  }
+
+  public void editFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public void editLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public void editUniversity(String university) {
+    this.university = university;
+  }
+
+  public void editImage(String image) {
+    this.image = image;
+  }
+
+  public void addSavedEvents(String event) {
+    savedEvents.add(event);
+  }
+
+  public void deleteSavedEvents(String event) {
+    savedEvents.remove(event);
   }
 }

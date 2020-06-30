@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
-<body onload="getUser('profile');">
+<body onload="getUser();">
     <nav class="nav-bar">
         <ul>
             <li class="home"><a href="index.html">College Activity Finder</a></li>
@@ -25,8 +25,10 @@
             <li><a href="">Saved Organizations</a></li>
         </ul>
     </div>
-    <div class="profile-container general-container">
-        <div id="auth-container"></div>
+    <div id="no-profile">
+        <p>You have not built your profile yet, please submit a profile </p>
+    </div>
+    <div id="main" class="profile-container general-container">
         <div class="row">
             <h1>My Profile</h1>
             <div class="container">
@@ -44,18 +46,16 @@
                 <div id="description"></div>
             </div>
         </div>
-
-        <div class="row" id="no-profile">
-            <p>You have not build your profile yet, please submit a profile </p>
-        </div>
     </div>
     <div class="profile-form general-container" id="user">
         <form action="save-individual" method="POST" id="user-form">
-            <label>Are you an individual or a club/organization?</label>
-            <select  id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
-                <option value="individual">Individual</option>
-                <option value="organization">Organization</option>
-            </select>
+            <div id="user-select">
+                <label>Are you an individual or a club/organization?</label>
+                <select id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
+                    <option value="individual">Individual</option>
+                    <option value="organization">Organization</option>
+                </select>
+            </div>
             <input type="hidden" name="id" id="datastore-id-org">
             <label>First Name</label>
             <input type="text" name="firstname" placeholder="Your first name..">
@@ -72,11 +72,13 @@
 
     <div class="profile-form general-container" id="organization">
         <form action="save-organization" method="POST" id="organization-form">
-            <label>Are you an individual or a club/organization?</label>
-            <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
-                <option value="individual">Individual</option>
-                <option value="organization">Organization</option>
-            </select>
+            <div id="org-select">
+                <label>Are you an individual or a club/organization?</label>
+                <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
+                    <option value="individual">Individual</option>
+                    <option value="organization">Organization</option>
+                </select>
+            </div>
             <input type="hidden" name="id" id="datastore-id">
             <label>Organization Name</label>
             <input type="text" name="name" placeholder="Your organization name..">

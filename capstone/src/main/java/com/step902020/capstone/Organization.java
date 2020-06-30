@@ -24,21 +24,9 @@ public class Organization {
   String image;
   
   public Organization() {
-
   }
   
   public Organization(Long timestamp, String name, String email, String university, String userType, String description, String image) {
-    this.timestamp = timestamp;
-    this.name = name;
-    this.email = email;
-    this.university = university;
-    this.userType = userType;
-    this.description = description;
-    this.image = image;
-  }
-
-  public Organization(Long datastoreId, Long timestamp, String name, String email, String university, String userType, String description, String image) {
-    this.datastoreId = datastoreId;
     this.timestamp = timestamp;
     this.name = name;
     this.email = email;
@@ -78,6 +66,22 @@ public class Organization {
 
   public String getImage() {
     return image;
+  }
+
+  public void editName(String name) {
+    this.name = name;
+  }
+
+  public void editUniversity(String university) {
+    this.university = university;
+  }
+
+  public void editDescription(String description) {
+    this.description = description;
+  }
+
+  public void editImage(String image) {
+    this.image = image;
   }
   
 }

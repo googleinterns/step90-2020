@@ -6,26 +6,35 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
-<body onload="getUser('saved-events');">
+<body onload="getIndividualEvents();">
     <nav class="nav-bar">
         <ul>
-            <li class="active"><a href="index.html">College Activity Finder</a></li>
-            <li><a href="about.html">Find Events</a></li>
-            <li><a href="projects.html">Find Organizations</a></li>
-            <li><a href="experiences.html">My Account</a></li>
-            <li><a href="gallery.html">About Us</a></li>
+            <li class="home"><a href="index.html">College Activity Finder</a></li>
+            <li><a href="">Events</a></li>
+            <li><a href="">Organizations</a></li>
+            <li class="active"><a href="">My Account</a></li>
+            <li><a href="=">About Us</a></li>
         </ul>
     </nav>
     <br/>
     <div class="left nav-bar">
         <ul>
-            <li><a href="index.html">My Profile</a></li>
+            <li><a href="profile.html">My Profile</a></li>
             <li><a href="">Calendar of Events</a></li>
             <li class="active"><a href="savedevents.html">Saved Events</a></li>
-            <li><a href="savedorganizations.html">Saved Organizations</a></li>
+            <li><a href="">Saved Organizations</a></li>
         </ul>
     </div>
-    <div id="saved-events" class="right">
+    <div class="row" id="no-profile">
+        <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
+    </div>
+    <form action="add-saved-event" method="POST">
+        <input type="text" name="event-name"></input>
+        <input type="hidden" name="email" id="temp-email"></input>
+        <button type="submit">Test add event</button>
+    </form>
+    <div id="main">
+        <div id="saved-events" class="right"></div>
     </div>
     
   </body>

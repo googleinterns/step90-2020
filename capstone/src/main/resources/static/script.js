@@ -64,8 +64,7 @@ function showMore() {
   }
 } 
 
-/** checks whether the user is authenticated and adjust elements 
-according to whether the user is logged in or logged out */
+/** authenticate user and return email */
 function checkAuth(){
   // send request for information on login status
   // if request not working, default to preset value
@@ -76,47 +75,74 @@ function checkAuth(){
   if (email == "") {
       email = "jennysheng@google.com";
   }
-  // prefill the email in the form so that user cannot edit their email
+  return email;
+}
+
+/* get the user information for the profile page */
+function getUser() {
+  var email = checkAuth();
+  
+   // prefill the email in the form so that user cannot edit their email
   document.getElementById("email-form-display").innerText = email;
   document.getElementById("org-email-form-display").innerText = email;
   document.getElementById("email-form").value = email;
   document.getElementById("org-email-form").value = email;
-  return email;
+
+  var userType = sessionStorage.getItem("user-type");
+
+  // if there is no userType stored in this session, that means this is a new user
+  if (userType == null) {
+    getUserType();
+    displayForm("individual", true);
+  } else {
+    if (userType == "organization") {
+      fetch('get-organization?email=' + email).then(response => response.json()).then((data) => {
+        createProfile(data, true);
+        displayForm(data[0].userType, false);
+        sessionStorage.setItem("user-type", data[0].userType);
+      });
+    } else if (userType == "individual") {
+      fetch('get-individual?email=' + email).then(response => response.json()).then((data) => {
+        createProfile(data, false);
+        displayForm(data[0].userType, false);
+        document.getElementById("profile-section").style.display = "block";
+        document.getElementById("no-profile").style.display = "none";
+        sessionStorage.setItem("user-type", data[0].userType);
+      });  
+    }
+    // display profile
+    document.getElementById("profile-section").style.display = "block";
+    document.getElementById("no-profile").style.display = "none";
+  }
 }
 
-document.cookie = "";
-
-/* gets the user information from Datastore and display them in profile */
-function getUser(page) {
-    // var email = checkAuth();
-    var email = "jennysheng@google.com";
+/* get and store the user type (individual or organization). With this we determine whether
+this user exists in our database or not */
+function getUserType() {
+    var email = checkAuth();
 
     /* Since there is no way to know beforehand whether the user is an organization 
     or an individual, we have to do two fetches to check the organization entities and
     the user entities */
     fetch('get-organization?email=' + email).then(response => response.json()).then((data) => {
       if (data.length != 0) {
-          createProfile(data, true);
-          displayForm(data[0].userType);
-          document.getElementById("profile-section").style.display = "block";
+          sessionStorage.setItem("user-type", data[0].userType);
+          // display information
+          document.getElementById("main").style.display = "block";
           document.getElementById("no-profile").style.display = "none";
       } else {
-          fetch('get-individual?email=' + email).then(response => response.json()).then((newData) => {
-            if (newData.length != 0) {
-                if (page == "profile") {
-                  createProfile(newData, false);
-                  displayForm(newData[0].userType);
-                  document.getElementById("profile-section").style.display = "block";
-                  document.getElementById("no-profile").style.display = "none";
-                } else if (page == "saved-events") {
-                  newData[0].savedEvents.forEach((element) => createEventElement(element));
-                }
-            } else {
-                // user does not exist at all, prompt them to submit a profile
-                document.getElementById("profile-section").style.display = "none";
-                document.getElementById("no-profile").style.display = "block";
-            }
-          });  
+        fetch('get-individual?email=' + email).then(response => response.json()).then((newData) => {
+          if (newData.length != 0) {
+            // display information
+            sessionStorage.setItem("user-type", newData[0].userType);
+            document.getElementById("main").style.display = "block";
+            document.getElementById("no-profile").style.display = "none";
+          } else {
+            // user does not exist at all, display message to them to submit a profile
+            document.getElementById("main").style.display = "none";
+            document.getElementById("no-profile").style.display = "block";
+          }
+        });  
       }
   });
 }
@@ -145,6 +171,7 @@ function createProfile(data, isOrganization) {
     pElementUniversity.innerText = "University: " + data[0].university;
     universityContainer.appendChild(pElementUniversity);
 
+    // addresses the different fields for each user type
     if (isOrganization) {
       createOrgProfile(data);
     } else {
@@ -185,34 +212,68 @@ function createOrgProfile(data) {
   document.getElementById("lastname").style.display = "none";
 }
 
-// function to toggle between the two different forms
-function displayForm(userType) {
+// function used to toggle after a change in the selected user type input
+function toggleForm(formUserType) {
+  var userType = document.getElementById(formUserType).value;
+  displayForm(userType, true);
+}
+
+// helper function for displaying forms
+// a new user will be able to toggle, but a returning user will not
+function displayForm(userType, displayBoth) {
   if (userType == "individual") {
     document.getElementById("user").style.display = "block";
     document.getElementById("organization").style.display = "none";
     document.getElementById("user-type-toggle").value = "individual";
+    if (!displayBoth) {
+        document.getElementById("user-select").style.display = "none";
+    }
 
   } else if (userType == "organization") {
     document.getElementById("user").style.display = "none";
     document.getElementById("organization").style.display = "block";
     document.getElementById("org-user-type").value = "organization";
+    if (!displayBoth) {
+        document.getElementById("org-select").style.display = "none";
+    }
   }
 }
 
+/* get the saved events for individual users */
+function getIndividualEvents() {
+  var email = checkAuth();
+  document.getElementById("temp-email").value = email;
+  var userType = sessionStorage.getItem("user-type");
+  if (userType == null) {
+    getUserType();
+  }
+  fetch('get-' + userType + '?email=' + email).then(response => response.json()).then((data) => {
+    data[0].savedEvents.forEach((element) => createSavedEventElement(element, data[0].email));
+    document.getElementById("no-profile").style.display = "none";
+    document.getElementById("saved-events").style.display = "block";
+  });
+}
 
-function createEventElement(event) {
+/* create the individual event containers for displaying events*/
+function createSavedEventElement(event, email) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container");
  
   const h3ElementName = document.createElement('h3');
   h3ElementName.innerText = event;
   divElement.appendChild(h3ElementName);
+
+  // create delete event form
+  const form = document.createElement("form");
+  form.setAttribute("method", "POST");
+  form.setAttribute("action", "delete-saved-event?email=" + email + "&event-name=" + event);
+  const button = document.createElement('button');
+  button.innerText = "Unsave this event";
+  button.setAttribute("type", "submit");
+  
+  form.appendChild(button);
+  divElement.appendChild(form);
   document.getElementById("saved-events").appendChild(divElement);
-
 }
 
-// function used to toggle after a change in the selected user type input
-function toggleForm(formUserType) {
-  var userType = document.getElementById(formUserType).value;
-  displayForm(userType);
-}
+

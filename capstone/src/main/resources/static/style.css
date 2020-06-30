@@ -104,9 +104,11 @@ input[type=submit]:hover {
   max-width: 950px;
   margin-left: auto;
   margin-right: auto;
+  background-color: white;
+  color: black;
 }
 
-#organization {
+#organization, #no-profile {
   display: none;
 }
 
