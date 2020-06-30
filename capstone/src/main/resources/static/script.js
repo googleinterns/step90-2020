@@ -27,7 +27,9 @@ function getEvents() {
   });
 }
 
-/** Creates an event element. */
+/**
+ * Format event listing
+ */
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
@@ -56,30 +58,34 @@ function createEventElement(event) {
   return eventElement;
 }
 
+/**
+ * Format review element and listing
+ */
 function createReviewElement(event) {
   const reviewElement = document.createElement('span');
 
+  // Submission
   const reviewTextElement = document.createElement('input');
   reviewTextElement.class = 'review-text';
   reviewTextElement.setAttribute('type', 'text');
 
   // Future: option to add image
-  
+
   const reviewButtonElement = document.createElement('button');
   reviewButtonElement.innerText = 'Submit Review';
   reviewButtonElement.addEventListener('click', () => {
     newReview(event.datastoreId, reviewTextElement.value);
   });
 
+  // Container
   const reviewContainer = document.createElement('div');
   reviewContainer.innerText = 'Reviews:'
   const reviews = event.reviews;
 
   reviews.forEach((review) => {
-      const text = document.createElement('p');
-      text.innerText = review.text;
-      console.log(review.text);
-      reviewContainer.appendChild(text);
+      const reviewTextElement = document.createElement('p');
+      reviewTextElement.innerText = review.text;
+      reviewContainer.appendChild(reviewTextElement);
     }) 
 
   reviewElement.appendChild(reviewTextElement);
@@ -89,19 +95,29 @@ function createReviewElement(event) {
   return reviewElement;
 }
 
-async function newReview(eventID, text) {
+/**
+ * Add review to event's list
+ */
+async function newReview(id, text) {
+  var email = getEmail();
+
   const params = new URLSearchParams();
   params.append('text', text);
-  params.append('id', eventID);
+  params.append('id', id);
+  params.append('email', email);
+  
   await fetch('new-review', {method:'POST', body: params});
   getEvents();
-
 }
 
+/** TEMP */
 async function newEvent() {
   await fetch('new-event', {method: 'POST'});
 }
 
+/**
+ * Toggle advanced filters
+ */
 function showMore() {
   const filterElement = document.getElementById('additionalFilters');  
   const button = document.getElementById('filterButton');
@@ -127,18 +143,27 @@ according to whether the user is logged in or logged out */
 function checkAuth(){
   // send request for information on login status
   // if request not working, default to preset value
-  var email = "";
-  fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
-      email = data["email"].substring(20);
-  });
-  if (email == "") {
-      email = "jennysheng@google.com";
-  }
+  var email = getEmail();
+
   // prefill the email in the form so that user cannot edit their email
   document.getElementById("email-form-display").innerText = email;
   document.getElementById("org-email-form-display").innerText = email;
   document.getElementById("email-form").value = email;
   document.getElementById("org-email-form").value = email;
+  return email;
+}
+
+function getEmail() {
+  var email = "";
+  fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
+    email = data["email"].substring(20);
+  });
+  
+  // Temp Back up
+  if (email == "") {
+      email = "jennysheng@google.com";
+  }
+
   return email;
 }
 

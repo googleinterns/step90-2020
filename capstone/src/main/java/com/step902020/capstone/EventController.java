@@ -11,6 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 import com.google.common.collect.Lists;
 
+/**
+ * Event functionalities
+ *   - Add new reviews
+ *   - List reviews
+ * TODO: filtering, creating event with front end input
+ */
+ 
 @RestController
 public class EventController {
 
@@ -28,14 +35,16 @@ public class EventController {
   }
 
   @PostMapping("/new-review")
-  public void saveEvent(
+  public void addReview(
       @RequestParam("text") String text,
-      @RequestParam("id") long id) throws IOException {
-    EventTemp event =this.eventRepository.findById(id);
-    LocalDateTime date = LocalDateTime.now();
+      @RequestParam("id") long id,
+      @RequestParam("email") String email) throws IOException {
+ 
+  EventTemp event =this.eventRepository.findById(id);
+  LocalDateTime date = LocalDateTime.now();
 
-   event.addReview(new Review(date, text));
-    this.eventRepository.save(event);
+  event.addReview(new Review(date, text, email));
+  this.eventRepository.save(event);
   }
 
 }

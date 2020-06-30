@@ -5,6 +5,7 @@ import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
 import java.util.*;
 
+/** TEMP USE */
 @Entity(name = "eventTemp")
 public class EventTemp {
 
