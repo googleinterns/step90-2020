@@ -69,4 +69,148 @@ function createMap() {
   const map = new google.maps.Map(
       document.getElementById('map'),
       {center: nycLatLng, zoom: 11});
+} 
+
+/** checks whether the user is authenticated and adjust elements 
+according to whether the user is logged in or logged out */
+function checkAuth(){
+  // send request for information on login status
+  // if request not working, default to preset value
+  var email = "";
+  fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
+      email = data["email"].substring(20);
+  });
+  if (email == "") {
+      email = "jennysheng@google.com";
+  }
+  // prefill the email in the form so that user cannot edit their email
+  document.getElementById("email-form-display").innerText = email;
+  document.getElementById("org-email-form-display").innerText = email;
+  document.getElementById("email-form").value = email;
+  document.getElementById("org-email-form").value = email;
+  return email;
+}
+
+/* gets the user information from Datastore and display them in profile */
+function getUser() {
+    var email = checkAuth();
+
+    /* Since there is no way to know beforehand whether the user is an organization 
+    or an individual, we have to do two fetches to check the organization entities and
+    the user entities */
+    fetch('get-organization?email=' + email).then(response => response.json()).then((data) => {
+      if (data.length != 0) {
+          createProfile(data, true);
+          displayForm(data[0].userType);
+          document.getElementById("profile-section").style.display = "block";
+          document.getElementById("no-profile").style.display = "none";
+      } else {
+          fetch('get-individual?email=' + email).then(response => response.json()).then((newData) => {
+            if (newData.length != 0) {
+                createProfile(newData, false);
+                displayForm(newData[0].userType);
+                document.getElementById("profile-section").style.display = "block";
+                document.getElementById("no-profile").style.display = "none";
+            } else {
+                // user does not exist at all, prompt them to submit a profile
+                document.getElementById("profile-section").style.display = "none";
+                document.getElementById("no-profile").style.display = "block";
+            }
+          });  
+      }
+  });
+}
+
+/* creates and populates the user profile */
+function createProfile(data, isOrganization) {
+    const emailFormContainer = document.getElementById("email-form");
+    emailFormContainer.value = data[0].email;
+    document.getElementById("email-form-display").innerText = data[0].email;
+
+    const idFormContainer = document.getElementById("datastore-id");
+    idFormContainer.value = data[0].datastoreId;
+
+    const emailContainer = document.getElementById("email");
+    const pElementEmail = document.createElement('p');
+    pElementEmail.innerText = "Email: " + data[0].email;
+    emailContainer.appendChild(pElementEmail);
+
+    const userTypeContainer = document.getElementById("user-type");
+    const pElementUserType = document.createElement('p');
+    pElementUserType.innerText = "User Type: " + data[0].userType;
+    userTypeContainer.appendChild(pElementUserType);
+
+    const universityContainer = document.getElementById("university");
+    const pElementUniversity = document.createElement('p');
+    pElementUniversity.innerText = "University: " + data[0].university;
+    universityContainer.appendChild(pElementUniversity);
+
+    if (isOrganization) {
+      createOrgProfile(data);
+    } else {
+      createIndividualProfile(data);
+    }
+
+}
+
+/* populate individual specific fields of the profile */
+function createIndividualProfile(data) {
+  const firstNameContainer = document.getElementById("firstname");
+  const pElementFirstName = document.createElement('p');
+  pElementFirstName.innerText = "First Name: " + data[0].firstName;
+  firstNameContainer.appendChild(pElementFirstName);
+
+  const lastNameContainer = document.getElementById("lastname");
+  const pElementLastName = document.createElement('p');
+  pElementLastName.innerText = "Last Name: " + data[0].lastName;
+  lastNameContainer.appendChild(pElementLastName);
+
+  document.getElementById("org-name").style.display = "none";
+  document.getElementById("description").style.display = "none";
+}
+
+/* populate organization specific fields of the profile */
+function createOrgProfile(data) {
+  const nameContainer = document.getElementById("org-name");
+  const pElementName = document.createElement('p');
+  pElementName.innerText = "Organization Name: " + data[0].name;
+  nameContainer.appendChild(pElementName);
+
+  const descriptionContainer = document.getElementById("description");
+  const pElementDescription = document.createElement('p');
+  pElementDescription.innerText = "Description: " + data[0].description;
+  descriptionContainer.appendChild(pElementDescription);
+
+  document.getElementById("firstname").style.display = "none";
+  document.getElementById("lastname").style.display = "none";
+}
+
+// function to toggle between the two different forms
+function displayForm(userType) {
+  if (userType == "individual") {
+    document.getElementById("user").style.display = "block";
+    document.getElementById("organization").style.display = "none";
+    document.getElementById("user-type-toggle").value = "individual";
+
+  } else if (userType == "organization") {
+    document.getElementById("user").style.display = "none";
+    document.getElementById("organization").style.display = "block";
+    document.getElementById("org-user-type").value = "organization";
+  }
+}
+
+function createDivElement(event) {
+  const divElement = document.createElement('div');
+  divElement.setAttribute("class", "item-container");
+ 
+  const h3ElementName = document.createElement('h3');
+  h3ElementName.innerText = event;
+  divElement.appendChild(h3ElementName);
+
+}
+
+// function used to toggle after a change in the selected user type input
+function toggleForm(formUserType) {
+  var userType = document.getElementById(formUserType).value;
+  displayForm(userType);
 }
