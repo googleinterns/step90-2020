@@ -47,6 +47,20 @@ public class UserDatastoreTest {
   Individual expectedIndividual;
   Organization expectedOrganization;
 
+  @Before
+  public void setUp() {
+    // append a random number to email to make a new user
+    expectedIndividual = this.individualRepository.save(new Individual(System.currentTimeMillis(), "Jenny", "Sheng", "jennysheng@google.com" + new Random().nextInt(), "Princeton", "individual", ""));   
+    expectedOrganization = this.organizationRepository.save(new Organization(System.currentTimeMillis(), "new organization", "newOrganization@google.com" + new Random().nextInt(), "Princeton", "organization", "hello world!", ""));    
+ 
+  }
+
+  @After
+  public void tearDown() {
+    this.individualRepository.deleteByEmail(expectedIndividual.getEmail());
+    this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
+  }
+
   @Test
   public void testGetIndividual() throws URISyntaxException {
 
@@ -75,19 +89,4 @@ public class UserDatastoreTest {
 
     Assert.assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
   }
-
-  @Before
-  public void setUp() {
-    // append a random number to email to make a new user
-    expectedIndividual = this.individualRepository.save(new Individual(System.currentTimeMillis(), "Jenny", "Sheng", "jennysheng@google.com" + new Random().nextInt(), "Princeton", "individual", ""));   
-    expectedOrganization = this.organizationRepository.save(new Organization(System.currentTimeMillis(), "new organization", "newOrganization@google.com" + new Random().nextInt(), "Princeton", "organization", "hello world!", ""));    
- 
-  }
-
-  @After
-  public void tearDown() {
-    this.individualRepository.deleteByEmail(expectedIndividual.getEmail());
-    this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
-  }
-
 }
