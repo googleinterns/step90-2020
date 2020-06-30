@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title> Create an Event </title>
     <script src="script.js"> </script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="event.css">
   </head>
   
   <body>
@@ -22,7 +22,7 @@
       <form id="form" method="POST">
 
         <label for="organizationID"> OrganizationID: </label>
-        <input type="number" id="organizationID" name="organizationID"> 
+        <input type="hidden" id="organizationID" name="organizationID"> 
         <br><br>
 
         <label for="organizationName"> Organization Name: </label>
@@ -30,15 +30,15 @@
         <br><br>
 
         <label for="university"> University: </label>
-        <input type="text" id="university" name="university">
+        <input type="hidden" id="university" name="university">
         <br><br>
 
         <label for="eventTitle"> Event Title: </label>
         <input type="text" id="eventTitle" name="eventTitle">
         <br><br>
 
-        <label for="eventTime"> Event Time: </label>
-        <input type="time" id="eventTime" name="eventTime">
+        <label for="eventDateTime"> Event Date and Time: </label>
+        <input type="datetime-local" id="eventDateTime" name="eventDateTime">
         <br><br>
 
         <label for="eventLocation"> Event Location: </label> <br>
@@ -70,6 +70,7 @@
             <br>
           </form>
           <br><br>
+          <input type="submit" value="submit">
 
       </form>
       <div id="events-container"></div>

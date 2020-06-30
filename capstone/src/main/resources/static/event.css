@@ -1,0 +1,40 @@
+#map {
+  text-align: center;
+  border: thin solid black;
+  height: 1000px;
+  width: 1000px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto; 
+  border-radius: 20px;
+}
+
+#chart {
+  display: block;
+  margin-left: auto;
+  margin-right: auto; 
+  border-radius: 20px;
+}
+
+form {
+  display: block;
+  margin-left: 40px;
+}
+
+.menu {
+    overflow: hidden;
+    background-color: #333;
+    padding: 30px;
+    color: white;
+}
+
+body {
+    background:gainsboro;
+    color:black;
+    margin-left: auto;
+}
+
+h1 {
+    text-align: center;
+    color:black
+}
