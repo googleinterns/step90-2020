@@ -27,6 +27,13 @@ import org.springframework.boot.web.server.LocalServerPort;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.After;
+import java.net.URL;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
+import org.json.JSONObject;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = 
@@ -89,4 +96,72 @@ public class UserDatastoreTest {
 
     Assert.assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
   }
+
+  @Test
+  public void testAddEvent() throws URISyntaxException {
+
+    String url = "http://localhost:" + port + "/add-saved-event";
+    String expectedEmail = expectedIndividual.getEmail();  
+ 
+    restTemplate = new TestRestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+    map.add("email", expectedEmail);
+    map.add("event-name", "test");
+
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class);
+
+    // getting the actual result
+    final String baseUrl = "http://localhost:"+ port + "/get-individual?email=" + expectedEmail;
+    URI uri = new URI(baseUrl);
+
+    Set<String> expectedSet = new HashSet<>();
+    expectedSet.add("hello 2");
+    expectedSet.add("hello 3");
+    expectedSet.add("hello 1");
+    expectedSet.add("test");
+ 
+    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
+
+    Assert.assertEquals("Insert event error", expectedSet, result[0].getSavedEvents());
+  }
+
+  @Test
+  public void testDeleteEvent() throws URISyntaxException {
+
+    String url = "http://localhost:" + port + "/delete-saved-event";
+    String expectedEmail = expectedIndividual.getEmail();  
+ 
+    restTemplate = new TestRestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+    map.add("email", expectedEmail);
+    map.add("event-name", "hello 2");
+
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class);
+
+    // getting the actual result
+    final String baseUrl = "http://localhost:"+ port + "/get-individual?email=" + expectedEmail;
+    URI uri = new URI(baseUrl);
+
+    Set<String> expectedSet = new HashSet<>();
+    expectedSet.add("hello 3");
+    expectedSet.add("hello 1");
+ 
+    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
+
+    Assert.assertEquals("Wrong user returned", expectedSet, result[0].getSavedEvents());
+  }
+
+
+
+  
 }
