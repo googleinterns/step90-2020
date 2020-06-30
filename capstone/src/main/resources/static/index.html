@@ -3,11 +3,21 @@
   <head>
     <meta charset="UTF-8">
     <title>Events</title>
-    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
 
   <body>
+    <nav class="nav-bar">
+      <ul>
+        <li class="home"><a href="index.html">College Activity Finder</a></li>
+        <li><a href="">Events</a></li>
+        <li><a href="">Organizations</a></li>
+        <li class="active"><a href="">My Account</a></li>
+        <li><a href="=">About Us</a></li>
+      </ul>
+    </nav>
+
     <h1>Events</h1>
     <div id="filters">
       <p>Filters</p>
@@ -52,12 +62,6 @@
           <label for="vistor">Visitors Allowed</label>
           <input type="checkbox" id="vistor" name="vistor" value="vistor">
         </div>
-
-        <label for="sort">SORT BY</label>
-        <select name="sort" id="sort" class="button smallDefaultButton">
-            <option value="descending">NEWEST</option>
-            <option value="ascending">OLDEST</option>
-        </select>
         <label for="searchEvent">Search Event</label>
         <input type="text" id="searchEvent" name="searchEvent">
         <button onclick="getEvents()">Search</button>

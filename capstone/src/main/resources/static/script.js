@@ -16,7 +16,7 @@
  * Retrieves events from server
  */
 function getEvents() {
-  fetch('/list-events').then(response => response.json()).then((events) => {
+  fetch('list-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
     eventListElement.innerText = "Events";
@@ -34,21 +34,72 @@ function createEventElement(event) {
 
   // Name 
   const nameElement = document.createElement('p');
-  nameElement.innerText = event.text;
+  nameElement.innerText = event.name;
+  console.log(event.name);
 
+  const idElement = document.createElement('p');
+  idElement.innerText = event.datastoreId;
+  idElement.style.display = 'none';
+
+  // Review
+  const reviewElement = createReviewElement(event);
   /*
   Time
   Location
   Organization
   Description
   */
+  eventElement.appendChild(idElement);
   eventElement.appendChild(nameElement);
+  eventElement.appendChild(reviewElement);
   
   return eventElement;
 }
 
+function createReviewElement(event) {
+  const reviewElement = document.createElement('span');
+
+  const reviewTextElement = document.createElement('input');
+  reviewTextElement.class = 'review-text';
+  reviewTextElement.setAttribute('type', 'text');
+
+  // Future: option to add image
+  
+  const reviewButtonElement = document.createElement('button');
+  reviewButtonElement.innerText = 'Submit Review';
+  reviewButtonElement.addEventListener('click', () => {
+    newReview(event.datastoreId, reviewTextElement.value);
+  });
+
+  const reviewContainer = document.createElement('div');
+  reviewContainer.innerText = 'Reviews:'
+  const reviews = event.reviews;
+
+  reviews.forEach((review) => {
+      const text = document.createElement('p');
+      text.innerText = review.text;
+      console.log(review.text);
+      reviewContainer.appendChild(text);
+    }) 
+
+  reviewElement.appendChild(reviewTextElement);
+  reviewElement.appendChild(reviewButtonElement);
+  reviewElement.appendChild(reviewContainer);
+
+  return reviewElement;
+}
+
+async function newReview(eventID, text) {
+  const params = new URLSearchParams();
+  params.append('text', text);
+  params.append('id', eventID);
+  await fetch('new-review', {method:'POST', body: params});
+  getEvents();
+
+}
+
 async function newEvent() {
-  await fetch('/new-event', {method: 'POST'});
+  await fetch('new-event', {method: 'POST'});
 }
 
 function showMore() {

@@ -58,12 +58,6 @@ img {
   width: 100%;
   height: auto;
 }
- 
-.profile {
-  border-radius: 20px;
-  width: 100%;
-  height: auto;
-}
 
 input[type=text], select, textarea {
   width: 100%;
@@ -151,4 +145,17 @@ li a:hover {
 /* Make the home page button bigger */
 .home {
   font-size: 18px;
+}
+
+.event {
+  list-style-type: none;
+  padding: 20px;
+}
+
+#events {
+  text-align: center;
+}
+
+#events input {
+  width: auto;
 }
