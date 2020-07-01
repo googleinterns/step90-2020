@@ -80,7 +80,7 @@ function checkAuth(){
       email = data["email"].substring(20);
   });
   if (email == "") {
-      email = "jennysheng@google.com";
+      email = "jenny@google.com";
   }
   return email;
 }
@@ -100,18 +100,15 @@ function getUser() {
   // if there is no userType stored in this session, that means this is a new user
   if (userType == null) {
     getUserType();
-    displayForm("individual", true);
   } else {
     if (userType == "organization") {
       fetch('get-organization?email=' + email).then(response => response.json()).then((data) => {
         createProfile(data, true);
-        displayForm(data[0].userType, false);
         sessionStorage.setItem("user-type", data[0].userType);
       });
     } else if (userType == "individual") {
       fetch('get-individual?email=' + email).then(response => response.json()).then((data) => {
         createProfile(data, false);
-        displayForm(data[0].userType, false);
         document.getElementById("profile-section").style.display = "block";
         document.getElementById("no-profile").style.display = "none";
         sessionStorage.setItem("user-type", data[0].userType);
@@ -148,6 +145,7 @@ function getUserType() {
             // user does not exist at all, display message to them to submit a profile
             document.getElementById("main").style.display = "none";
             document.getElementById("no-profile").style.display = "block";
+            displayForm("individual", true);
           }
         });  
       }
@@ -158,7 +156,6 @@ function getUserType() {
 function createProfile(data, isOrganization) {
     const emailFormContainer = document.getElementById("email-form");
     emailFormContainer.value = data[0].email;
-    document.getElementById("email-form-display").innerText = data[0].email;
 
     const idFormContainer = document.getElementById("datastore-id");
     idFormContainer.value = data[0].datastoreId;
@@ -189,15 +186,18 @@ function createProfile(data, isOrganization) {
 
 /* populate individual specific fields of the profile */
 function createIndividualProfile(data) {
+  document.getElementById("university-form-display").innerText = data[0].university;
   const firstNameContainer = document.getElementById("firstname");
   const pElementFirstName = document.createElement('p');
   pElementFirstName.innerText = "First Name: " + data[0].firstName;
   firstNameContainer.appendChild(pElementFirstName);
+  document.getElementById("ind-firstname").value = data[0].firstName;
 
   const lastNameContainer = document.getElementById("lastname");
   const pElementLastName = document.createElement('p');
   pElementLastName.innerText = "Last Name: " + data[0].lastName;
   lastNameContainer.appendChild(pElementLastName);
+  document.getElementById("ind-lastname").value = data[0].lastName;
 
   document.getElementById("org-name").style.display = "none";
   document.getElementById("description").style.display = "none";
@@ -205,15 +205,18 @@ function createIndividualProfile(data) {
 
 /* populate organization specific fields of the profile */
 function createOrgProfile(data) {
+  document.getElementById("org-university-form-display").innerText = data[0].university;
   const nameContainer = document.getElementById("org-name");
   const pElementName = document.createElement('p');
   pElementName.innerText = "Organization Name: " + data[0].name;
   nameContainer.appendChild(pElementName);
+  document.getElementById("org-name").value = data[0].name;
 
   const descriptionContainer = document.getElementById("description");
   const pElementDescription = document.createElement('p');
   pElementDescription.innerText = "Description: " + data[0].description;
   descriptionContainer.appendChild(pElementDescription);
+  document.getElementById("org-description").value = data[0].description;
 
   document.getElementById("firstname").style.display = "none";
   document.getElementById("lastname").style.display = "none";
@@ -234,6 +237,7 @@ function displayForm(userType, displayBoth) {
     document.getElementById("user-type-toggle").value = "individual";
     if (!displayBoth) {
         document.getElementById("user-select").style.display = "none";
+        document.getElementById("ind-uni").style.display="none";
     }
 
   } else if (userType == "organization") {
@@ -242,6 +246,7 @@ function displayForm(userType, displayBoth) {
     document.getElementById("org-user-type").value = "organization";
     if (!displayBoth) {
         document.getElementById("org-select").style.display = "none";
+        document.getElementById("org-uni").style.display="none";
     }
   }
 }
@@ -255,10 +260,69 @@ function getIndividualEvents() {
     getUserType();
   }
   fetch('get-' + userType + '?email=' + email).then(response => response.json()).then((data) => {
-    data[0].savedEvents.forEach((element) => createSavedEventElement(element, data[0].email));
+    data[0].savedEvents.forEach((event) => createSavedEventElement(event, email));
     document.getElementById("no-profile").style.display = "none";
-    document.getElementById("saved-events").style.display = "block";
+    document.getElementById("main").style.display = "block";
   });
+}
+
+// will be used in the future when event entity is set up
+// function getSavedEventElements(savedEvents, userEmail) {
+//   fetch('get-saved-events?saved-events=' + savedEvents + "&email=" + userEmail).then(response => response.json()).then((data) => {
+//     data.forEach((event) => createSavedEventElement(event, userEmail));
+//   });
+// }
+
+/* get the saved organizations for individual users */
+function getIndividualOrganizations() {
+  var email = checkAuth();
+	document.getElementById("temp-email").value = email;
+  var userType = sessionStorage.getItem("user-type");
+  if (userType == null) {
+    getUserType();
+  }
+  fetch('get-' + userType + '?email=' + email).then(response => response.json()).then((data) => {
+    getSavedOrgElements(data[0].savedOrganizations, email);
+    document.getElementById("no-profile").style.display = "none";
+    document.getElementById("main").style.display = "block";
+  });
+}
+
+/* function to return the list of correponding saved organizations */
+function getSavedOrgElements(email, userEmail) {
+  fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
+    data.forEach((org) => createSavedOrgElement(org, userEmail));
+    });
+}
+
+/* Function to create the individual organization display divs*/
+function createSavedOrgElement(data, email) {
+  const divElement = document.createElement('div');
+  divElement.setAttribute("class", "item-container");
+ 
+  const h3ElementName = document.createElement('h3');
+  h3ElementName.innerText = data.name;
+  divElement.appendChild(h3ElementName);
+
+  const h5ElementEmail = document.createElement('h5');
+  h5ElementEmail.innerText = data.email;
+  divElement.appendChild(h5ElementEmail);
+
+  const h5ElementBio = document.createElement('h5');
+  h5ElementBio.innerText = data.description;
+  divElement.appendChild(h5ElementBio);
+
+  // create delete organization form
+  const form = document.createElement("form");
+  form.setAttribute("method", "POST");
+  form.setAttribute("action", "delete-saved-organization?email=" + email + "&organization-email=" + data.email);
+  const button = document.createElement('button');
+  button.innerText = "Unsave this organization";
+  button.setAttribute("type", "submit");
+  
+  form.appendChild(button);
+  divElement.appendChild(form);
+  document.getElementById("saved-orgs").appendChild(divElement);
 }
 
 /* create the individual event containers for displaying events*/
@@ -275,7 +339,7 @@ function createSavedEventElement(event, email) {
   form.setAttribute("method", "POST");
   form.setAttribute("action", "delete-saved-event?email=" + email + "&event-name=" + event);
   const button = document.createElement('button');
-  button.innerText = "Unsave this event";
+  button.innerText = "Unsave this organization";
   button.setAttribute("type", "submit");
   
   form.appendChild(button);
@@ -283,4 +347,22 @@ function createSavedEventElement(event, email) {
   document.getElementById("saved-events").appendChild(divElement);
 }
 
+/* Function to control form display using button */
+function revealForm() {
+	var userType = sessionStorage.getItem("user-type");
+	if (userType == null) {
+		getUserType();
+        if (sessionStorage.getItem("user-type") == null) {
+            displayForm("individual", true);
+            return;
+        }
+	} 
+    displayForm(userType, false);
+}
+
+/* Function to close form display after submission */
+function closeForm() {
+	document.getElementById("user").style.display = "none";
+	document.getElementById("organization").style.display = "none";
+}
 

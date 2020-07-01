@@ -25,6 +25,20 @@ public class OrganizationController {
     return this.organizationRepository.findByEmail(email);
   }
 
+  @GetMapping("get-saved-organizations")
+  public List<Organization> getSavedOrganizations(@RequestParam("emails") List<String> emails) {
+    List<Organization> result = new ArrayList<Organization>();
+
+    // there should be a better way to do this using findByAllEmail() but I keep getting a Blob error
+    for (String email : emails) {
+        List<Organization> org = this.organizationRepository.findByEmail(email);
+        if (org.size() > 0) {
+            result.add(org.get(0));
+        }
+    }
+    return result;
+  }
+
   @PostMapping("save-organization")
   public RedirectView saveOrganization(
       @RequestParam("name") String name,
@@ -40,7 +54,6 @@ public class OrganizationController {
     if (orgList.size() > 0) {
       current = orgList.get(0);
       current.editName(name);
-      current.editUniversity(university);
       current.editDescription(description);
     } else {
       current = new Organization(System.currentTimeMillis(), name, email, university, userType, description, "");
@@ -48,4 +61,6 @@ public class OrganizationController {
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
   }
+
+  
 }

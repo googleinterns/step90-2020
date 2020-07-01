@@ -120,9 +120,6 @@ public class UserDatastoreTest {
     URI uri = new URI(baseUrl);
 
     Set<String> expectedSet = new HashSet<>();
-    expectedSet.add("hello 2");
-    expectedSet.add("hello 3");
-    expectedSet.add("hello 1");
     expectedSet.add("test");
  
     Individual[] result = restTemplate.getForObject(uri, Individual[].class);
@@ -153,15 +150,68 @@ public class UserDatastoreTest {
     URI uri = new URI(baseUrl);
 
     Set<String> expectedSet = new HashSet<>();
-    expectedSet.add("hello 3");
-    expectedSet.add("hello 1");
  
     Individual[] result = restTemplate.getForObject(uri, Individual[].class);
 
-    Assert.assertEquals("Wrong user returned", expectedSet, result[0].getSavedEvents());
+    Assert.assertEquals("Delete event error", expectedSet, result[0].getSavedEvents());
   }
 
+  @Test
+  public void testAddSavedOrganization() throws URISyntaxException {
 
+    String url = "http://localhost:" + port + "/add-saved-organization";
+    String expectedEmail = expectedIndividual.getEmail();  
+ 
+    restTemplate = new TestRestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-  
+    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+    map.add("email", expectedEmail);
+    map.add("organization-email", "org1@google.com");
+
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class);
+
+    // getting the actual result
+    final String baseUrl = "http://localhost:"+ port + "/get-individual?email=" + expectedEmail;
+    URI uri = new URI(baseUrl);
+
+    Set<String> expectedSet = new HashSet<>();
+    expectedSet.add("org1@google.com");
+ 
+    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
+
+    Assert.assertEquals("Insert organization error", expectedSet, result[0].getSavedOrganizations());
+  }
+
+  @Test
+  public void testDeleteSavedOrganization() throws URISyntaxException {
+
+    String url = "http://localhost:" + port + "/delete-saved-organization";
+    String expectedEmail = expectedIndividual.getEmail();  
+ 
+    restTemplate = new TestRestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+    MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+    map.add("email", expectedEmail);
+    map.add("organization-email", "org1@google.com");
+
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+    ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class);
+
+    // getting the actual result
+    final String baseUrl = "http://localhost:"+ port + "/get-individual?email=" + expectedEmail;
+    URI uri = new URI(baseUrl);
+
+    Set<String> expectedSet = new HashSet<>();
+ 
+    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
+
+    Assert.assertEquals("Delete organization error", expectedSet, result[0].getSavedOrganizations());
+  }
 }

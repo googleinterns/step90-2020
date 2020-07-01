@@ -72,10 +72,6 @@ public class Organization {
     this.name = name;
   }
 
-  public void editUniversity(String university) {
-    this.university = university;
-  }
-
   public void editDescription(String description) {
     this.description = description;
   }

@@ -108,7 +108,7 @@ input[type=submit]:hover {
   color: black;
 }
 
-#organization, #no-profile {
+#organization, #no-profile, #user {
   display: none;
 }
 

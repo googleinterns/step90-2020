@@ -42,7 +42,6 @@ public class IndividualController {
       current = userList.get(0);
       current.editFirstName(firstname);
       current.editLastName(lastname);
-      current.editUniversity(university);
     }
     else {
         current = new Individual(System.currentTimeMillis(), firstname, lastname, email, university, userType, "");
@@ -81,5 +80,35 @@ public class IndividualController {
     }
     this.individualRepository.save(current);
     return new RedirectView("savedevents.html", true);
+  }
+
+  @PostMapping("add-saved-organization")
+  public RedirectView addSavedOrganizations(
+      @RequestParam("email") String email, 
+      @RequestParam("organization-email") String organizationEmail) throws IOException {
+    
+    Individual current = null;
+    List<Individual> userList = this.individualRepository.findByEmail(email);
+    if (userList.size() > 0) {
+      current = userList.get(0);
+      current.addSavedOrganizations(organizationEmail);
+    } 
+    this.individualRepository.save(current);
+    return new RedirectView("savedorganizations.html", true);
+  }
+
+  @PostMapping("delete-saved-organization")
+  public RedirectView deleteSavedOrganization(
+      @RequestParam("email") String email, 
+      @RequestParam("organization-email") String organizationEmail) throws IOException {
+    
+    Individual current = null;
+    List<Individual> userList = this.individualRepository.findByEmail(email);
+    if (userList.size() > 0) {
+      current = userList.get(0);
+      current.deleteSavedOrganizations(organizationEmail);
+    } 
+    this.individualRepository.save(current);
+    return new RedirectView("savedorganizations.html", true);
   }
 }
