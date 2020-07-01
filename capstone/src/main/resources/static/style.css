@@ -1,0 +1,154 @@
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+ 
+nav li {
+  float: left;
+  color: white;
+}
+ 
+li a {
+  display: block;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-family: Helvetica, Arial, sans-serif;
+  color: white;
+}
+ 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+ 
+div.row {
+  padding-left:3%;
+  padding-bottom: 0;
+  margin-bottom: 1em;
+}
+
+.left {
+  float: left;
+  max-width: 15%;
+}
+
+.profile-container {
+  float: left;
+  margin-left: 2%;
+  width: 38%;
+  height: 100%;
+}
+
+img {
+  max-width: 300px;
+  width: 70%;
+}
+
+.intro {
+  display: inline-block;
+  float: left;
+  width: 45%;
+  padding: 15px;
+}
+ 
+.profile {
+  border-radius: 20px;
+  width: 100%;
+  height: auto;
+}
+ 
+.profile {
+  border-radius: 20px;
+  width: 100%;
+  height: auto;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: #64BBD7;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #4CAF50;
+}
+
+.profile-form {
+  border-radius: 5px;
+  padding: 3%;
+  width: 40%;
+  float: right;
+  height: 100%;
+}
+
+.item-container {
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 950px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#organization {
+  display: none;
+}
+
+/* shared classes and styling */
+
+body {
+  background-color: #0C0A7A;
+  color: white;
+}
+
+.nav-bar {
+  background-color: #8B63FB;
+  color: white;
+}
+
+.general-container {
+  background-color: #1B70D3;
+  border-radius: 5px;
+}
+
+.button {
+  background-color: #64BBD7;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-bottom: 1em;
+}
+
+/* for changing color on hover in the nav  */
+li a:hover {
+  background-color: #1B70D3;
+}
+ 
+/* for changing color when clicked in the nav */
+.active {
+  background-color: #64BBD7;
+}
+
+/* Make the home page button bigger */
+.home {
+  font-size: 18px;
+}

@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <title> Create an Event </title>
     <script src="script.js"> </script>
+<<<<<<< HEAD
     <link rel="stylesheet" href="style.css">
+=======
+    <link rel="stylesheet" href="event.css">
+>>>>>>> 8a46b6dc87f2cfb0ef1769c3dbb6ae4be12df86d
   </head>
   
   <body>
@@ -20,25 +24,23 @@
 
     <div class="event-form">
       <form id="form" method="POST">
-
-        <label for="organizationID"> OrganizationID: </label>
-        <input type="number" id="organizationID" name="organizationID"> 
+        
+        <input type="hidden" id="organizationID" name="organizationID"> 
         <br><br>
 
         <label for="organizationName"> Organization Name: </label>
         <input type="text" id="organizationName" name="organizationName">
         <br><br>
 
-        <label for="university"> University: </label>
-        <input type="text" id="university" name="university">
+        <input type="hidden" id="university" name="university">
         <br><br>
 
         <label for="eventTitle"> Event Title: </label>
         <input type="text" id="eventTitle" name="eventTitle">
         <br><br>
 
-        <label for="eventTime"> Event Time: </label>
-        <input type="time" id="eventTime" name="eventTime">
+        <label for="eventDateTime"> Event Date and Time: </label>
+        <input type="datetime-local" id="eventDateTime" name="eventDateTime">
         <br><br>
 
         <label for="eventLocation"> Event Location: </label> <br>
@@ -53,9 +55,6 @@
         <label for="eventFilters"> Event Filters: </label>
         <br>
           <form>
-            <input type="checkbox" id="filter1" name="filter1" value="Disability Accomodations">
-            <label for="filter1"> Disability Accomodations </label>
-            <br>
 
             <input type="checkbox" id="filter2" name="filter2" value="Food Avaliable">
             <label for="filter2"> Food Avaliable </label>
@@ -69,12 +68,13 @@
             <label for="filter4"> Visitors Allowed </label>
             <br>
           </form>
-          <br><br>
+
+          <input type="submit" value="submit">
 
       </form>
       <div id="events-container"></div>
     </div>
 
   </body>
-
+  
 </html>
