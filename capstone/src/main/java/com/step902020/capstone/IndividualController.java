@@ -40,8 +40,8 @@ public class IndividualController {
     // either edit the existing user or create a new one
     if (userList.size() > 0) {
       current = userList.get(0);
-      current.editFirstName(firstname);
-      current.editLastName(lastname);
+      current.setFirstName(firstname);
+      current.setLastName(lastname);
     }
     else {
         current = new Individual(System.currentTimeMillis(), firstname, lastname, email, university, userType, "");

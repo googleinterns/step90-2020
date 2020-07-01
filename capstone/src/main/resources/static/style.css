@@ -7,7 +7,6 @@ ul {
  
 nav li {
   float: left;
-  color: white;
 }
  
 li a {
@@ -16,7 +15,7 @@ li a {
   padding: 14px 16px;
   text-decoration: none;
   font-family: Helvetica, Arial, sans-serif;
-  color: white;
+  color: #073763ff;
 }
  
 body {
@@ -104,8 +103,6 @@ input[type=submit]:hover {
   max-width: 950px;
   margin-left: auto;
   margin-right: auto;
-  background-color: white;
-  color: black;
 }
 
 #organization, #no-profile, #user {
@@ -115,17 +112,19 @@ input[type=submit]:hover {
 /* shared classes and styling */
 
 body {
-  background-color: #0C0A7A;
-  color: white;
+  background-color: #073763ff;
+  color: #ffffff;
 }
 
 .nav-bar {
-  background-color: #8B63FB;
-  color: white;
+  background-color: #ffffff;
+  color: #073763ff;
 }
 
 .general-container {
-  background-color: #1B70D3;
+  background-color: #073763ff;
+  border-style: solid;
+  border-color: #ffffff;
   border-radius: 5px;
 }
 
@@ -141,13 +140,11 @@ body {
 }
 
 /* for changing color on hover in the nav  */
-li a:hover {
-  background-color: #1B70D3;
-}
- 
-/* for changing color when clicked in the nav */
-.active {
-  background-color: #64BBD7;
+li a:hover, .active a {
+  background-color: #073763ff;
+  color: #ffffff;
+  border-style: solid;
+  border-color: #ffffff;
 }
 
 /* Make the home page button bigger */

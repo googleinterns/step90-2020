@@ -68,15 +68,15 @@ public class Organization {
     return image;
   }
 
-  public void editName(String name) {
+  public void setName(String name) {
     this.name = name;
   }
 
-  public void editDescription(String description) {
+  public void setDescription(String description) {
     this.description = description;
   }
 
-  public void editImage(String image) {
+  public void setImage(String image) {
     this.image = image;
   }
   

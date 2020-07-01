@@ -91,15 +91,15 @@ public class Individual {
     return savedOrganizations;
   }
 
-  public void editFirstName(String firstName) {
+  public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
 
-  public void editLastName(String lastName) {
+  public void setLastName(String lastName) {
     this.lastName = lastName;
   }
 
-  public void editImage(String image) {
+  public void setImage(String image) {
     this.image = image;
   }
 

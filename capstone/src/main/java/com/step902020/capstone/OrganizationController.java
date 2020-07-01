@@ -53,8 +53,8 @@ public class OrganizationController {
     // either edit the existing user or create a new one
     if (orgList.size() > 0) {
       current = orgList.get(0);
-      current.editName(name);
-      current.editDescription(description);
+      current.setName(name);
+      current.setDescription(description);
     } else {
       current = new Organization(System.currentTimeMillis(), name, email, university, userType, description, "");
     }

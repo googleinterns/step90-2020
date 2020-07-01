@@ -109,17 +109,22 @@ function getUser() {
     } else if (userType == "individual") {
       fetch('get-individual?email=' + email).then(response => response.json()).then((data) => {
         createProfile(data, false);
-        document.getElementById("profile-section").style.display = "block";
-        document.getElementById("no-profile").style.display = "none";
         sessionStorage.setItem("user-type", data[0].userType);
       });  
     }
-    // display profile
-    document.getElementById("profile-section").style.display = "block";
-    document.getElementById("no-profile").style.display = "none";
+    displayMain(true);
   }
 }
 
+function displayMain(display) {
+  if (display) {
+    document.getElementById("profile-section").style.display = "block";
+    document.getElementById("no-profile").style.display = "none";
+  } else {
+    document.getElementById("profile-section").style.display = "none";
+    document.getElementById("no-profile").style.display = "block";
+  }
+}
 /* get and store the user type (individual or organization). With this we determine whether
 this user exists in our database or not */
 function getUserType() {
@@ -131,20 +136,16 @@ function getUserType() {
     fetch('get-organization?email=' + email).then(response => response.json()).then((data) => {
       if (data.length != 0) {
           sessionStorage.setItem("user-type", data[0].userType);
-          // display information
-          document.getElementById("main").style.display = "block";
-          document.getElementById("no-profile").style.display = "none";
+          displayMain(true);
       } else {
         fetch('get-individual?email=' + email).then(response => response.json()).then((newData) => {
           if (newData.length != 0) {
             // display information
             sessionStorage.setItem("user-type", newData[0].userType);
-            document.getElementById("main").style.display = "block";
-            document.getElementById("no-profile").style.display = "none";
+            displayMain(true);
           } else {
             // user does not exist at all, display message to them to submit a profile
-            document.getElementById("main").style.display = "none";
-            document.getElementById("no-profile").style.display = "block";
+            displayMain(false);
             displayForm("individual", true);
           }
         });  
@@ -210,7 +211,7 @@ function createOrgProfile(data) {
   const pElementName = document.createElement('p');
   pElementName.innerText = "Organization Name: " + data[0].name;
   nameContainer.appendChild(pElementName);
-  document.getElementById("org-name").value = data[0].name;
+  document.getElementById("org-form-name").value = data[0].name;
 
   const descriptionContainer = document.getElementById("description");
   const pElementDescription = document.createElement('p');
@@ -232,23 +233,29 @@ function toggleForm(formUserType) {
 // a new user will be able to toggle, but a returning user will not
 function displayForm(userType, displayBoth) {
   if (userType == "individual") {
-    document.getElementById("user").style.display = "block";
-    document.getElementById("organization").style.display = "none";
-    document.getElementById("user-type-toggle").value = "individual";
+    updateUserTypeInForm("user", "organization", "user-type-toggle", "individual");
     if (!displayBoth) {
-        document.getElementById("user-select").style.display = "none";
-        document.getElementById("ind-uni").style.display="none";
+      hideFields("user-select", "ind-uni");
     }
-
   } else if (userType == "organization") {
-    document.getElementById("user").style.display = "none";
-    document.getElementById("organization").style.display = "block";
-    document.getElementById("org-user-type").value = "organization";
-    if (!displayBoth) {
-        document.getElementById("org-select").style.display = "none";
-        document.getElementById("org-uni").style.display="none";
-    }
+		updateUserTypeInForm("organization", "user", "org-user-type", "organization");
+		if (!displayBoth) {
+			hideFields("org-select", "org-uni");
+		}
   }
+}
+
+/* helper function to display the correct form and set user type */
+function updateUserTypeInForm(display, hide, toggleSection, toggleValue) {
+	document.getElementById(display).style.display = "block";
+	document.getElementById(hide).style.display = "none";
+	document.getElementById(toggleSection).value = toggleValue;
+}
+
+/* helper function to hide/display the correct fields in forms */
+function hideFields(selectField, uniField) {
+	document.getElementById(selectField).style.display = "none";
+  document.getElementById(uniField).style.display="none";
 }
 
 /* get the saved events for individual users */
@@ -265,13 +272,6 @@ function getIndividualEvents() {
     document.getElementById("main").style.display = "block";
   });
 }
-
-// will be used in the future when event entity is set up
-// function getSavedEventElements(savedEvents, userEmail) {
-//   fetch('get-saved-events?saved-events=' + savedEvents + "&email=" + userEmail).then(response => response.json()).then((data) => {
-//     data.forEach((event) => createSavedEventElement(event, userEmail));
-//   });
-// }
 
 /* get the saved organizations for individual users */
 function getIndividualOrganizations() {
@@ -298,7 +298,7 @@ function getSavedOrgElements(email, userEmail) {
 /* Function to create the individual organization display divs*/
 function createSavedOrgElement(data, email) {
   const divElement = document.createElement('div');
-  divElement.setAttribute("class", "item-container");
+  divElement.setAttribute("class", "item-container general-container");
  
   const h3ElementName = document.createElement('h3');
   h3ElementName.innerText = data.name;
@@ -328,7 +328,7 @@ function createSavedOrgElement(data, email) {
 /* create the individual event containers for displaying events*/
 function createSavedEventElement(event, email) {
   const divElement = document.createElement('div');
-  divElement.setAttribute("class", "item-container");
+  divElement.setAttribute("class", "item-container general-container");
  
   const h3ElementName = document.createElement('h3');
   h3ElementName.innerText = event;
@@ -339,7 +339,7 @@ function createSavedEventElement(event, email) {
   form.setAttribute("method", "POST");
   form.setAttribute("action", "delete-saved-event?email=" + email + "&event-name=" + event);
   const button = document.createElement('button');
-  button.innerText = "Unsave this organization";
+  button.innerText = "Unsave this event";
   button.setAttribute("type", "submit");
   
   form.appendChild(button);
@@ -352,10 +352,10 @@ function revealForm() {
 	var userType = sessionStorage.getItem("user-type");
 	if (userType == null) {
 		getUserType();
-        if (sessionStorage.getItem("user-type") == null) {
-            displayForm("individual", true);
-            return;
-        }
+    if (sessionStorage.getItem("user-type") == null) {
+        displayForm("individual", true);
+        return;
+    }
 	} 
     displayForm(userType, false);
 }
