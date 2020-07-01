@@ -24,10 +24,6 @@ public class EventTemp {
     reviews = new ArrayList();
   }
   
-  public EventTemp(long datastoreId) {
-      this.datastoreId = datastoreId;
-  }
-
   public Long getDatastoreId() {
     return datastoreId;
   }

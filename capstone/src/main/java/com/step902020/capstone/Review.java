@@ -13,8 +13,8 @@ public class Review {
 
   LocalDateTime date;
 
-  @Field(name="email")
-  String email;
+  @Field(name="name")
+  String name;
 
   @Field(name="text")
   String text;
@@ -22,14 +22,14 @@ public class Review {
   //@Field(name="image-filename")
   //String imageFilename;
 
-  public Review(LocalDateTime date, String text, String email) {
+  public Review(LocalDateTime date, String text, String name) {
     this.date = date;
     this.text = text;
-    this.email = email;
+    this.name = name;
   }
 
-  public String getEmail() {
-    return email;
+  public String getName() {
+    return name;
   }
 
   public LocalDateTime getDate() {

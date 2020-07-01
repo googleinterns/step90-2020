@@ -37,13 +37,13 @@ public class EventController {
   @PostMapping("/new-review")
   public void addReview(
       @RequestParam("text") String text,
-      @RequestParam("id") long id,
-      @RequestParam("email") String email) throws IOException {
+      @RequestParam("eventId") long eventId,
+      @RequestParam("name") String name) throws IOException {
  
-  EventTemp event =this.eventRepository.findById(id);
+  EventTemp event =this.eventRepository.findById(eventId);
   LocalDateTime date = LocalDateTime.now();
 
-  event.addReview(new Review(date, text, email));
+  event.addReview(new Review(date, text, name));
   this.eventRepository.save(event);
   }
 

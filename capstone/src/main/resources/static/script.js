@@ -37,14 +37,11 @@ function createEventElement(event) {
   // Name 
   const nameElement = document.createElement('p');
   nameElement.innerText = event.name;
-  console.log(event.name);
 
   const idElement = document.createElement('p');
   idElement.innerText = event.datastoreId;
   idElement.style.display = 'none';
 
-  // Review
-  const reviewElement = createReviewElement(event);
   /*
   Time
   Location
@@ -53,7 +50,7 @@ function createEventElement(event) {
   */
   eventElement.appendChild(idElement);
   eventElement.appendChild(nameElement);
-  eventElement.appendChild(reviewElement);
+  eventElement.appendChild(createReviewElement(event));
   
   return eventElement;
 }
@@ -65,32 +62,43 @@ function createReviewElement(event) {
   const reviewElement = document.createElement('span');
 
   // Submission
-  const reviewTextElement = document.createElement('input');
-  reviewTextElement.class = 'review-text';
-  reviewTextElement.setAttribute('type', 'text');
+  const reviewInputElement = document.createElement('input');
+  reviewInputElement.setAttribute('placeholder', 'Leave a review');
+  reviewInputElement.setAttribute('type', 'text');
 
   // Future: option to add image
 
   const reviewButtonElement = document.createElement('button');
   reviewButtonElement.innerText = 'Submit Review';
   reviewButtonElement.addEventListener('click', () => {
-    newReview(event.datastoreId, reviewTextElement.value);
+    newReview(event.datastoreId, reviewInputElement.value);
   });
 
   // Container
-  const reviewContainer = document.createElement('div');
-  reviewContainer.innerText = 'Reviews:'
+  const reviewsContainer = document.createElement('div');
+  reviewsContainer.innerText = 'Reviews:'
   const reviews = event.reviews;
 
   reviews.forEach((review) => {
+      const reviewContainer = document.createElement('div');
+      reviewContainer.className = 'review';
       const reviewTextElement = document.createElement('p');
       reviewTextElement.innerText = review.text;
+      reviewTextElement.className = 'review-text'
+
+      const reviewUserElement = document.createElement('p');
+      reviewUserElement.innerText = review.name;
+      reviewUserElement.className = 'review-name';
+
+      reviewContainer.appendChild(reviewUserElement);
       reviewContainer.appendChild(reviewTextElement);
+
+      reviewsContainer.appendChild(reviewContainer);
     }) 
 
-  reviewElement.appendChild(reviewTextElement);
+  reviewElement.appendChild(reviewInputElement);
   reviewElement.appendChild(reviewButtonElement);
-  reviewElement.appendChild(reviewContainer);
+  reviewElement.appendChild(reviewsContainer);
 
   return reviewElement;
 }
@@ -98,13 +106,16 @@ function createReviewElement(event) {
 /**
  * Add review to event's list
  */
-async function newReview(id, text) {
+async function newReview(eventId, text) {
   var email = getEmail();
+  
+  const response = await fetch('get-individual?email=' + email);
+  const individual = await response.json();
 
   const params = new URLSearchParams();
   params.append('text', text);
-  params.append('id', id);
-  params.append('email', email);
+  params.append('eventId', eventId);
+  params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
   
   await fetch('new-review', {method:'POST', body: params});
   getEvents();
@@ -161,7 +172,7 @@ function getEmail() {
   
   // Temp Back up
   if (email == "") {
-      email = "jennysheng@google.com";
+      email = "jenny@google.com";
   }
 
   return email;
