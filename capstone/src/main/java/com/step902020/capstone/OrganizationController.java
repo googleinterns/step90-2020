@@ -66,4 +66,17 @@ public class OrganizationController {
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
   }
+
+  @GetMapping("search-organization")
+  public List<Organization> searchOrganization(
+      @RequestParam("name") String name, 
+      @RequestParam("university") String university) throws IOException {
+      return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", university);
+  }
+
+  @GetMapping("get-all-organizations")
+  public Iterable<Organization> getAllOrganizations(
+      @RequestParam("university") String university) throws IOException {
+      return this.organizationRepository.findByUniversity(university);
+  }
 }

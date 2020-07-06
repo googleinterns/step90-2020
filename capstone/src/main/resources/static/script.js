@@ -160,12 +160,10 @@ function getUser() {
     if (userType == "organization") {
       fetch('get-organization').then(response => response.json()).then((data) => {
         createProfile(data[0], true);
-        sessionStorage.setItem("user-type", data[0].userType);
       });
     } else if (userType == "individual") {
       fetch('get-individual').then(response => response.json()).then((data) => {
         createProfile(data[0], false);
-        sessionStorage.setItem("user-type", data[0].userType);
       });  
     }
     displayMain(true);
@@ -192,17 +190,18 @@ function getUserType() {
     fetch('get-organization').then(response => response.json()).then((data) => {
       if (data.length != 0) {
           sessionStorage.setItem("user-type", data[0].userType);
+          sessionStorage.setItem("university", data[0].university);
           displayMain(true);
       } else {
         fetch('get-individual').then(response => response.json()).then((newData) => {
           if (newData.length != 0) {
             // display information
             sessionStorage.setItem("user-type", newData[0].userType);
+            sessionStorage.setItem("university", newData[0].university);
             displayMain(true);
           } else {
             // user does not exist at all, display message to them to submit a profile
             displayMain(false);
-            displayForm("individual", true);
           }
         });  
       }
@@ -341,12 +340,15 @@ function getIndividualOrganizations() {
 /* function to return the list of correponding saved organizations */
 function getSavedOrgElements(email) {
   fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
-    data.forEach((org) => createSavedOrgElement(org));
+    const container = document.getElementById("saved-orgs");
+    container.innerHTML = '';
+    data.forEach((org) => container.appendChild(createSavedOrgElement(org, userEmail, true)));
     });
 }
 
 /* Function to create the individual organization display divs*/
-function createSavedOrgElement(data) {
+
+function createSavedOrgElement(data, email, isDelete) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
  
@@ -361,8 +363,21 @@ function createSavedOrgElement(data) {
   const h5ElementBio = document.createElement('h5');
   h5ElementBio.innerText = data.description;
   divElement.appendChild(h5ElementBio);
-
+  
   // create delete organization form
+  if (isDelete) {
+    const form = createDeleteButton(data, email);
+    divElement.appendChild(form);
+  } else {
+    const form = createSaveButton(data, email);
+    divElement.appendChild(form);
+  }
+  
+  return divElement;
+}
+
+/* create delete buttons for the organization divs */
+function createDeleteButton(data, email) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
   form.setAttribute("action", "delete-saved-organization?&organization-id=" + data.datastoreId);
@@ -371,8 +386,21 @@ function createSavedOrgElement(data) {
   button.setAttribute("type", "submit");
   
   form.appendChild(button);
-  divElement.appendChild(form);
-  document.getElementById("saved-orgs").appendChild(divElement);
+  return form;
+}
+
+/* create save buttons for the organization divs */
+function createSaveButton(data, email) {
+  var email = checkAuth();
+  const form = document.createElement("form");
+  form.setAttribute("method", "POST");
+  form.setAttribute("action", "add-saved-organization?email=" + email + "&organization-email=" + data.email);
+  const button = document.createElement('button');
+  button.innerText = "Save this organization";
+  button.setAttribute("type", "submit");
+  
+  form.appendChild(button);
+  return form;
 }
 
 /* create the individual event containers for displaying events*/
@@ -416,3 +444,47 @@ function closeForm() {
 	document.getElementById("organization").style.display = "none";
 }
 
+/* Function to support searching for organizations by name */
+function searchOrg() {
+  var email = checkAuth();
+  var university = sessionStorage.getItem("university");
+  if (university == null) {
+    if (sessionStorage.getItem("university") == null) {
+      return;
+    }
+  }
+  var name = document.getElementById("search-org").value;
+  fetch('search-organization?name=' + name + "&university=" + university).then(response => response.json()).then((organizations) => {
+
+    const orgListElement = document.getElementById('list-organizations');
+    orgListElement.innerHTML = '';
+    
+    organizations.forEach((org) => {
+      orgListElement.appendChild(createSavedOrgElement(org, email, false));
+    }) 
+  });
+
+}
+
+function getAllOrgs() {
+
+  var university = sessionStorage.getItem("university");
+  var email = checkAuth();
+  if (university == null) {
+    getUserType();
+    if (sessionStorage.getItem("university") == null) {
+      return;
+    }
+  }
+  var name = document.getElementById("search-org").value;
+  fetch('get-all-organizations?university=' + university).then(response => response.json()).then((organizations) => {
+
+    const orgListElement = document.getElementById('list-organizations');
+    orgListElement.innerHTML = '';
+    
+    organizations.forEach((org) => {
+      orgListElement.appendChild(createSavedOrgElement(org, email, false));
+    }) 
+  });
+
+}
