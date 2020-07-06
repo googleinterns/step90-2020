@@ -202,6 +202,7 @@ function getUserType() {
           } else {
             // user does not exist at all, display message to them to submit a profile
             displayMain(false);
+            displayForm("individual", true);
           }
         });  
       }
@@ -449,6 +450,7 @@ function searchOrg() {
   var email = checkAuth();
   var university = sessionStorage.getItem("university");
   if (university == null) {
+    getUserType();
     if (sessionStorage.getItem("university") == null) {
       return;
     }
