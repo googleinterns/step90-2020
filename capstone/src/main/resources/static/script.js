@@ -465,26 +465,3 @@ function searchOrg() {
   });
 
 }
-
-function getAllOrgs() {
-
-  var university = sessionStorage.getItem("university");
-  var email = checkAuth();
-  if (university == null) {
-    getUserType();
-    if (sessionStorage.getItem("university") == null) {
-      return;
-    }
-  }
-  var name = document.getElementById("search-org").value;
-  fetch('get-all-organizations?university=' + university).then(response => response.json()).then((organizations) => {
-
-    const orgListElement = document.getElementById('list-organizations');
-    orgListElement.innerHTML = '';
-    
-    organizations.forEach((org) => {
-      orgListElement.appendChild(createSavedOrgElement(org, email, false));
-    }) 
-  });
-
-}

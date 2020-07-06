@@ -39,6 +39,12 @@ public class OrganizationController {
             result.add(org.get());
         }
     }
+    Collections.sort(result, new Comparator<Organization>() {
+      @Override
+      public int compare(Organization a, Organization b) {
+        return a.getName().compareTo(b.getName());
+      }
+    });
     return result;
   }
   
@@ -71,12 +77,11 @@ public class OrganizationController {
   public List<Organization> searchOrganization(
       @RequestParam("name") String name, 
       @RequestParam("university") String university) throws IOException {
-      return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", university);
-  }
-
-  @GetMapping("get-all-organizations")
-  public Iterable<Organization> getAllOrganizations(
-      @RequestParam("university") String university) throws IOException {
-      return this.organizationRepository.findByUniversity(university);
+    
+    if (name.equals("")) {
+        return this.organizationRepository.findByUniversity(university);
+    } else {
+        return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", university);
+    } 
   }
 }
