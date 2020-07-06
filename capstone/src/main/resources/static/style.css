@@ -110,6 +110,26 @@ input[type=submit]:hover {
   display: none;
 }
 
+.calendar {
+  width: 80%;
+  float: center;
+  margin:2%;
+  padding:2%;
+}
+.date {
+  padding: 2px;
+  width: 100%;
+  margin: 2%;
+  padding: 2%;
+}
+.event {
+  width:10%;
+  height:80px;
+  float: left;
+  margin: 2%;
+  padding: 2%;
+
+}
 /* shared classes and styling */
 
 body {
