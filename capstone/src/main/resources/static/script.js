@@ -103,12 +103,12 @@ function getUser() {
   } else {
     if (userType == "organization") {
       fetch('get-organization?email=' + email).then(response => response.json()).then((data) => {
-        createProfile(data, true);
+        createProfile(data[0], true);
         sessionStorage.setItem("user-type", data[0].userType);
       });
     } else if (userType == "individual") {
       fetch('get-individual?email=' + email).then(response => response.json()).then((data) => {
-        createProfile(data, false);
+        createProfile(data[0], false);
         sessionStorage.setItem("user-type", data[0].userType);
       });  
     }
@@ -156,24 +156,24 @@ function getUserType() {
 /* creates and populates the user profile */
 function createProfile(data, isOrganization) {
     const emailFormContainer = document.getElementById("email-form");
-    emailFormContainer.value = data[0].email;
+    emailFormContainer.value = data.email;
 
     const idFormContainer = document.getElementById("datastore-id");
-    idFormContainer.value = data[0].datastoreId;
+    idFormContainer.value = data.datastoreId;
 
     const emailContainer = document.getElementById("email");
     const pElementEmail = document.createElement('p');
-    pElementEmail.innerText = "Email: " + data[0].email;
+    pElementEmail.innerText = "Email: " + data.email;
     emailContainer.appendChild(pElementEmail);
 
     const userTypeContainer = document.getElementById("user-type");
     const pElementUserType = document.createElement('p');
-    pElementUserType.innerText = "User Type: " + data[0].userType;
+    pElementUserType.innerText = "User Type: " + data.userType;
     userTypeContainer.appendChild(pElementUserType);
 
     const universityContainer = document.getElementById("university");
     const pElementUniversity = document.createElement('p');
-    pElementUniversity.innerText = "University: " + data[0].university;
+    pElementUniversity.innerText = "University: " + data.university;
     universityContainer.appendChild(pElementUniversity);
 
     // addresses the different fields for each user type
@@ -187,38 +187,44 @@ function createProfile(data, isOrganization) {
 
 /* populate individual specific fields of the profile */
 function createIndividualProfile(data) {
-  document.getElementById("university-form-display").innerText = data[0].university;
   const firstNameContainer = document.getElementById("firstname");
   const pElementFirstName = document.createElement('p');
-  pElementFirstName.innerText = "First Name: " + data[0].firstName;
+  pElementFirstName.innerText = "First Name: " + data.firstName;
   firstNameContainer.appendChild(pElementFirstName);
-  document.getElementById("ind-firstname").value = data[0].firstName;
-
+  
   const lastNameContainer = document.getElementById("lastname");
   const pElementLastName = document.createElement('p');
-  pElementLastName.innerText = "Last Name: " + data[0].lastName;
+  pElementLastName.innerText = "Last Name: " + data.lastName;
   lastNameContainer.appendChild(pElementLastName);
-  document.getElementById("ind-lastname").value = data[0].lastName;
 
+  // prefill form
+  document.getElementById("ind-firstname").value = data.firstName;
+  document.getElementById("ind-lastname").value = data.lastName;
+  document.getElementById("university-form-display").innerText = data.university;
+  
+  // hide fields that pertain to organizations only
   document.getElementById("org-name").style.display = "none";
   document.getElementById("description").style.display = "none";
 }
 
 /* populate organization specific fields of the profile */
 function createOrgProfile(data) {
-  document.getElementById("org-university-form-display").innerText = data[0].university;
   const nameContainer = document.getElementById("org-name");
   const pElementName = document.createElement('p');
-  pElementName.innerText = "Organization Name: " + data[0].name;
+  pElementName.innerText = "Organization Name: " + data.name;
   nameContainer.appendChild(pElementName);
-  document.getElementById("org-form-name").value = data[0].name;
 
   const descriptionContainer = document.getElementById("description");
   const pElementDescription = document.createElement('p');
-  pElementDescription.innerText = "Description: " + data[0].description;
+  pElementDescription.innerText = "Description: " + data.description;
   descriptionContainer.appendChild(pElementDescription);
-  document.getElementById("org-description").value = data[0].description;
 
+  // prefill form
+  document.getElementById("org-form-name").value = data.name;
+  document.getElementById("org-university-form-display").innerText = data.university;
+  document.getElementById("org-description").value = data.description;
+
+  // hide fields that pertain to individual users
   document.getElementById("firstname").style.display = "none";
   document.getElementById("lastname").style.display = "none";
 }
