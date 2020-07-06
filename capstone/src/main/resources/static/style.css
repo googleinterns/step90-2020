@@ -21,7 +21,17 @@ li a {
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
- 
+
+button {
+  border-color: white;
+  background-color: Transparent;
+  border-radius: 10px;
+  border-style: solid;
+  color: white;
+  padding: 10px;
+  margin: 10px;
+}
+
 div.row {
   padding-left:3%;
   padding-bottom: 0;
@@ -50,12 +60,6 @@ img {
   float: left;
   width: 45%;
   padding: 15px;
-}
- 
-.profile {
-  border-radius: 20px;
-  width: 100%;
-  height: auto;
 }
  
 .profile {
@@ -150,4 +154,40 @@ li a:hover, .active a {
 /* Make the home page button bigger */
 .home {
   font-size: 18px;
+}
+
+/* Event Feed */
+.event {
+  list-style-type: none;
+  padding: 20px;
+}
+
+#events input {
+  width: auto;
+}
+
+/* Reviews */
+.review {
+  border-style: solid;
+  border-color: white; /* subject to change in final stages */
+  margin: 10px;
+  width: 25%;
+  padding: 20px;
+  border-radius: 30px;
+}
+
+.review-text {
+  text-align: center;
+  margin: 0px;
+}
+
+.review-name {
+  text-align: left;
+  margin: 0px;
+}
+
+.event input[type=text] {
+  background-color: Transparent;
+  border-color: white;
+  border-style: solid;
 }

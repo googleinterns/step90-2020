@@ -16,7 +16,7 @@
  * Retrieves events from server
  */
 function getEvents() {
-  fetch('/list-events').then(response => response.json()).then((events) => {
+  fetch('list-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
     eventListElement.innerText = "Events";
@@ -27,14 +27,20 @@ function getEvents() {
   });
 }
 
-/** Creates an event element. */
+/**
+ * Format event listing
+ */
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
 
   // Name 
   const nameElement = document.createElement('p');
-  nameElement.innerText = event.text;
+  nameElement.innerText = event.name;
+
+  const idElement = document.createElement('p');
+  idElement.innerText = event.datastoreId;
+  idElement.style.display = 'none';
 
   /*
   Time
@@ -42,15 +48,87 @@ function createEventElement(event) {
   Organization
   Description
   */
+  eventElement.appendChild(idElement);
   eventElement.appendChild(nameElement);
+  eventElement.appendChild(createReviewElement(event));
   
   return eventElement;
 }
 
-async function newEvent() {
-  await fetch('/new-event', {method: 'POST'});
+/**
+ * Format review element and listing
+ */
+function createReviewElement(event) {
+  const reviewElement = document.createElement('span');
+
+  // Submission
+  const reviewInputElement = document.createElement('input');
+  reviewInputElement.setAttribute('placeholder', 'Leave a review');
+  reviewInputElement.setAttribute('type', 'text');
+
+  // Future: option to add image
+
+  const reviewButtonElement = document.createElement('button');
+  reviewButtonElement.innerText = 'Submit Review';
+  reviewButtonElement.addEventListener('click', () => {
+    newReview(event.datastoreId, reviewInputElement.value);
+  });
+
+  // Container
+  const reviewsContainer = document.createElement('div');
+  reviewsContainer.innerText = 'Reviews:'
+  const reviews = event.reviews;
+
+  reviews.forEach((review) => {
+      const reviewContainer = document.createElement('div');
+      reviewContainer.className = 'review';
+      const reviewTextElement = document.createElement('p');
+      reviewTextElement.innerText = review.text;
+      reviewTextElement.className = 'review-text'
+
+      const reviewUserElement = document.createElement('p');
+      reviewUserElement.innerText = review.name;
+      reviewUserElement.className = 'review-name';
+
+      reviewContainer.appendChild(reviewUserElement);
+      reviewContainer.appendChild(reviewTextElement);
+
+      reviewsContainer.appendChild(reviewContainer);
+    }) 
+
+  reviewElement.appendChild(reviewInputElement);
+  reviewElement.appendChild(reviewButtonElement);
+  reviewElement.appendChild(reviewsContainer);
+
+  return reviewElement;
 }
 
+/**
+ * Add review to event's list
+ */
+async function newReview(eventId, text) {
+  var email = getEmail();
+  
+  const response = await fetch('get-individual?email=' + email);
+  const individual = await response.json();
+
+  const params = new URLSearchParams();
+  params.append('text', text);
+  params.append('eventId', eventId);
+  params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
+  
+  await fetch('new-review', {method:'POST', body: params});
+  getEvents();
+}
+
+/** TEMP */
+async function newEvent() {
+  await fetch('new-event', {method: 'POST'});
+}
+
+/**
+ * Toggle advanced filters
+ */
 function showMore() {
   const filterElement = document.getElementById('additionalFilters');  
   const button = document.getElementById('filterButton');
