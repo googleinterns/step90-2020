@@ -116,15 +116,17 @@ function getUser() {
   }
 }
 
+/* function to toggle between displaying user profile and displaying an error message */
 function displayMain(display) {
   if (display) {
-    document.getElementById("profile-section").style.display = "block";
+    document.getElementById("main").style.display = "block";
     document.getElementById("no-profile").style.display = "none";
   } else {
-    document.getElementById("profile-section").style.display = "none";
+    document.getElementById("main").style.display = "none";
     document.getElementById("no-profile").style.display = "block";
   }
 }
+
 /* get and store the user type (individual or organization). With this we determine whether
 this user exists in our database or not */
 function getUserType() {
@@ -274,8 +276,7 @@ function getIndividualEvents() {
   }
   fetch('get-' + userType + '?email=' + email).then(response => response.json()).then((data) => {
     data[0].savedEvents.forEach((event) => createSavedEventElement(event, email));
-    document.getElementById("no-profile").style.display = "none";
-    document.getElementById("main").style.display = "block";
+    displayMain(true);
   });
 }
 
@@ -289,8 +290,7 @@ function getIndividualOrganizations() {
   }
   fetch('get-' + userType + '?email=' + email).then(response => response.json()).then((data) => {
     getSavedOrgElements(data[0].savedOrganizations, email);
-    document.getElementById("no-profile").style.display = "none";
-    document.getElementById("main").style.display = "block";
+    displayMain(true);
   });
 }
 
