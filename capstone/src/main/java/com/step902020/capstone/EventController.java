@@ -18,6 +18,8 @@ public class EventController {
 
   @Autowired
   private EventRepository eventRepository;
+  @Autowired
+  private OrganizationRepository organizationRepository;
 
   @GetMapping("get-all-events")
   public Iterable<Event> getAllEvents() {
@@ -33,16 +35,17 @@ public class EventController {
 
   @PostMapping("save-event")
   public RedirectView saveEvent (
-    @RequestParam("organizationName") String organizationName,
+    @RequestParam("organizationId") Long organizationId,
     @RequestParam("eventTitle") String eventTitle,
     @RequestParam("eventDateTime") String eventDateTime,
     @RequestParam("eventDescription") String eventDescription,
     @RequestParam("eventLatitude") String eventLatitude,
     @RequestParam("eventLongitude") String eventLongitude
-    // @RequestParam("eventFilters") List<String> eventFilters
     ) throws IOException {
       
-      Event newEvent = new Event(organizationName, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
+      Organization organization = organizationRepository.findById(organizationId).orElse(null);
+
+      Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
 
       this.eventRepository.save(newEvent);
       return new RedirectView("event.html", true);

@@ -5,6 +5,4 @@ import org.springframework.cloud.gcp.data.datastore.repository.DatastoreReposito
 
 public interface EventRepository extends DatastoreRepository<Event, Long> {
 
-  public List<Event> findByDatastoreID(Long datastoreID);
-
 }

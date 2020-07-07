@@ -16,7 +16,7 @@
  * Retrieves events from server
  */
 function getEvents() {
-  fetch('/list-events').then(response => response.json()).then((events) => {
+  fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
     eventListElement.innerText = "Events";
@@ -32,23 +32,40 @@ function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
 
-  // Name 
-  const nameElement = document.createElement('p');
-  nameElement.innerText = event.text;
+  const organizationName = document.getElementById('organizationName');
+  organizationName.innerText = event.organizationName;
 
-  /*
-  Time
-  Location
-  Organization
-  Description
-  */
-  eventElement.appendChild(nameElement);
+  const eventTitleElement = document.getElementById('eventTitle');
+  eventTitleElement.innerText = event.eventTitle;
+
+  const eventDateTime = document.getElementById('eventDateTime');
+  eventDateTime.innerText = event.eventDateTime;
+  
+  const eventDescription = document.getElementById('eventDescription');
+  eventDescription.innerText = event.eventDescription;
+
+  const eventLatitude = document.getElementById('eventLat');
+  eventLatitude.innerText = event.eventLatitude;
+
+  const eventLongitude = document.getElementById('eventLng');
+  eventLongitude.innerText = event.eventLongitude;
+
+  const eventFilters = document.getElementById('filters');
+  eventFilters.innerText = event.eventFilters;
+
+  eventElement.appendChild(eventTitleElement);
+  eventElement.appendChild(organizationName);
+  eventElement.appendChild(eventDateTime);
+  eventElement.appendChild(eventDescription);
+  eventElement.appendChild(eventLatitude);
+  eventElement.appendChild(eventLongitude);
+  eventElement.appendChild(eventFilters);
   
   return eventElement;
 }
 
 async function newEvent() {
-  await fetch('/new-event', {method: 'POST'});
+  await fetch('save-event', {method: 'POST'});
 }
 
 function showMore() {

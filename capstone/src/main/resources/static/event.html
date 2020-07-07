@@ -21,12 +21,17 @@
     <div class="event-form">
       <form id="form" action="save-event" method="POST">
         
-        <input type="hidden" id="organizationID" name="organizationID">
+        <label for="organizationId"> OrganizationId: </label>
+        <input type="input" id="organizationId" name="organizationId">
+        <br><br>
+
         <input type="hidden" id="university" name="university">
-        
+
+       <!-- 
         <label for="organizationName"> Organization Name: </label>
         <input type="text" id="organizationName" name="organizationName">
-        <br><br>
+        <br><br> 
+        -->
 
         <label for="eventTitle"> Event Title: </label>
         <input type="text" id="eventTitle" name="eventTitle">
