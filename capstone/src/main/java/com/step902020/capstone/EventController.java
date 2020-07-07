@@ -33,10 +33,6 @@ public class EventController {
     return this.eventRepository.findAll();
   }
 
-  @GetMapping("get-single-event")
-  public List<Event> getEventByID(@RequestParam("datastoreID") Long datastoreID) {
-    return this.eventRepository.findByDatastoreID(datastoreID);
-  }
 //   @PostMapping("/new-event")
 //   public void saveEvent() throws IOException {
 //     this.eventRepository.save(new EventTemp("EVENT_HOLDER"));
@@ -65,7 +61,6 @@ public class EventController {
     @RequestParam("eventDescription") String eventDescription,
     @RequestParam("eventLatitude") String eventLatitude,
     @RequestParam("eventLongitude") String eventLongitude
-    // @RequestParam("eventFilters") List<String> eventFilters
     ) throws IOException {
       
       Event newEvent = new Event(organizationName, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
