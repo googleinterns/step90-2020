@@ -343,12 +343,12 @@ function getSavedOrgElements(email) {
   fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
     const container = document.getElementById("saved-orgs");
     container.innerHTML = '';
-    data.forEach((org) => container.appendChild(createSavedOrgElement(org, userEmail, true)));
+    data.forEach((org) => container.appendChild(createSavedOrgElement(org, true)));
     });
 }
 
 /* Function to create the individual organization display divs*/
-function createSavedOrgElement(data, email, isDelete) {
+function createSavedOrgElement(data, isDelete) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
  
@@ -366,10 +366,10 @@ function createSavedOrgElement(data, email, isDelete) {
   
   // create delete organization form
   if (isDelete) {
-    const form = createDeleteButton(data, email);
+    const form = createDeleteButton(data);
     divElement.appendChild(form);
   } else {
-    const form = createSaveButton(data, email);
+    const form = createSaveButton(data);
     divElement.appendChild(form);
   }
   
@@ -377,7 +377,7 @@ function createSavedOrgElement(data, email, isDelete) {
 }
 
 /* create delete buttons for the organization divs */
-function createDeleteButton(data, email) {
+function createDeleteButton(data) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
   form.setAttribute("action", "delete-saved-organization?&organization-id=" + data.datastoreId);
@@ -390,11 +390,10 @@ function createDeleteButton(data, email) {
 }
 
 /* create save buttons for the organization divs */
-function createSaveButton(data, email) {
-  var email = checkAuth();
+function createSaveButton(data) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "add-saved-organization?email=" + email + "&organization-email=" + data.email);
+  form.setAttribute("action", "add-saved-organization?organization-id=" + data.datastoreId);
   const button = document.createElement('button');
   button.innerText = "Save this organization";
   button.setAttribute("type", "submit");
@@ -415,7 +414,7 @@ function createSavedEventElement(event) {
   // create delete event form
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-event?event-name=" + event);
+  form.setAttribute("action", "delete-saved-event?event-id=" + event);
   const button = document.createElement('button');
   button.innerText = "Unsave this event";
   button.setAttribute("type", "submit");
@@ -430,10 +429,10 @@ function revealForm() {
 	var userType = sessionStorage.getItem("user-type");
 	if (userType == null) {
 		getUserType();
-    if (sessionStorage.getItem("user-type") == null) {
-        displayForm("individual", true);
-        return;
-    }
+        if (sessionStorage.getItem("user-type") == null) {
+            displayForm("individual", true);
+            return;
+        }
 	} 
     displayForm(userType, false);
 }
@@ -446,7 +445,6 @@ function closeForm() {
 
 /* Function to support searching for organizations by name */
 function searchOrg() {
-  var email = checkAuth();
   var university = sessionStorage.getItem("university");
   if (university == null) {
     getUserType();
@@ -461,8 +459,7 @@ function searchOrg() {
     orgListElement.innerHTML = '';
     
     organizations.forEach((org) => {
-      orgListElement.appendChild(createSavedOrgElement(org, email, false));
+      orgListElement.appendChild(createSavedOrgElement(org, false));
     }) 
   });
-
 }

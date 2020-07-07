@@ -72,7 +72,6 @@ public class OrganizationController {
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
   }
-<<<<<<< HEAD
 
   @GetMapping("search-organization")
   public List<Organization> searchOrganization(
@@ -85,6 +84,4 @@ public class OrganizationController {
         return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", university);
     } 
   }
-=======
->>>>>>> d248944... fix requested changes and IAP security
 }
