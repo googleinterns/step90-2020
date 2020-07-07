@@ -10,6 +10,7 @@ function createEvent(event) {
   const listEventElement = document.createElement('li');
   listEventElement.className = 'list-events';
 
+
   createEventAttribute(organizationId);
   createEventAttribute(eventTitle);
   createEventAttribute(eventDateTime);

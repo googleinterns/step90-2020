@@ -2,6 +2,7 @@ package com.step902020.capstone;
 
 import java.io.IOException;
 import java.util.*;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,13 @@ import java.lang.Double;
 
 import java.io.IOException;
 
+/**
+ * Event functionalities
+ *   - Add new reviews
+ *   - List reviews
+ * TODO: filtering, creating event with front end input
+ */
+ 
 @RestController
 public class EventController {
 
@@ -26,12 +34,6 @@ public class EventController {
 
     return this.eventRepository.findAll();
   }
-
-  @GetMapping("get-single-event")
-  public List<Event> getEventByID(@RequestParam("datastoreID") Long datastoreID) {
-    return this.eventRepository.findByDatastoreID(datastoreID);
-  }
-
 
   @PostMapping("save-event")
   public RedirectView saveEvent (

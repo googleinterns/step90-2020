@@ -27,47 +27,107 @@ function getEvents() {
   });
 }
 
-/** Creates an event element. */
+/**
+ * Format event listing
+ */
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
+  // Name 
+  const nameElement = document.createElement('p');
+  nameElement.innerText = event.name;
 
-  const organizationName = document.getElementById('organizationName');
-  organizationName.innerText = event.organizationName;
+  const idElement = document.createElement('p');
+  idElement.innerText = event.datastoreId;
+  idElement.style.display = 'none';
 
-  const eventTitleElement = document.getElementById('eventTitle');
-  eventTitleElement.innerText = event.eventTitle;
-
-  const eventDateTime = document.getElementById('eventDateTime');
-  eventDateTime.innerText = event.eventDateTime;
-  
-  const eventDescription = document.getElementById('eventDescription');
-  eventDescription.innerText = event.eventDescription;
-
-  const eventLatitude = document.getElementById('eventLat');
-  eventLatitude.innerText = event.eventLatitude;
-
-  const eventLongitude = document.getElementById('eventLng');
-  eventLongitude.innerText = event.eventLongitude;
-
-  const eventFilters = document.getElementById('filters');
-  eventFilters.innerText = event.eventFilters;
-
-  eventElement.appendChild(eventTitleElement);
-  eventElement.appendChild(organizationName);
-  eventElement.appendChild(eventDateTime);
-  eventElement.appendChild(eventDescription);
-  eventElement.appendChild(eventLatitude);
-  eventElement.appendChild(eventLongitude);
-  eventElement.appendChild(eventFilters);
+  /*
+  Time
+  Location
+  Organization
+  Description
+  */
+  eventElement.appendChild(idElement);
+  eventElement.appendChild(nameElement);
+  eventElement.appendChild(createReviewElement(event));
   
   return eventElement;
 }
 
+/**
+ * Format review element and listing
+ */
+function createReviewElement(event) {
+  const reviewElement = document.createElement('span');
+
+  // Submission
+  const reviewInputElement = document.createElement('input');
+  reviewInputElement.setAttribute('placeholder', 'Leave a review');
+  reviewInputElement.setAttribute('type', 'text');
+
+  // Future: option to add image
+
+  const reviewButtonElement = document.createElement('button');
+  reviewButtonElement.innerText = 'Submit Review';
+  reviewButtonElement.addEventListener('click', () => {
+    newReview(event.datastoreId, reviewInputElement.value);
+  });
+
+  // Container
+  const reviewsContainer = document.createElement('div');
+  reviewsContainer.innerText = 'Reviews:'
+  const reviews = event.reviews;
+
+  reviews.forEach((review) => {
+      const reviewContainer = document.createElement('div');
+      reviewContainer.className = 'review';
+      const reviewTextElement = document.createElement('p');
+      reviewTextElement.innerText = review.text;
+      reviewTextElement.className = 'review-text'
+
+      const reviewUserElement = document.createElement('p');
+      reviewUserElement.innerText = review.name;
+      reviewUserElement.className = 'review-name';
+
+      reviewContainer.appendChild(reviewUserElement);
+      reviewContainer.appendChild(reviewTextElement);
+
+      reviewsContainer.appendChild(reviewContainer);
+    }) 
+
+  reviewElement.appendChild(reviewInputElement);
+  reviewElement.appendChild(reviewButtonElement);
+  reviewElement.appendChild(reviewsContainer);
+
+  return reviewElement;
+}
+
+/**
+ * Add review to event's list
+ */
+async function newReview(eventId, text) {
+  var email = getEmail();
+  
+  const response = await fetch('get-individual?email=' + email);
+  const individual = await response.json();
+
+  const params = new URLSearchParams();
+  params.append('text', text);
+  params.append('eventId', eventId);
+  params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
+  
+  await fetch('new-review', {method:'POST', body: params});
+  getEvents();
+}
+
+/** TEMP */
 async function newEvent() {
   await fetch('save-event', {method: 'POST'});
 }
 
+/**
+ * Toggle advanced filters
+ */
 function showMore() {
   const filterElement = document.getElementById('additionalFilters');  
   const button = document.getElementById('filterButton');
@@ -93,18 +153,27 @@ according to whether the user is logged in or logged out */
 function checkAuth(){
   // send request for information on login status
   // if request not working, default to preset value
-  var email = "";
-  fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
-      email = data["email"].substring(20);
-  });
-  if (email == "") {
-      email = "jennysheng@google.com";
-  }
+  var email = getEmail();
+
   // prefill the email in the form so that user cannot edit their email
   document.getElementById("email-form-display").innerText = email;
   document.getElementById("org-email-form-display").innerText = email;
   document.getElementById("email-form").value = email;
   document.getElementById("org-email-form").value = email;
+  return email;
+}
+
+function getEmail() {
+  var email = "";
+  fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
+    email = data["email"].substring(20);
+  });
+  
+  // Temp Back up
+  if (email == "") {
+      email = "jenny@google.com";
+  }
+
   return email;
 }
 

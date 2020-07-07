@@ -13,6 +13,7 @@ public class Event{
   Long datastoreID;
 
   @Reference
+
   Organization organization;
 
   @Field(name="eventTitle")
@@ -39,7 +40,6 @@ public class Event{
     this.eventDescription = eventDescription;
     this.eventLatitude = eventLatitude;
     this.eventLongitude = eventLongitude;
-
   }
 
   public Long getDatastoreID() {
@@ -52,7 +52,7 @@ public class Event{
   public Organization getOrganization() {
     return organization;
   }
-  public String geteventDateTime() {
+  public String getEventDateTime() {
     return eventDateTime;
   }
   public String getDescription() {
@@ -61,7 +61,7 @@ public class Event{
   public double getEventLatitude() {
     return eventLatitude;
   }
-  public double geteventLongitude() {
+  public double getEventLongitude() {
     return eventLongitude;
   }
 
