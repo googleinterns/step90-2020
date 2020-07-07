@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
-<body onload="getUser();">
+<body onload="createCalendar()">
     <nav class="nav-bar">
         <ul>
             <li class="home"><a href="index.html">College Activity Finder</a></li>
@@ -25,7 +25,7 @@
             <li><a href="">Saved Organizations</a></li>
         </ul>
     </div>
-    <div class="calendar">
+    <div class="calendar" id="calendar">
         <div class="date general-container">
             <p>Sunday</p>
         </div>
@@ -54,15 +54,6 @@
             <div class="event general-container col">
                 <p> event 3</p>
             </div>
-        </div>
-        <div class="date general-container">
-            <p>Monday</p>
-        </div>
-        <div class="date general-container">
-            <p>Tuesday</p>
-        </div>
-        <div class="date general-container" >
-            <p>Wednesday</p>
         </div>
     </div>
 

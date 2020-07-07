@@ -214,3 +214,20 @@ function toggleForm(formUserType) {
   var userType = document.getElementById(formUserType).value;
   displayForm(userType);
 }
+
+
+function createCalendar() {
+  const calendar = document.getElementById("calendar");
+  for (var i = 0; i < 14; i++) {
+    var nextDay = new Date();
+    var today = new Date();
+    nextDay.setDate(today.getDate() + i);
+    const dateDiv = document.createElement('div');
+    dateDiv.setAttribute("class", "date general-container");
+    const dateDisplay = document.createElement('p');
+    dateDisplay.innerText = nextDay;
+    dateDiv.appendChild(dateDisplay);
+    calendar.append(dateDiv);
+  }
+
+}
