@@ -23,7 +23,9 @@ function getEvents() {
     
     events.forEach((event) => {
       eventListElement.appendChild(createEventElement(event));
-    }) 
+    })
+    // Format time to *** time ago
+    timeago.render(document.querySelectorAll('.timeago')); 
   });
 }
 
@@ -56,12 +58,11 @@ function createEventElement(event) {
 }
 
 /**
- * Format review element and listing
+ * Create event's review submission and format review listing
  */
 function createReviewElement(event) {
   const reviewElement = document.createElement('span');
 
-  // Submission
   const reviewInputElement = document.createElement('input');
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
   reviewInputElement.setAttribute('type', 'text');
@@ -73,34 +74,43 @@ function createReviewElement(event) {
   reviewButtonElement.addEventListener('click', () => {
     newReview(event.datastoreId, reviewInputElement.value);
   });
-
-  // Container
-  const reviewsContainer = document.createElement('div');
-  reviewsContainer.innerText = 'Reviews:'
-  const reviews = event.reviews;
-
-  reviews.forEach((review) => {
-      const reviewContainer = document.createElement('div');
-      reviewContainer.className = 'review';
-      const reviewTextElement = document.createElement('p');
-      reviewTextElement.innerText = review.text;
-      reviewTextElement.className = 'review-text'
-
-      const reviewUserElement = document.createElement('p');
-      reviewUserElement.innerText = review.name;
-      reviewUserElement.className = 'review-name';
-
-      reviewContainer.appendChild(reviewUserElement);
-      reviewContainer.appendChild(reviewTextElement);
-
-      reviewsContainer.appendChild(reviewContainer);
-    }) 
-
+ 
   reviewElement.appendChild(reviewInputElement);
   reviewElement.appendChild(reviewButtonElement);
-  reviewElement.appendChild(reviewsContainer);
-
+  reviewElement.appendChild(createReviewContainerElement(event.reviews));
   return reviewElement;
+}
+
+/**
+ * Format each review to add to review container
+ */
+function createReviewContainerElement(reviews) {
+  const reviewsContainer = document.createElement('div');
+  reviewsContainer.innerText = 'Reviews:'
+
+  reviews.forEach((review) => {
+    const reviewContainer = document.createElement('div');
+    reviewContainer.className = 'review';
+
+    const reviewDetailsElement = document.createElement('div');
+    reviewDetailsElement.className = 'review-details';
+    reviewDetailsElement.innerText = review.name;
+
+    const reviewTimeElement = document.createElement('time');
+    reviewTimeElement.className = "timeago";
+    reviewTimeElement.setAttribute('datetime', review.timestamp);
+     
+    const reviewTextElement = document.createElement('p');
+    reviewTextElement.className = 'review-text';
+    reviewTextElement.innerText = review.text;
+
+    reviewDetailsElement.appendChild(document.createElement('br'));
+    reviewDetailsElement.appendChild(reviewTimeElement);
+    reviewContainer.appendChild(reviewDetailsElement);
+    reviewContainer.appendChild(reviewTextElement);
+    reviewsContainer.appendChild(reviewContainer);
+  })   
+  return reviewsContainer;
 }
 
 /**
@@ -172,7 +182,7 @@ function getEmail() {
   
   // Temp Back up
   if (email == "") {
-      email = "jenny@google.com";
+      email = "jennysheng@google.com";
   }
 
   return email;

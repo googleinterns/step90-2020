@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @Entity(name = "review")
 public class Review {
 
+  long timestamp;
+
   LocalDateTime date;
 
   @Field(name="name")
@@ -22,8 +24,9 @@ public class Review {
   //@Field(name="image-filename")
   //String imageFilename;
 
-  public Review(LocalDateTime date, String text, String name) {
-    this.date = date;
+  public Review(String text, String name) {
+    this.date = LocalDateTime.now();
+    this.timestamp = System.currentTimeMillis();
     this.text = text;
     this.name = name;
   }
@@ -32,8 +35,8 @@ public class Review {
     return name;
   }
 
-  public LocalDateTime getDate() {
-    return date;
+  public long getTimestamp() {
+    return timestamp;
   }
 
   public String getText() {
