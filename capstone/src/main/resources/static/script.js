@@ -149,30 +149,8 @@ function createMap() {
       {center: nycLatLng, zoom: 11});
 } 
 
-/** authenticate user and return email */
-function checkAuth(){
-  // send request for information on login status
-  // if request not working, default to preset value
-  var email = "";
-  fetch('_gcp_iap/identity').then(response => response.json()).then((data) => {
-      email = data["email"].substring(20);
-  });
-  if (email == "") {
-      email = "jenny@google.com";
-  }
-  return email;
-}
-
 /* get the user information for the profile page */
 function getUser() {
-  var email = checkAuth();
-  
-   // prefill the email in the form so that user cannot edit their email
-  document.getElementById("email-form-display").innerText = email;
-  document.getElementById("org-email-form-display").innerText = email;
-  document.getElementById("email-form").value = email;
-  document.getElementById("org-email-form").value = email;
-
   var userType = sessionStorage.getItem("user-type");
 
   // if there is no userType stored in this session, that means this is a new user
@@ -180,12 +158,12 @@ function getUser() {
     getUserType();
   } else {
     if (userType == "organization") {
-      fetch('get-organization?email=' + email).then(response => response.json()).then((data) => {
+      fetch('get-organization').then(response => response.json()).then((data) => {
         createProfile(data[0], true);
         sessionStorage.setItem("user-type", data[0].userType);
       });
     } else if (userType == "individual") {
-      fetch('get-individual?email=' + email).then(response => response.json()).then((data) => {
+      fetch('get-individual').then(response => response.json()).then((data) => {
         createProfile(data[0], false);
         sessionStorage.setItem("user-type", data[0].userType);
       });  
@@ -208,17 +186,15 @@ function displayMain(display) {
 /* get and store the user type (individual or organization). With this we determine whether
 this user exists in our database or not */
 function getUserType() {
-    var email = checkAuth();
-
     /* Since there is no way to know beforehand whether the user is an organization 
     or an individual, we have to do two fetches to check the organization entities and
     the user entities */
-    fetch('get-organization?email=' + email).then(response => response.json()).then((data) => {
+    fetch('get-organization').then(response => response.json()).then((data) => {
       if (data.length != 0) {
           sessionStorage.setItem("user-type", data[0].userType);
           displayMain(true);
       } else {
-        fetch('get-individual?email=' + email).then(response => response.json()).then((newData) => {
+        fetch('get-individual').then(response => response.json()).then((newData) => {
           if (newData.length != 0) {
             // display information
             sessionStorage.setItem("user-type", newData[0].userType);
@@ -235,12 +211,6 @@ function getUserType() {
 
 /* creates and populates the user profile */
 function createProfile(data, isOrganization) {
-    const emailFormContainer = document.getElementById("email-form");
-    emailFormContainer.value = data.email;
-
-    const idFormContainer = document.getElementById("datastore-id");
-    idFormContainer.value = data.datastoreId;
-
     const emailContainer = document.getElementById("email");
     const pElementEmail = document.createElement('p');
     pElementEmail.innerText = "Email: " + data.email;
@@ -339,48 +309,44 @@ function updateUserTypeInForm(display, hide, toggleSection, toggleValue) {
 }
 
 /* helper function to hide/display the correct fields in forms */
-function hideFields(selectField, uniField) {
+function hideFields(selectField, universityField) {
 	document.getElementById(selectField).style.display = "none";
-  document.getElementById(uniField).style.display="none";
+  document.getElementById(universityField).style.display="none";
 }
 
 /* get the saved events for individual users */
 function getIndividualEvents() {
-  var email = checkAuth();
-  document.getElementById("temp-email").value = email;
   var userType = sessionStorage.getItem("user-type");
   if (userType == null) {
     getUserType();
   }
-  fetch('get-' + userType + '?email=' + email).then(response => response.json()).then((data) => {
-    data[0].savedEvents.forEach((event) => createSavedEventElement(event, email));
+  fetch('get-' + userType).then(response => response.json()).then((data) => {
+    data[0].savedEvents.forEach((event) => createSavedEventElement(event));
     displayMain(true);
   });
 }
 
 /* get the saved organizations for individual users */
 function getIndividualOrganizations() {
-  var email = checkAuth();
-	document.getElementById("temp-email").value = email;
   var userType = sessionStorage.getItem("user-type");
   if (userType == null) {
     getUserType();
   }
-  fetch('get-' + userType + '?email=' + email).then(response => response.json()).then((data) => {
-    getSavedOrgElements(data[0].savedOrganizations, email);
+  fetch('get-' + userType).then(response => response.json()).then((data) => {
+    getSavedOrgElements(data[0].savedOrganizations);
     displayMain(true);
   });
 }
 
 /* function to return the list of correponding saved organizations */
-function getSavedOrgElements(email, userEmail) {
+function getSavedOrgElements(email) {
   fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
-    data.forEach((org) => createSavedOrgElement(org, userEmail));
+    data.forEach((org) => createSavedOrgElement(org));
     });
 }
 
 /* Function to create the individual organization display divs*/
-function createSavedOrgElement(data, email) {
+function createSavedOrgElement(data) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
  
@@ -399,7 +365,7 @@ function createSavedOrgElement(data, email) {
   // create delete organization form
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-organization?email=" + email + "&organization-email=" + data.email);
+  form.setAttribute("action", "delete-saved-organization?&organization-id=" + data.datastoreId);
   const button = document.createElement('button');
   button.innerText = "Unsave this organization";
   button.setAttribute("type", "submit");
@@ -410,7 +376,7 @@ function createSavedOrgElement(data, email) {
 }
 
 /* create the individual event containers for displaying events*/
-function createSavedEventElement(event, email) {
+function createSavedEventElement(event) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
  
@@ -421,7 +387,7 @@ function createSavedEventElement(event, email) {
   // create delete event form
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-event?email=" + email + "&event-name=" + event);
+  form.setAttribute("action", "delete-saved-event?event-name=" + event);
   const button = document.createElement('button');
   button.innerText = "Unsave this event";
   button.setAttribute("type", "submit");

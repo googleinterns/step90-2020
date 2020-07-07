@@ -31,10 +31,10 @@ public class Individual {
   String image;
 
   @Field(name="saved-events")
-  Set<String> savedEvents;
+  Set<Long> savedEvents;
 
   @Field(name="saved-organizations")
-  Set<String> savedOrganizations;
+  Set<Long> savedOrganizations;
 
   public Individual() {
   }
@@ -47,8 +47,8 @@ public class Individual {
     this.university = university;
     this.userType = userType;
     this.image = image;
-    savedEvents = new HashSet<String>();
-    savedOrganizations = new HashSet<String>();
+    savedEvents = new HashSet<Long>();
+    savedOrganizations = new HashSet<Long>();
   }
   
   public Long getDatastoreId() {
@@ -83,11 +83,11 @@ public class Individual {
     return image;
   }
 
-  public Set<String> getSavedEvents() {
+  public Set<Long> getSavedEvents() {
     return savedEvents;
   }
 
-  public Set<String> getSavedOrganizations() {
+  public Set<Long> getSavedOrganizations() {
     return savedOrganizations;
   }
 
@@ -103,19 +103,19 @@ public class Individual {
     this.image = image;
   }
 
-  public void addSavedEvents(String event) {
+  public void addSavedEvents(long event) {
     savedEvents.add(event);
   }
 
-  public void deleteSavedEvents(String event) {
+  public void deleteSavedEvents(long event) {
     savedEvents.remove(event);
   }
 
-  public void addSavedOrganizations(String organization) {
+  public void addSavedOrganizations(long organization) {
     savedOrganizations.add(organization);
   }
 
-  public void deleteSavedOrganizations(String organization) {
+  public void deleteSavedOrganizations(long organization) {
     savedOrganizations.remove(organization);
   }
 }
