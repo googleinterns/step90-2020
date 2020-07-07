@@ -3,7 +3,6 @@ package com.step902020.capstone;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
-import java.time.LocalDateTime;
 
 /**
  * 
@@ -12,8 +11,6 @@ import java.time.LocalDateTime;
 public class Review {
 
   long timestamp;
-
-  LocalDateTime date;
 
   @Field(name="name")
   String name;
@@ -25,7 +22,6 @@ public class Review {
   //String imageFilename;
 
   public Review(String text, String name) {
-    this.date = LocalDateTime.now();
     this.timestamp = System.currentTimeMillis();
     this.text = text;
     this.name = name;
