@@ -40,10 +40,9 @@ public class EventController {
       @RequestParam("eventId") long eventId,
       @RequestParam("name") String name) throws IOException {
  
-  EventTemp event = this.eventRepository.findById(eventId);
+  EventTemp event = this.eventRepository.findById(eventId).get();
 
   event.addReview(new Review(text, name));
   this.eventRepository.save(event);
   }
-
 }

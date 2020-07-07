@@ -64,6 +64,7 @@ function createReviewElement(event) {
   const reviewElement = document.createElement('span');
 
   const reviewInputElement = document.createElement('input');
+  
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
   reviewInputElement.setAttribute('type', 'text');
 
