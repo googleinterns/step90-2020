@@ -22,11 +22,13 @@
             <li class="active"><a href="profile.html">My Profile</a></li>
             <li><a href="">Calendar of Events</a></li>
             <li><a href="savedevents.html">Saved Events</a></li>
-            <li><a href="">Saved Organizations</a></li>
+            <li><a href="savedorganizations.html">Saved Organizations</a></li>
         </ul>
     </div>
-    <div class="profile-container general-container">
-        <div id="auth-container"></div>
+    <div id="no-profile">
+        <p>You have not built your profile yet, please submit a profile </p>
+    </div>
+    <div id="main" class="profile-container general-container">
         <div class="row">
             <h1>My Profile</h1>
             <div class="container">
@@ -42,52 +44,47 @@
                 <div id="user-type"></div>
                 <div id="university"></div>
                 <div id="description"></div>
+                <button class="button submit" onclick="revealForm()">Edit/Submit Your Profile</input>
             </div>
-        </div>
-
-        <div class="row" id="no-profile">
-            <p>You have not build your profile yet, please submit a profile </p>
         </div>
     </div>
     <div class="profile-form general-container" id="user">
         <form action="save-individual" method="POST" id="user-form">
-            <label>Are you an individual or a club/organization?</label>
-            <select  id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
-                <option value="individual">Individual</option>
-                <option value="organization">Organization</option>
-            </select>
-            <input type="hidden" name="id" id="datastore-id-org">
-            <label>First Name</label>
-            <input type="text" name="firstname" placeholder="Your first name..">
-            <label>Last Name</label>
-            <input type="text" name="lastname" placeholder="Your last name..">
-            <label>Your Email</label>
-            <p id="email-form-display"></p>
-            <input type="hidden" name="email" id="email-form">
-            <label>Your University</label>
-            <input type="text" name="university" placeholder="Your university..">
-            <input class="button submit" type="submit" value="Submit">
+            <div id="user-select">
+                <label>Are you an individual or a club/organization?</label>
+                <select id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
+                    <option value="individual">Individual</option>
+                    <option value="organization">Organization</option>
+                </select>
+            </div>
+            <label>First Name:</label>
+            <input type="text" name="firstname" id="ind-firstname" placeholder="Your first name.."></input>
+            <label>Last Name:</label>
+            <input type="text" name="lastname" id="ind-lastname" placeholder="Your last name.."></input>
+            <label>University:</label>
+            <p id="university-form-display"></p>
+            <input type="text" name="university" id="ind-uni" placeholder="Your university.."></input>
+            <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
         </form>
     </div>
 
     <div class="profile-form general-container" id="organization">
         <form action="save-organization" method="POST" id="organization-form">
-            <label>Are you an individual or a club/organization?</label>
-            <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
-                <option value="individual">Individual</option>
-                <option value="organization">Organization</option>
-            </select>
-            <input type="hidden" name="id" id="datastore-id">
-            <label>Organization Name</label>
-            <input type="text" name="name" placeholder="Your organization name..">
-            <label>Email</label>
-            <p id="org-email-form-display"></p>
-            <input type="hidden" name="email" id="org-email-form">
-            <label>Affiliated University</label>
-            <input type="text" name="university" placeholder="Your university..">
-            <label>Description</label>
-            <input type="text" name="description" placeholder="Description of your organization..">
-            <input class="button submit" type="submit" value="Submit">
+            <div id="org-select">
+                <label>Are you an individual or an organization?</label>
+                <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
+                    <option value="individual">Individual</option>
+                    <option value="organization">Organization</option>
+                </select>
+            </div>
+            <label>Organization Name:</label>
+            <input type="text" name="name" id="org-form-name" placeholder="Your organization name.."></input>
+            <label>Affiliated University:</label>
+            <p id="org-university-form-display"></p>
+            <input type="text" name="university" id="org-uni" placeholder="Your university.."></input>
+            <label>Description:</label>
+            <input type="text" name="description" id="org-description" placeholder="Description of your organization.."></input>
+            <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
         </form>
     </div>
   </body>
