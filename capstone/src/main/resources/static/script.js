@@ -348,7 +348,6 @@ function getSavedOrgElements(email) {
 }
 
 /* Function to create the individual organization display divs*/
-
 function createSavedOrgElement(data, email, isDelete) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
