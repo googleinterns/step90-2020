@@ -337,7 +337,7 @@ function getIndividualOrganizations() {
     getUserType();
   }
   fetch('get-' + userType).then(response => response.json()).then((data) => {
-    getSavedOrgElements(data[0].savedOrganizations);
+    data[0].organizations.forEach((org) => createSavedOrgElement(org));
     displayMain(true);
   });
 }

@@ -3,6 +3,7 @@ package com.step902020.capstone;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import java.util.*;
 
 @Entity(name = "individual")
@@ -18,23 +19,20 @@ public class Individual {
   @Field(name="lastname")
   String lastName;
 
-  @Field(name="email")
   String email;
 
-  @Field(name="university")
   String university;
 
   @Field(name="user-type")
   String userType;
 
-  @Field(name="image")
   String image;
 
   @Field(name="saved-events")
   Set<Long> savedEvents;
 
-  @Field(name="saved-organizations")
-  Set<Long> savedOrganizations;
+  @Reference
+  List<Organization> organizations;
 
   public Individual() {
   }
@@ -48,7 +46,7 @@ public class Individual {
     this.userType = userType;
     this.image = image;
     savedEvents = new HashSet<Long>();
-    savedOrganizations = new HashSet<Long>();
+    organizations = new ArrayList<Organization>();
   }
   
   public Long getDatastoreId() {
@@ -87,8 +85,8 @@ public class Individual {
     return savedEvents;
   }
 
-  public Set<Long> getSavedOrganizations() {
-    return savedOrganizations;
+  public List<Organization> getOrganizations() {
+    return organizations;
   }
 
   public void setFirstName(String firstName) {
@@ -111,11 +109,21 @@ public class Individual {
     savedEvents.remove(event);
   }
 
-  public void addSavedOrganizations(long organization) {
-    savedOrganizations.add(organization);
+  public void addOrganizations(Organization organization) {
+    organizations.add(organization);
   }
 
-  public void deleteSavedOrganizations(long organization) {
-    savedOrganizations.remove(organization);
+  public void deleteOrganizations(Organization organization) {
+    System.out.println("before: "+ organizations);
+    System.out.println("organization to be deleted: " + organization);
+    organizations.removeIf(o -> organization.getEmail().equals(o.getEmail()));
+    System.out.println("after: "+ organizations);
   }
 }
+
+public void deleteOrganizations(Organization organization) {
+    System.out.println("before: "+ organizations);
+    System.out.println("organization to be deleted: " + organization);
+    organizations.remove(organization);
+    System.out.println("after: "+ organizations);
+  }
