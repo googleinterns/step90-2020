@@ -175,10 +175,8 @@ function getUser(fillForm) {
 /* function to toggle between displaying user profile and displaying an error message */
 function displayMain(display) {
   if (display) {
-    document.getElementById("main").style.display = "block";
     document.getElementById("no-profile").style.display = "none";
   } else {
-    document.getElementById("main").style.display = "none";
     document.getElementById("no-profile").style.display = "block";
   }
 }
