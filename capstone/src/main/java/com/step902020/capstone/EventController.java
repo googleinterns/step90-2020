@@ -31,7 +31,6 @@ public class EventController {
 
   @GetMapping("get-all-events")
   public Iterable<Event> getAllEvents() {
-
     return this.eventRepository.findAll();
   }
 

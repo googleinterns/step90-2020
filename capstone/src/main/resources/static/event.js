@@ -11,20 +11,20 @@ function createEvent(event) {
   listEventElement.className = 'list-events';
 
 
-  createEventAttribute(organizationId);
-  createEventAttribute(eventTitle);
-  createEventAttribute(eventDateTime);
-  createEventAttribute(eventDescription);
-  createEventAttribute(eventLatitude);
-  createEventAttribute(eventLongitude);
+  createEventAttribute(event.organizationId);
+  createEventAttribute(event.eventTitle);
+  createEventAttribute(event.eventDateTime);
+  createEventAttribute(event.eventDescription);
+  createEventAttribute(event.eventLatitude);
+  createEventAttribute(event.eventLongitude);
   
   return listEventElement;
 }
 
-function createEventAttribute(attributeName) {
-  attributeName = document.createElement('p');
-  atttributeName.innerText = event.attributeName;
-  listEventElement.appendChild(attributeName);
+function createEventAttribute(attributeValue) {
+  const attributeValueElement = document.createElement('p');
+  attributeValueElement.innerText = attributeValue;
+  listEventElement.appendChild(attributeValueElement);
 }
 
 async function newEvent() {
