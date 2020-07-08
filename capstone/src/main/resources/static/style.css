@@ -113,6 +113,10 @@ input[type=submit]:hover {
   display: none;
 }
 
+#org-nav {
+  display: none;
+}
+
 /* shared classes and styling */
 
 body {

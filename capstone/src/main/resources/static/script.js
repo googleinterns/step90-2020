@@ -159,11 +159,15 @@ function getUser() {
   } else {
     if (userType == "organization") {
       fetch('get-organization').then(response => response.json()).then((data) => {
+        document.getElementById("org-nav").style.display = "block";
+        document.getElementById("individual-nav").style.display = "none";
         createProfile(data[0], true);
         sessionStorage.setItem("user-type", data[0].userType);
       });
     } else if (userType == "individual") {
       fetch('get-individual').then(response => response.json()).then((data) => {
+        document.getElementById("org-nav").style.display = "none";
+        document.getElementById("individual-nav").style.display = "block";
         createProfile(data[0], false);
         sessionStorage.setItem("user-type", data[0].userType);
       });  
@@ -289,7 +293,7 @@ function toggleForm(formUserType) {
 // a new user will be able to toggle, but a returning user will not
 function displayForm(userType, displayBoth) {
   if (userType == "individual") {
-    updateUserTypeInForm("user", "organization", "user-type-toggle", "individual");
+    updateUserTypeInForm("user", "oretuseranization", "user-type-toggle", "individual");
     if (!displayBoth) {
       hideFields("user-select", "ind-uni");
     }
