@@ -16,7 +16,7 @@
  * Retrieves events from server
  */
 function getEvents() {
-  fetch('list-events').then(response => response.json()).then((events) => {
+  fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
     eventListElement.innerText = "Events";
@@ -33,7 +33,6 @@ function getEvents() {
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
-
   // Name 
   const nameElement = document.createElement('p');
   nameElement.innerText = event.name;
@@ -123,7 +122,7 @@ async function newReview(eventId, text) {
 
 /** TEMP */
 async function newEvent() {
-  await fetch('new-event', {method: 'POST'});
+  await fetch('save-event', {method: 'POST'});
 }
 
 /**
