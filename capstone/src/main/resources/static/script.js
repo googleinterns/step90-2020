@@ -183,7 +183,7 @@ function getEmail() {
   
   // Temp Back up
   if (email == "") {
-      email = "jennysheng@google.com";
+      email = "dummy@google.com";
   }
 
   return email;
