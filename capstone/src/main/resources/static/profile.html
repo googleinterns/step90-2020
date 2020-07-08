@@ -6,47 +6,40 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
-<body onload="getUser();">
+<body onload="getUser(true);">
     <nav class="nav-bar">
         <ul>
             <li class="home"><a href="index.html">College Activity Finder</a></li>
             <li><a href="">Events</a></li>
-            <li><a href="">Organizations</a></li>
-            <li class="active"><a href="">My Account</a></li>
+            <li><a href="organizationsearch.html">Organizations</a></li>
+            <li class="active"><a href="profile.html">My Account</a></li>
             <li><a href="=">About Us</a></li>
         </ul>
     </nav>
     <br/>
-    <div class="left nav-bar">
-        <ul>
-            <li class="active"><a href="profile.html">My Profile</a></li>
-            <li><a href="">Calendar of Events</a></li>
-            <li><a href="savedevents.html">Saved Events</a></li>
-            <li><a href="savedorganizations.html">Saved Organizations</a></li>
-        </ul>
-    </div>
-    <div id="no-profile">
-        <p>You have not built your profile yet, please submit a profile </p>
-    </div>
-    <div id="main" class="profile-container general-container">
-        <div class="row">
-            <h1>My Profile</h1>
-            <div class="container">
-                <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
-            </div>
+    <div class="profile-head">
+        <div id="name"></div>
+        <div class="container">
+            <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
         </div>
-        <div class="row" id="profile-section">
-            <div class="col intro">
-                <div id="firstname"></div>
-                <div id="lastname"></div>
-                <div id="org-name"></div>
-                <div id="email"></div>
-                <div id="user-type"></div>
-                <div id="university"></div>
-                <div id="description"></div>
-                <button class="button submit" onclick="revealForm()">Edit/Submit Your Profile</input>
-            </div>
+        <div id="email"></div>
+        <div id="university"></div>
+        <div id="description"></div>
+        <div class="row" id="no-profile">
+            <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
         </div>
+        <nav class="nav-bar-inverted">
+            <ul>
+                <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
+                <li><a href="usercalendar.html">Calendar of Events</a></li>
+                <li><a href="savedevents.html">Saved Events</a></li>
+                <li><a href="savedorganizations.html">Saved Organizations</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div class="profile-head">
+        <button class="button submit profile-button" onclick="revealForm()">Edit/Submit Your Profile</input>
     </div>
     <div class="profile-form general-container" id="user">
         <form action="save-individual" method="POST" id="user-form">
