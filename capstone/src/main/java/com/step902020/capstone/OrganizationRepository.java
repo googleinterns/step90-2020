@@ -8,4 +8,6 @@ public interface OrganizationRepository extends DatastoreRepository<Organization
   public List<Organization> findByEmail(String email);
 
   public long deleteByEmail(String email);
+
+  public List<Organization> findAllByEmail(List<String> email);
 }
