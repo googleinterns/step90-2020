@@ -11,17 +11,17 @@ function createEvent(event) {
   listEventElement.className = 'list-events';
 
 
-  createEventAttribute(event.organizationId);
-  createEventAttribute(event.eventTitle);
-  createEventAttribute(event.eventDateTime);
-  createEventAttribute(event.eventDescription);
-  createEventAttribute(event.eventLatitude);
-  createEventAttribute(event.eventLongitude);
+  createEventAttribute(event.organizationId, listEventElement);
+  createEventAttribute(event.eventTitle, listEventElement);
+  createEventAttribute(event.eventDateTime, listEventElement);
+  createEventAttribute(event.eventDescription, listEventElement);
+  createEventAttribute(event.eventLatitude, listEventElement);
+  createEventAttribute(event.eventLongitude, listEventElement);
   
   return listEventElement;
 }
 
-function createEventAttribute(attributeValue) {
+function createEventAttribute(attributeValue, listEventElement) {
   const attributeValueElement = document.createElement('p');
   attributeValueElement.innerText = attributeValue;
   listEventElement.appendChild(attributeValueElement);
