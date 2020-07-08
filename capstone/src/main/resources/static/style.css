@@ -109,7 +109,7 @@ input[type=submit]:hover {
   margin-right: auto;
 }
 
-#organization, #no-profile, #user {
+#organization, #no-profile, #user, #org-nav {
   display: none;
 }
 
