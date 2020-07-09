@@ -17,7 +17,7 @@ var reviewsExist = false;
  * Retrieves events from server
  */
 function getEvents() {
-  fetch('list-events').then(response => response.json()).then((events) => {
+  fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
     eventListElement.innerText = "Events";
@@ -27,7 +27,7 @@ function getEvents() {
     })
     // Format time to *** time ago
     if (reviewsExist){
-      timeago.render(dogitcument.querySelectorAll('.timeago'));
+      timeago.render(document.querySelectorAll('.timeago'));
     }
   });
 }
@@ -38,13 +38,12 @@ function getEvents() {
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
-
   // Name 
   const nameElement = document.createElement('p');
-  nameElement.innerText = event.name;
+  nameElement.innerText = event.eventTitle;
 
   const idElement = document.createElement('p');
-  idElement.innerText = event.datastoreId;
+  idElement.innerText = event.datastoreID;
   idElement.style.display = 'none';
 
   /*
@@ -76,7 +75,7 @@ function createReviewElement(event) {
   const reviewButtonElement = document.createElement('button');
   reviewButtonElement.innerText = 'Submit Review';
   reviewButtonElement.addEventListener('click', () => {
-    newReview(event.datastoreId, reviewInputElement.value);
+    newReview(event.datastoreID, reviewInputElement.value);
   });
  
   reviewElement.appendChild(reviewInputElement);
@@ -122,14 +121,12 @@ function createReviewContainerElement(reviews) {
  * Add review to event's list
  */
 async function newReview(eventId, text) {
-  var email = getEmail();
-
   const params = new URLSearchParams();
   params.append('text', text);
   params.append('eventId', eventId);
   //params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
   //Quick fix until create a new way to attach user to review
-  params.append('name', "quick fix");
+  params.append('name', 'quick-fix');
   
   await fetch('new-review', {method:'POST', body: params});
   getEvents();
@@ -137,7 +134,7 @@ async function newReview(eventId, text) {
 
 /** TEMP */
 async function newEvent() {
-  await fetch('new-event', {method: 'POST'});
+  await fetch('save-event', {method: 'POST'});
 }
 
 /**
@@ -353,7 +350,7 @@ function getIndividualOrganizations() {
   });
 }
 
-/* function to return the list of correponding saved organizations */
+/* function to return the list of corresponding saved organizations */
 function getSavedOrgElements(email) {
   fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
     data.forEach((org) => createSavedOrgElement(org));

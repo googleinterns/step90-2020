@@ -5,6 +5,6 @@ import org.springframework.cloud.gcp.data.datastore.repository.DatastoreReposito
 /**
  * 
  */
-public interface EventRepository extends DatastoreRepository<EventTemp, Long> {
-    //public EventTemp findById(long id);
+public interface EventRepository extends DatastoreRepository<Event, Long> {
+
 }

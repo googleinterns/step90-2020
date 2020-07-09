@@ -9,6 +9,8 @@ import org.springframework.data.annotation.Id;
  */
 @Entity(name = "review")
 public class Review {
+  @Id
+  Long datastoreId;
 
   long timestamp;
 
