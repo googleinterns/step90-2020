@@ -413,7 +413,7 @@ function createCalendar() {
     const dateDiv = document.createElement('div');
     dateDiv.setAttribute("class", "date general-container");
     const dateDisplay = document.createElement('p');
-    dateDisplay.innerText = nextDay;
+    dateDisplay.innerText = nextDay.toDateString();
     dateDiv.appendChild(dateDisplay);
     calendar.append(dateDiv);
   }
