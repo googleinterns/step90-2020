@@ -30,7 +30,7 @@ public class Event{
 
   @Field(name="eventLongitude")
   double eventLongitude;
-
+  
   @Reference
   List<Review> reviews;
 

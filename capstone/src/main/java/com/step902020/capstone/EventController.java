@@ -50,7 +50,6 @@ public class EventController {
 
       this.eventRepository.save(newEvent);
       return new RedirectView("event.html", true);
-
   }
 
   @PostMapping("/new-review")
