@@ -368,7 +368,8 @@ function createSavedOrgElement(data, deleteAllowed) {
   divElement.appendChild(h5ElementBio);
   
   // create delete organization form
-  const form = isDelete ? createDeleteButton(data) : createSaveButton(data);
+  const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
+  divElement.appendChild(form);
   
   return divElement;
 }
