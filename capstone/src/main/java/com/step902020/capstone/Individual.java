@@ -120,10 +120,3 @@ public class Individual {
     System.out.println("after: "+ organizations);
   }
 }
-
-public void deleteOrganizations(Organization organization) {
-    System.out.println("before: "+ organizations);
-    System.out.println("organization to be deleted: " + organization);
-    organizations.remove(organization);
-    System.out.println("after: "+ organizations);
-  }
