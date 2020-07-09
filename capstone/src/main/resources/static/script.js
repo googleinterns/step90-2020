@@ -189,16 +189,12 @@ function getUserType() {
     the user entities */
     fetch('get-organization').then(response => response.json()).then((data) => {
       if (data.length != 0) {
-          sessionStorage.setItem("user-type", data[0].userType);
-          sessionStorage.setItem("university", data[0].university);
-          displayMain(true);
+          setupAndStore(data[0]);
       } else {
         fetch('get-individual').then(response => response.json()).then((newData) => {
           if (newData.length != 0) {
             // display information
-            sessionStorage.setItem("user-type", newData[0].userType);
-            sessionStorage.setItem("university", newData[0].university);
-            displayMain(true);
+            setupAndStore(newData[0]);
           } else {
             // user does not exist at all, display message to them to submit a profile
             displayMain(false);
@@ -207,6 +203,13 @@ function getUserType() {
         });  
       }
   });
+}
+
+/** helper function to store information and set up display */
+function setupAndStore(data) {
+  sessionStorage.setItem("user-type", data.userType);
+  sessionStorage.setItem("university", data.university);
+  displayMain(true);
 }
 
 /* creates and populates the user profile */
@@ -348,7 +351,7 @@ function getSavedOrgElements(email) {
 }
 
 /* Function to create the individual organization display divs*/
-function createSavedOrgElement(data, isDelete) {
+function createSavedOrgElement(data, deleteAllowed) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
  
@@ -365,13 +368,7 @@ function createSavedOrgElement(data, isDelete) {
   divElement.appendChild(h5ElementBio);
   
   // create delete organization form
-  if (isDelete) {
-    const form = createDeleteButton(data);
-    divElement.appendChild(form);
-  } else {
-    const form = createSaveButton(data);
-    divElement.appendChild(form);
-  }
+  const form = isDelete ? createDeleteButton(data) : createSaveButton(data);
   
   return divElement;
 }
