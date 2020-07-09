@@ -41,18 +41,12 @@ function createEventElement(event) {
   // Name 
   const nameElement = document.createElement('p');
   nameElement.innerText = event.eventTitle;
-
-  const idElement = document.createElement('p');
-  idElement.innerText = event.datastoreID;
-  idElement.style.display = 'none';
-
   /*
   Time
   Location
   Organization
   Description
   */
-  eventElement.appendChild(idElement);
   eventElement.appendChild(nameElement);
   eventElement.appendChild(createReviewElement(event));
   
@@ -63,19 +57,30 @@ function createEventElement(event) {
  * Create event's review submission and format review listing
  */
 function createReviewElement(event) {
-  const reviewElement = document.createElement('span');
+  const reviewElement = document.createElement('div');
+
+  //const reviewFormElement = document.createElement('form');
+  //reviewFormElement.setAttribute('action', newReview(event.datastoreID, reviewInputElement.value));
 
   const reviewInputElement = document.createElement('input');
-  
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
   reviewInputElement.setAttribute('type', 'text');
+  //reviewInputElement.required = true;
 
+  //const reviewButtonElement = document.createElement("input"); //input element, Submit button
+  //reviewButtonElement.setAttribute('type','submit');
+  //reviewButtonElement.setAttribute('value','Submit');
+
+  //reviewFormElement.appendChild(reviewInputElement);
+  //reviewFormElement.appendChild(reviewButtonElement);
   // Future: option to add image
 
   const reviewButtonElement = document.createElement('button');
   reviewButtonElement.innerText = 'Submit Review';
   reviewButtonElement.addEventListener('click', () => {
-    newReview(event.datastoreID, reviewInputElement.value);
+    if (reviewInputElement.value != '') {
+      newReview(event.datastoreID, reviewInputElement.value);
+    }
   });
  
   reviewElement.appendChild(reviewInputElement);
@@ -127,14 +132,9 @@ async function newReview(eventId, text) {
   //params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
   //Quick fix until create a new way to attach user to review
   params.append('name', 'quick-fix');
-  
   await fetch('new-review', {method:'POST', body: params});
-  getEvents();
-}
 
-/** TEMP */
-async function newEvent() {
-  await fetch('save-event', {method: 'POST'});
+  getEvents();
 }
 
 /**
