@@ -190,4 +190,5 @@ li a:hover, .active a {
   background-color: Transparent;
   border-color: white;
   border-style: solid;
+  color: white;
 }
