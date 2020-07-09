@@ -23,6 +23,9 @@ public class IndividualController {
   @Autowired
   private OrganizationRepository organizationRepository;
 
+  @Autowired
+  private EventRepository eventRepository;
+
   /** Find an individual's profile information by email */
   @GetMapping("get-individual")
   public List<Individual> getIndividual(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
@@ -63,9 +66,10 @@ public class IndividualController {
 
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (userList.size() > 0) {
       current = userList.get(0);
-      current.addSavedEvents(Long.parseLong(eventId));
+      current.addSavedEvents(event);
     }
     this.individualRepository.save(current);
     return new RedirectView("savedevents.html", true);
@@ -79,9 +83,10 @@ public class IndividualController {
 
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (userList.size() > 0) {
       current = userList.get(0);
-      current.deleteSavedEvents(Long.parseLong(eventId));
+      current.deleteSavedEvents(event);
     }
     this.individualRepository.save(current);
     return new RedirectView("savedevents.html", true);
@@ -96,7 +101,7 @@ public class IndividualController {
     
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
-    Organization organization = organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
+    Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
     if (userList.size() > 0) {
       current = userList.get(0);
       current.addOrganizations(organization);
@@ -114,9 +119,7 @@ public class IndividualController {
     
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
-    System.out.println("All the users: " + userList);
-    Organization organization = organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
-    System.out.println("Organization " + ((organization == null) ? "null organization" : organization.getName()));
+    Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
     
     if (userList.size() > 0) {
       current = userList.get(0);

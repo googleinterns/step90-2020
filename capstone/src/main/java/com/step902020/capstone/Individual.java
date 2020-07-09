@@ -28,8 +28,8 @@ public class Individual {
 
   String image;
 
-  @Field(name="saved-events")
-  Set<Long> savedEvents;
+  @Reference
+  List<Event> savedEvents;
 
   @Reference
   List<Organization> organizations;
@@ -45,7 +45,7 @@ public class Individual {
     this.university = university;
     this.userType = userType;
     this.image = image;
-    savedEvents = new HashSet<Long>();
+    savedEvents = new ArrayList<Event>();
     organizations = new ArrayList<Organization>();
   }
   
@@ -81,7 +81,7 @@ public class Individual {
     return image;
   }
 
-  public Set<Long> getSavedEvents() {
+  public List<Event> getSavedEvents() {
     return savedEvents;
   }
 
@@ -101,12 +101,12 @@ public class Individual {
     this.image = image;
   }
 
-  public void addSavedEvents(long event) {
+  public void addSavedEvents(Event event) {
     savedEvents.add(event);
   }
 
-  public void deleteSavedEvents(long event) {
-    savedEvents.remove(event);
+  public void deleteSavedEvents(Event event) {
+    savedEvents.removeIf(e -> event.getDatastoreID().equals(e.getDatastoreID()));
   }
 
   public void addOrganizations(Organization organization) {
@@ -114,9 +114,6 @@ public class Individual {
   }
 
   public void deleteOrganizations(Organization organization) {
-    System.out.println("before: "+ organizations);
-    System.out.println("organization to be deleted: " + organization);
-    organizations.removeIf(o -> organization.getEmail().equals(o.getEmail()));
-    System.out.println("after: "+ organizations);
+    organizations.removeIf(o -> organization.getDatastoreId().equals(o.getDatastoreId()));
   }
 }

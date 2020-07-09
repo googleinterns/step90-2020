@@ -324,7 +324,8 @@ function getIndividualEvents() {
     getUserType();
   }
   fetch('get-' + userType).then(response => response.json()).then((data) => {
-    data[0].savedEvents.forEach((event) => createSavedEventElement(event));
+    const eventDiv = document.getElementById("saved-events");
+    data[0].savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event)));
     displayMain(true);
   });
 }
@@ -384,8 +385,12 @@ function createSavedEventElement(event) {
   divElement.setAttribute("class", "item-container general-container");
  
   const h3ElementName = document.createElement('h3');
-  h3ElementName.innerText = event;
+  h3ElementName.innerText = event.eventTitle;
   divElement.appendChild(h3ElementName);
+
+  const pElementTime = document.createElement('p');
+  pElementTime.innerText = event.eventDateTime;
+  divElement.appendChild(pElementTime);
 
   // create delete event form
   const form = document.createElement("form");
@@ -397,7 +402,7 @@ function createSavedEventElement(event) {
   
   form.appendChild(button);
   divElement.appendChild(form);
-  document.getElementById("saved-events").appendChild(divElement);
+  return divElement;
 }
 
 /* Function to control form display using button */
@@ -417,5 +422,17 @@ function revealForm() {
 function closeForm() {
 	document.getElementById("user").style.display = "none";
 	document.getElementById("organization").style.display = "none";
+}
+
+function getOrganizationEvents() {
+  var userType = sessionStorage.getItem("user-type");
+  if (userType == null) {
+    getUserType();
+  }
+  fetch('get-' + userType).then(response => response.json()).then((data) => {
+    const eventDiv = document.getElementById("created-events");
+    data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event)));
+    displayMain(true);
+  });
 }
 

@@ -26,6 +26,7 @@ public class EventController {
 
   @Autowired
   private EventRepository eventRepository;
+
   @Autowired
   private OrganizationRepository organizationRepository;
 
@@ -49,6 +50,8 @@ public class EventController {
       Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
 
       this.eventRepository.save(newEvent);
+      organization.addEvent(newEvent);
+      this.organizationRepository.save(organization);
       return new RedirectView("event.html", true);
 
     }

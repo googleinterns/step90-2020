@@ -3,6 +3,7 @@ package com.step902020.capstone;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import java.util.*;
 
 @Entity(name = "organization")
@@ -22,6 +23,9 @@ public class Organization {
   String userType;
   String description;
   String image;
+
+  @Reference
+  List<Event> events;
   
   public Organization() {
   }
@@ -34,6 +38,7 @@ public class Organization {
     this.userType = userType;
     this.description = description;
     this.image = image;
+    events = new ArrayList<Event>();
   }
   
   public Long getDatastoreId() {
@@ -67,6 +72,10 @@ public class Organization {
   public String getImage() {
     return image;
   }
+  
+  public List<Event> getEvents() {
+    return events;
+  }
 
   public void setName(String name) {
     this.name = name;
@@ -78,6 +87,14 @@ public class Organization {
 
   public void setImage(String image) {
     this.image = image;
+  }
+
+  public void addEvent(Event event) {
+    events.add(event);
+  }
+
+  public void deleteEvent(Event event) {
+    events.removeIf(e -> event.getDatastoreID().equals(e.getDatastoreID()));
   }
   
 }
