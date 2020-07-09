@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
-import com.google.common.collect.Lists;
+import java.time.LocalDateTime;
+import java.lang.Double;
+
+import java.io.IOException;
 
 /**
  * Event functionalities
@@ -24,27 +27,34 @@ public class EventController {
   @Autowired
   private EventRepository eventRepository;
 
-  @GetMapping("/list-events")
-  public Iterable<EventTemp> getEvents() {
+  @Autowired
+  private OrganizationRepository organizationRepository;
+
+  @GetMapping("get-all-events")
+  public Iterable<Event> getAllEvents() {
     return this.eventRepository.findAll();
   }
 
-  @PostMapping("/new-event")
-  public void saveEvent() throws IOException {
-    this.eventRepository.save(new EventTemp("EVENT_HOLDER"));
-  }
+  @PostMapping("save-event")
+  public RedirectView saveEvent (
+    @RequestParam("organizationId") Long organizationId,
+    @RequestParam("eventTitle") String eventTitle,
+    @RequestParam("eventDateTime") String eventDateTime,
+    @RequestParam("eventDescription") String eventDescription,
+    @RequestParam("eventLatitude") String eventLatitude,
+    @RequestParam("eventLongitude") String eventLongitude
+    ) throws IOException {
+      
+      Organization organization = organizationRepository.findById(organizationId).orElse(null);
 
-  @PostMapping("/new-review")
-  public void addReview(
-      @RequestParam("text") String text,
-      @RequestParam("eventId") long eventId,
-      @RequestParam("name") String name) throws IOException {
- 
-  EventTemp event =this.eventRepository.findById(eventId);
-  LocalDateTime date = LocalDateTime.now();
+      Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
 
-  event.addReview(new Review(date, text, name));
-  this.eventRepository.save(event);
-  }
+      this.eventRepository.save(newEvent);
+      organization.addEvent(newEvent);
+      this.organizationRepository.save(organization);
+      return new RedirectView("event.html", true);
 
+    }
+  
+    
 }

@@ -16,7 +16,7 @@
  * Retrieves events from server
  */
 function getEvents() {
-  fetch('list-events').then(response => response.json()).then((events) => {
+  fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
     eventListElement.innerText = "Events";
@@ -33,7 +33,6 @@ function getEvents() {
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
-
   // Name 
   const nameElement = document.createElement('p');
   nameElement.innerText = event.name;
@@ -123,7 +122,7 @@ async function newReview(eventId, text) {
 
 /** TEMP */
 async function newEvent() {
-  await fetch('new-event', {method: 'POST'});
+  await fetch('save-event', {method: 'POST'});
 }
 
 /**
@@ -163,6 +162,8 @@ function getUser() {
         document.getElementById("individual-nav").style.display = "none";
         createProfile(data[0], true);
         sessionStorage.setItem("user-type", data[0].userType);
+        document.getElementById("individual-nav").style.display = "none";
+        document.getElementById("org-nav").style.display = "block";
       });
     } else if (userType == "individual") {
       fetch('get-individual').then(response => response.json()).then((data) => {
@@ -170,6 +171,8 @@ function getUser() {
         document.getElementById("individual-nav").style.display = "block";
         createProfile(data[0], false);
         sessionStorage.setItem("user-type", data[0].userType);
+        document.getElementById("individual-nav").style.display = "block";
+        document.getElementById("org-nav").style.display = "none";
       });  
     }
     displayMain(true);
@@ -325,7 +328,8 @@ function getIndividualEvents() {
     getUserType();
   }
   fetch('get-' + userType).then(response => response.json()).then((data) => {
-    data[0].savedEvents.forEach((event) => createSavedEventElement(event));
+    const eventDiv = document.getElementById("saved-events");
+    data[0].savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event)));
     displayMain(true);
   });
 }
@@ -337,7 +341,7 @@ function getIndividualOrganizations() {
     getUserType();
   }
   fetch('get-' + userType).then(response => response.json()).then((data) => {
-    getSavedOrgElements(data[0].savedOrganizations);
+    data[0].organizations.forEach((org) => createSavedOrgElement(org));
     displayMain(true);
   });
 }
@@ -385,8 +389,12 @@ function createSavedEventElement(event) {
   divElement.setAttribute("class", "item-container general-container");
  
   const h3ElementName = document.createElement('h3');
-  h3ElementName.innerText = event;
+  h3ElementName.innerText = event.eventTitle;
   divElement.appendChild(h3ElementName);
+
+  const pElementTime = document.createElement('p');
+  pElementTime.innerText = event.eventDateTime;
+  divElement.appendChild(pElementTime);
 
   // create delete event form
   const form = document.createElement("form");
@@ -398,7 +406,7 @@ function createSavedEventElement(event) {
   
   form.appendChild(button);
   divElement.appendChild(form);
-  document.getElementById("saved-events").appendChild(divElement);
+  return divElement;
 }
 
 /* Function to control form display using button */
@@ -418,5 +426,17 @@ function revealForm() {
 function closeForm() {
 	document.getElementById("user").style.display = "none";
 	document.getElementById("organization").style.display = "none";
+}
+
+function getOrganizationEvents() {
+  var userType = sessionStorage.getItem("user-type");
+  if (userType == null) {
+    getUserType();
+  }
+  fetch('get-' + userType).then(response => response.json()).then((data) => {
+    const eventDiv = document.getElementById("created-events");
+    data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event)));
+    displayMain(true);
+  });
 }
 
