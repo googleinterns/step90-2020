@@ -1,5 +1,6 @@
 package com.step902020.capstone;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
@@ -25,6 +26,7 @@ public class Organization {
   String image;
 
   @Reference
+  @JsonManagedReference
   List<Event> events;
   
   public Organization() {

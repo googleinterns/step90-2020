@@ -294,6 +294,7 @@ function closeForm() {
 	document.getElementById("organization").style.display = "none";
 }
 
+/* function to get all events hosted by the current organization */
 function getOrganizationEvents() {
   var userType = sessionStorage.getItem("user-type");
   if (userType == null) {

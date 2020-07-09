@@ -1,5 +1,6 @@
 package com.step902020.capstone;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
@@ -15,7 +16,7 @@ public class Event{
   Long datastoreID;
 
   @Reference
-  @JsonIgnore
+  @JsonBackReference
   Organization organization;
 
   @Field(name="eventTitle")
@@ -34,7 +35,7 @@ public class Event{
   double eventLongitude;
  
 
-    public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude) {
+  public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude) {
     
     this.organization = organization;
     this.eventTitle = eventTitle;
@@ -51,6 +52,7 @@ public class Event{
   public String getEventTitle() {
     return eventTitle;
   }
+
   public Organization getOrganization() {
     return organization;
   }
@@ -65,6 +67,34 @@ public class Event{
   }
   public double getEventLongitude() {
     return eventLongitude;
+  }
+
+  public void setDatastoreID(Long datastoreID) {
+    this.datastoreID = datastoreID;
+  }
+
+  public void setOrganization(Organization organization) {
+    this.organization = organization;
+  }
+
+  public void setEventTitle(String eventTitle) {
+    this.eventTitle = eventTitle;
+  }
+
+  public void setEventDateTime(String eventDateTime) {
+    this.eventDateTime = eventDateTime;
+  }
+
+  public void setEventDescription(String eventDescription) {
+    this.eventDescription = eventDescription;
+  }
+
+  public void setEventLatitude(double eventLatitude) {
+    this.eventLatitude = eventLatitude;
+  }
+
+  public void setEventLongitude(double eventLongitude) {
+    this.eventLongitude = eventLongitude;
   }
 
 }

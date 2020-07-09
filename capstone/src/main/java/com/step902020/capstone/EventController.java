@@ -48,17 +48,26 @@ public class EventController {
     @RequestParam("eventDateTime") String eventDateTime,
     @RequestParam("eventDescription") String eventDescription,
     @RequestParam("eventLatitude") String eventLatitude,
-    @RequestParam("eventLongitude") String eventLongitude
+    @RequestParam("eventLongitude") String eventLongitude,
+    @RequestParam("event-id") String eventId
     ) throws IOException {
-      
       Organization organization = organizationRepository.findById(organizationId).orElse(null);
-
-      Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
-
-      this.eventRepository.save(newEvent);
-      organization.addEvent(newEvent);
-      this.organizationRepository.save(organization);
-      return new RedirectView("event.html", true);
+      Event event = eventId.length() <= 0? null : this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
+      if (event != null) {
+        event.setEventDateTime(eventDateTime);
+        event.setEventDescription(eventDescription);
+        event.setEventLatitude(Double.parseDouble(eventLatitude));
+        event.setEventLongitude(Double.parseDouble(eventLongitude));
+        event.setEventTitle(eventTitle);
+        event.setOrganization(organization);
+        this.eventRepository.save(event);
+      } else {
+        Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
+        this.eventRepository.save(newEvent);
+        organization.addEvent(newEvent);
+        this.organizationRepository.save(organization);
+      }
+      return new RedirectView("manageevents.html", true);
 
     }
   

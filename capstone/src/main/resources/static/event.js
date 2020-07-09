@@ -31,6 +31,9 @@ async function newEvent() {
   await fetch('save-event', {method: 'POST'});
 }
 
+/* Function to prefill event information if editing event
+NOTE: organization id is hardcoded inside the html for now
+*/
 function loadEventInfo() {
   const event = window.location.hash.substring(1);
   if (event != "") {
@@ -40,7 +43,7 @@ function loadEventInfo() {
       document.getElementById("eventLatitude").value = data.eventLatitude;
       document.getElementById("eventLongitude").value = data.eventLongitude;
       document.getElementById("eventDescription").value = data.description;
-
+      document.getElementById("event-id").value = data.datastoreID;
     });
   }
 
