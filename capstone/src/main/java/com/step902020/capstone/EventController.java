@@ -35,6 +35,12 @@ public class EventController {
     return this.eventRepository.findAll();
   }
 
+  @GetMapping("get-event")
+  public Event getEvent(@RequestParam("event-id") String eventId) throws IOException {
+    Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
+    return event;
+  }
+
   @PostMapping("save-event")
   public RedirectView saveEvent (
     @RequestParam("organizationId") Long organizationId,

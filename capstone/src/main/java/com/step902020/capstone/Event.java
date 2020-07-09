@@ -1,5 +1,7 @@
 package com.step902020.capstone;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Reference;
@@ -13,7 +15,7 @@ public class Event{
   Long datastoreID;
 
   @Reference
-
+  @JsonIgnore
   Organization organization;
 
   @Field(name="eventTitle")
