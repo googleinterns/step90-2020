@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var reviewsExist = false;
 /**
  * Retrieves events from server
  */
@@ -25,7 +26,9 @@ function getEvents() {
       eventListElement.appendChild(createEventElement(event));
     })
     // Format time to *** time ago
-    timeago.render(document.querySelectorAll('.timeago')); 
+    if (reviewsExist){
+      timeago.render(dogitcument.querySelectorAll('.timeago'));
+    }
   });
 }
 
@@ -90,6 +93,7 @@ function createReviewContainerElement(reviews) {
   reviewsContainer.innerText = 'Reviews:'
 
   reviews.forEach((review) => {
+  reviewsExist = true;
     const reviewContainer = document.createElement('div');
     reviewContainer.className = 'review';
 
