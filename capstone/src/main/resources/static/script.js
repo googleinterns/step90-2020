@@ -16,7 +16,7 @@
  * Retrieves events from server
  */
 function getEvents() {
-  fetch('list-events').then(response => response.json()).then((events) => {
+  fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
     eventListElement.innerText = "Events";
@@ -33,7 +33,6 @@ function getEvents() {
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
-
   // Name 
   const nameElement = document.createElement('p');
   nameElement.innerText = event.name;
@@ -123,7 +122,7 @@ async function newReview(eventId, text) {
 
 /** TEMP */
 async function newEvent() {
-  await fetch('new-event', {method: 'POST'});
+  await fetch('save-event', {method: 'POST'});
 }
 
 /**
@@ -150,7 +149,7 @@ function createMap() {
 } 
 
 /* get the user information for the profile page */
-function getUser() {
+function getUser(fillForm) {
   var userType = sessionStorage.getItem("user-type");
 
   // if there is no userType stored in this session, that means this is a new user
@@ -159,11 +158,13 @@ function getUser() {
   } else {
     if (userType == "organization") {
       fetch('get-organization').then(response => response.json()).then((data) => {
-        createProfile(data[0], true);
+        createProfile(data[0], fillForm, true);
+        sessionStorage.setItem("user-type", data[0].userType);
       });
     } else if (userType == "individual") {
       fetch('get-individual').then(response => response.json()).then((data) => {
-        createProfile(data[0], false);
+        createProfile(data[0], fillForm, false);
+        sessionStorage.setItem("user-type", data[0].userType);
       });  
     }
     displayMain(true);
@@ -173,10 +174,8 @@ function getUser() {
 /* function to toggle between displaying user profile and displaying an error message */
 function displayMain(display) {
   if (display) {
-    document.getElementById("main").style.display = "block";
     document.getElementById("no-profile").style.display = "none";
   } else {
-    document.getElementById("main").style.display = "none";
     document.getElementById("no-profile").style.display = "block";
   }
 }
@@ -213,73 +212,62 @@ function setupAndStore(data) {
 }
 
 /* creates and populates the user profile */
-function createProfile(data, isOrganization) {
+function createProfile(data, fillForm, isOrganization) {
     const emailContainer = document.getElementById("email");
     const pElementEmail = document.createElement('p');
-    pElementEmail.innerText = "Email: " + data.email;
+    pElementEmail.innerText = data.email;
     emailContainer.appendChild(pElementEmail);
-
-    const userTypeContainer = document.getElementById("user-type");
-    const pElementUserType = document.createElement('p');
-    pElementUserType.innerText = "User Type: " + data.userType;
-    userTypeContainer.appendChild(pElementUserType);
 
     const universityContainer = document.getElementById("university");
     const pElementUniversity = document.createElement('p');
-    pElementUniversity.innerText = "University: " + data.university;
+    pElementUniversity.innerText = data.university;
     universityContainer.appendChild(pElementUniversity);
 
     // addresses the different fields for each user type
     if (isOrganization) {
-      createOrgProfile(data);
+      createOrgProfile(data, fillForm);
     } else {
-      createIndividualProfile(data);
+      createIndividualProfile(data, fillForm);
     }
 
 }
 
 /* populate individual specific fields of the profile */
-function createIndividualProfile(data) {
-  const firstNameContainer = document.getElementById("firstname");
-  const pElementFirstName = document.createElement('p');
-  pElementFirstName.innerText = "First Name: " + data.firstName;
-  firstNameContainer.appendChild(pElementFirstName);
-  
-  const lastNameContainer = document.getElementById("lastname");
-  const pElementLastName = document.createElement('p');
-  pElementLastName.innerText = "Last Name: " + data.lastName;
-  lastNameContainer.appendChild(pElementLastName);
+function createIndividualProfile(data, fillForm) {
+  const nameContainer = document.getElementById("name");
+  const pElementName = document.createElement('h1');
+  pElementName.innerText = data.firstName + " " + data.lastName;
+  nameContainer.appendChild(pElementName);
 
-  // prefill form
-  document.getElementById("ind-firstname").value = data.firstName;
-  document.getElementById("ind-lastname").value = data.lastName;
-  document.getElementById("university-form-display").innerText = data.university;
-  
   // hide fields that pertain to organizations only
-  document.getElementById("org-name").style.display = "none";
   document.getElementById("description").style.display = "none";
+
+  if (fillForm) {
+    // prefill form
+    document.getElementById("ind-firstname").value = data.firstName;
+    document.getElementById("ind-lastname").value = data.lastName;
+    document.getElementById("university-form-display").innerText = data.university;
+  }
 }
 
 /* populate organization specific fields of the profile */
-function createOrgProfile(data) {
-  const nameContainer = document.getElementById("org-name");
-  const pElementName = document.createElement('p');
-  pElementName.innerText = "Organization Name: " + data.name;
+function createOrgProfile(data, fillForm) {
+  const nameContainer = document.getElementById("name");
+  const pElementName = document.createElement('h1');
+  pElementName.innerText = data.name;
   nameContainer.appendChild(pElementName);
 
   const descriptionContainer = document.getElementById("description");
   const pElementDescription = document.createElement('p');
-  pElementDescription.innerText = "Description: " + data.description;
+  pElementDescription.innerText = "About Us: " + data.description;
   descriptionContainer.appendChild(pElementDescription);
 
-  // prefill form
-  document.getElementById("org-form-name").value = data.name;
-  document.getElementById("org-university-form-display").innerText = data.university;
-  document.getElementById("org-description").value = data.description;
-
-  // hide fields that pertain to individual users
-  document.getElementById("firstname").style.display = "none";
-  document.getElementById("lastname").style.display = "none";
+  if (fillForm) {
+    // prefill form
+    document.getElementById("org-form-name").value = data.name;
+    document.getElementById("org-university-form-display").innerText = data.university;
+    document.getElementById("org-description").value = data.description;
+  }
 }
 
 // function used to toggle after a change in the selected user type input
@@ -461,3 +449,21 @@ function searchOrg() {
     }) 
   });
 }
+
+/* function to generate divs for the calendar */
+function createCalendar() {
+  const calendar = document.getElementById("calendar");
+  for (var i = 0; i < 14; i++) {
+    var nextDay = new Date();
+    var today = new Date();
+    nextDay.setDate(today.getDate() + i);
+    const dateDiv = document.createElement('div');
+    dateDiv.setAttribute("class", "date general-container");
+    const dateDisplay = document.createElement('p');
+    dateDisplay.innerText = nextDay.toDateString();
+    dateDiv.appendChild(dateDisplay);
+    calendar.append(dateDiv);
+  }
+
+}
+
