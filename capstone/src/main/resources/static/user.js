@@ -276,6 +276,7 @@ function createSavedEventElement(event, saveAllowed) {
   return divElement;
 }
 
+/* creates an unsave button for event */
 function createUnsaveEventButton(event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
@@ -288,6 +289,7 @@ function createUnsaveEventButton(event) {
   return form;
 }
 
+/* creates an edit button for events */
 function createEditEventButton(event) {
   const form = document.createElement("form");
   form.setAttribute("action", "event.html#" + event.datastoreID);

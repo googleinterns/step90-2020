@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.util.*;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import java.time.LocalDateTime;
 import java.lang.Double;
@@ -43,15 +40,15 @@ public class EventController {
 
   @PostMapping("save-event")
   public RedirectView saveEvent (
-    @RequestParam("organizationId") Long organizationId,
-    @RequestParam("eventTitle") String eventTitle,
-    @RequestParam("eventDateTime") String eventDateTime,
-    @RequestParam("eventDescription") String eventDescription,
-    @RequestParam("eventLatitude") String eventLatitude,
-    @RequestParam("eventLongitude") String eventLongitude,
-    @RequestParam("event-id") String eventId
+           @RequestHeader("X-Goog-Authenticated-User-Email") String email,
+           @RequestParam("eventTitle") String eventTitle,
+           @RequestParam("eventDateTime") String eventDateTime,
+           @RequestParam("eventDescription") String eventDescription,
+           @RequestParam("eventLatitude") String eventLatitude,
+           @RequestParam("eventLongitude") String eventLongitude,
+           @RequestParam("event-id") String eventId
     ) throws IOException {
-      Organization organization = organizationRepository.findById(organizationId).orElse(null);
+      Organization organization = organizationRepository.findByEmail(email.substring(20)).get(0);
       Event event = eventId.length() <= 0? null : this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
       if (event != null) {
         event.setEventDateTime(eventDateTime);

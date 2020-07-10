@@ -31,9 +31,7 @@ async function newEvent() {
   await fetch('save-event', {method: 'POST'});
 }
 
-/* Function to prefill event information if editing event
-NOTE: organization id is hardcoded inside the html for now
-*/
+/* Function to prefill event information if editing event */
 function loadEventInfo() {
   const event = window.location.hash.substring(1);
   if (event != "") {
