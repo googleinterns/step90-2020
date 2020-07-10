@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
-<body onload="getUser(false);getIndividualOrganizations();">
+<body onload="getUser(false);createCalendar()">
     <nav class="nav-bar">
         <ul>
             <li class="home"><a href="index.html">College Activity Finder</a></li>
@@ -31,16 +31,43 @@
         <nav class="nav-bar-inverted">
             <ul>
                 <li><a href="profile.html">My Profile</a></li>
-                <li><a href="usercalendar.html">Calendar of Events</a></li>
+                <li class="active-highlighted"><a href="usercalendar.html">Calendar of Events</a></li>
                 <li><a href="savedevents.html">Saved Events</a></li>
-                <li class="active-highlighted"><a href="savedorganizations.html">Saved Organizations</a></li>
+                <li><a href="savedorganizations.html">Saved Organizations</a></li>
             </ul>
         </nav>
     </div>
-    <form action="add-saved-organization" method="POST">
-        <input type="text" name="organization-id"></input>
-        <button type="submit">Test add organization</button>
-    </form>
-    <div id="saved-orgs" class="right"></div>
+    <div class="calendar" id="calendar">
+        <div class="date general-container">
+            <p>Sunday</p>
+        </div>
+        <div class="date row">
+            <div class="event general-container col">
+                <p> event 1</p>
+            </div>
+            <div class="event general-container col">
+                <p> event 2</p>
+            </div>
+            <div class="event general-container col">
+                <p> event 3</p>
+            </div>
+            <div class="event general-container col">
+                <p> event 4</p>
+            </div>
+            <div class="event general-container col">
+                <p> event 5</p>
+            </div>
+            <div class="event general-container col">
+                <p> event 1</p>
+            </div>
+            <div class="event general-container col">
+                <p> event 2</p>
+            </div>
+            <div class="event general-container col">
+                <p> event 3</p>
+            </div>
+        </div>
+    </div>
+
   </body>
 </html>
