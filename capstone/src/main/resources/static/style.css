@@ -164,6 +164,12 @@ img {
   width: 100%;
 }
 
+div.row {
+  padding-left:3%;
+  padding-bottom: 0;
+  margin-bottom: 1em;
+}
+
 /* My Account Saved Events & Orgs */
 .item-container {
   border-radius: 10px;
