@@ -6,7 +6,8 @@ ul {
 }
  
 nav li {
-  float: left;
+  display: inline-block;
+  color: white;
 }
  
 li a {
@@ -38,16 +39,23 @@ div.row {
   margin-bottom: 1em;
 }
 
-.left {
-  float: left;
-  max-width: 15%;
+.center ul {
+  text-align: center;
+  list-style-type: none;
+  margin: auto;
 }
 
 .profile-container {
-  float: left;
-  margin-left: 2%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   width: 38%;
   height: 100%;
+}
+
+.profile {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 img {
@@ -62,8 +70,21 @@ img {
   padding: 15px;
 }
  
+.profile-head {
+  width: 60%;
+  display: block;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.profile-button {
+  float: center;
+}
+ 
 .profile {
-  border-radius: 20px;
+  border-radius: 200px;
   width: 100%;
   height: auto;
 }
@@ -95,8 +116,10 @@ input[type=submit]:hover {
   border-radius: 5px;
   padding: 3%;
   width: 40%;
-  float: right;
+  display: block;
   height: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .item-container {
@@ -109,12 +132,27 @@ input[type=submit]:hover {
   margin-right: auto;
 }
 
-#organization, #no-profile, #user {
+#organization, #no-profile, #user, #org-nav, #individual-nav {
   display: none;
 }
 
-#org-nav {
-  display: none;
+.calendar {
+  width: 83%;
+  margin: auto;
+}
+.date {
+  width: 100%;
+  margin: 2%;
+  padding: 2px;
+  display: block;
+}
+.event {
+  width:10%;
+  height:80px;
+  margin: 2%;
+  padding: 2%;
+  display: inline-block;
+
 }
 
 /* shared classes and styling */
@@ -127,6 +165,29 @@ body {
 .nav-bar {
   background-color: #ffffff;
   color: #073763ff;
+}
+
+.nav-bar-inverted {
+  background-color: #073763ff;
+  color: #ffffff;
+  border-style: solid;
+  border-color: #ffffff;
+  border-radius: 30px;
+  max-width: 70%;
+  margin: auto;
+  padding: auto;
+}
+
+.active-highlighted {
+  border-style: solid;
+  border-color: coral;
+  background-color: #073763ff;
+  color: #ffffff;
+
+}
+
+.nav-bar-inverted li a {
+  color: #ffffff;
 }
 
 .general-container {
@@ -185,7 +246,7 @@ li a:hover, .active a {
   margin: 0px;
 }
 
-.review-name {
+.review-details {
   text-align: left;
   margin: 0px;
 }
@@ -194,4 +255,5 @@ li a:hover, .active a {
   background-color: Transparent;
   border-color: white;
   border-style: solid;
+  color: white;
 }

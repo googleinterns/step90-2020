@@ -107,7 +107,7 @@ public class IndividualController {
       current.addOrganizations(organization);
     } 
     this.individualRepository.save(current);
-    return new RedirectView("savedorganizations.html", true);
+    return new RedirectView("organizationsearch.html", true);
   }
 
    /** delete the organization with the organization id from the current 

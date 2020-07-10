@@ -68,8 +68,17 @@ public class EventController {
         this.organizationRepository.save(organization);
       }
       return new RedirectView("manageevents.html", true);
+  }
 
-    }
-  
-    
+  @PostMapping("/new-review")
+  public void addReview(
+          @RequestParam("text") String text,
+          @RequestParam("eventId") Long eventId,
+          @RequestParam("name") String name) throws IOException {
+
+    Event event = this.eventRepository.findById(eventId).get();
+
+    event.addReview(new Review(text, name));
+    this.eventRepository.save(event);
+  }
 }
