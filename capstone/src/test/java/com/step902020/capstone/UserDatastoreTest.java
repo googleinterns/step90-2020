@@ -113,8 +113,6 @@ public class UserDatastoreTest {
     Set<Long> expectedSet = new HashSet<>();
     expectedSet.add(123L);
 
-    ResponseEntity<Individual[]> oddresult = authRestTemplate.getForEntity(getIndividualUrl, Individual[].class);
-    System.out.println(oddresult);
     Individual[] result = authRestTemplate.getForObject(getIndividualUrl, Individual[].class);
     assertEquals("Insert event error", expectedSet, result[0].getSavedEvents());
   }

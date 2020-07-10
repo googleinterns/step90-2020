@@ -24,7 +24,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .anyRequest().authenticated();
 
-    System.out.println("********************* IAP enabled? " + iapEnabled);
     if (iapEnabled) {
       http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
     } else {

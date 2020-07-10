@@ -11,9 +11,9 @@
 
   <!-- Try uncommenting this, running the application and looking
        at the Spring Security filter chain! -->
-  <logger name="org.springframework.security" level="trace">
+<!--  <logger name="org.springframework.security" level="trace">
     <appender-ref ref="STDOUT" />
-  </logger>
+  </logger>-->
 
   <root level="WARN">
     <appender-ref ref="STDOUT" />
