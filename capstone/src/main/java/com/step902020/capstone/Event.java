@@ -16,8 +16,6 @@ public class Event{
 
   Organization organization;
 
-  Long organizationID;
-
   @Field(name="eventTitle")
   String eventTitle;
 
@@ -38,10 +36,13 @@ public class Event{
 
   @Field(name="requiredFee")
   boolean requiredFee;
+  
+  @Reference
+  List<Review> reviews;
  
 
   public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, boolean foodAvaliable, boolean requiredFee) {
-    
+ 
     this.organization = organization;
     this.eventTitle = eventTitle;
     this.eventDateTime = eventDateTime;
@@ -50,6 +51,7 @@ public class Event{
     this.eventLongitude = eventLongitude;
     this.foodAvaliable = foodAvaliable;
     this.requiredFee = requiredFee;
+    this.reviews = new ArrayList();
   }
 
   public Long getDatastoreID() {
@@ -74,5 +76,15 @@ public class Event{
   public double getEventLongitude() {
     return eventLongitude;
   }
+  public List<Review> getReviews() {
+    return reviews;
+  }
 
+  /**
+   * Add new review to list
+   * @param review Review object
+   */
+  public void addReview(Review review) {
+    reviews.add(review);
+  }
 }

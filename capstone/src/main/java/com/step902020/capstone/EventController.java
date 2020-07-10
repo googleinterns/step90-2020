@@ -52,8 +52,17 @@ public class EventController {
 
       this.eventRepository.save(newEvent);
       return new RedirectView("event.html", true);
-
     }
-  
-    
+
+  @PostMapping("/new-review")
+  public void addReview(
+          @RequestParam("text") String text,
+          @RequestParam("eventId") Long eventId,
+          @RequestParam("name") String name) throws IOException {
+
+    Event event = this.eventRepository.findById(eventId).get();
+
+    event.addReview(new Review(text, name));
+    this.eventRepository.save(event);
+  }
 }
