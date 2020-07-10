@@ -4,15 +4,11 @@
   <head>
     <meta charset="UTF-8">
     <title> Create an Event </title>
-    <script src="script.js"> </script>
-<<<<<<< HEAD
-    <link rel="stylesheet" href="style.css">
-=======
+    <script src="event.js"> </script>
     <link rel="stylesheet" href="event.css">
->>>>>>> 8a46b6dc87f2cfb0ef1769c3dbb6ae4be12df86d
   </head>
   
-  <body>
+  <body onload="getEvents()">
 
     <div class="menu">
       <nav>
@@ -22,18 +18,15 @@
 
     <h1>Create an Event </h1>
 
-    <div class="event-form">
-      <form id="form" method="POST">
+    <div class="create-event-form">
+      <form id="event-form" action="save-event" method="POST">
         
-        <input type="hidden" id="organizationID" name="organizationID"> 
-        <br><br>
-
-        <label for="organizationName"> Organization Name: </label>
-        <input type="text" id="organizationName" name="organizationName">
+        <label for="organizationId"> OrganizationId: </label>
+        <input type="input" id="organizationId" name="organizationId">
         <br><br>
 
         <input type="hidden" id="university" name="university">
-        <br><br>
+
 
         <label for="eventTitle"> Event Title: </label>
         <input type="text" id="eventTitle" name="eventTitle">
@@ -44,35 +37,29 @@
         <br><br>
 
         <label for="eventLocation"> Event Location: </label> <br>
-        <input type="number" id="eventLat" name="eventLat" placeholder="Event Latitude"> <br>
-        <input type="number" id="eventLng" name="eventLng" placeholder="Event Longitude">
+        <input type="number" step="0.000001" id="eventLatitude" name="eventLatitude" placeholder="Event Latitude"> <br>
+        <input type="number" step="0.000001" id="eventLongitude" name="eventLongitude" placeholder="Event Longitude">
         <br><br>
 
         <label for="eventDescription"> Event Description: </label> <br>
         <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
         <br><br>
 
-        <label for="eventFilters"> Event Filters: </label>
+        <label> Event Filters: </label>
         <br>
-          <form>
 
-            <input type="checkbox" id="filter2" name="filter2" value="Food Avaliable">
-            <label for="filter2"> Food Avaliable </label>
-            <br>
+        <input type="checkbox" id="foodAvaliable" name="foodAvaliable">
+        <label for="foodAvaliable"> Food Avaliable </label>
+        <br>
 
-            <input type="checkbox" id="filter3" name="filter3" value="Required Fee">
-            <label for="filter3"> Required Fee </label>
-            <br>
+        <input type="checkbox" id="requiredFee" name="requiredFee">
+        <label for="requiredFee"> Required Fee </label>
+        <br><br>
 
-            <input type="checkbox" id="filter4" name="filter4" value="Visitors Allowed">
-            <label for="filter4"> Visitors Allowed </label>
-            <br>
-          </form>
-
-          <input type="submit" value="submit">
+        <input type="submit" form="event-form" value="submit">
 
       </form>
-      <div id="events-container"></div>
+      
     </div>
 
   </body>
