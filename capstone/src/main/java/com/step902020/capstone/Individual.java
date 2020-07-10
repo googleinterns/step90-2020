@@ -111,10 +111,18 @@ public class Individual {
     savedEvents.remove(event);
   }
 
+  /**
+   * add a new organization to the list
+   * @param organization organization to be added
+   */
   public void addSavedOrganizations(long organization) {
     savedOrganizations.add(organization);
   }
 
+  /**
+   * deletes an organization from the list
+   * @param organization organization to be deleted
+   */
   public void deleteSavedOrganizations(long organization) {
     savedOrganizations.remove(organization);
   }
