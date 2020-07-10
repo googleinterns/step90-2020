@@ -7,30 +7,30 @@
     <script src="event.js"> </script>
     <link rel="stylesheet" href="event.css">
   </head>
-  
+
   <body onload="getEvents()">
 
     <div class="menu">
       <nav>
         <a href="map.html"> Campus Map </a>
       </nav>
-    </div>    
+    </div>
 
     <h1>Create an Event </h1>
 
     <div class="event-form">
       <form id="form" action="save-event" method="POST">
-        
+
         <label for="organizationId"> OrganizationId: </label>
         <input type="input" id="organizationId" name="organizationId">
         <br><br>
 
         <input type="hidden" id="university" name="university">
 
-       <!-- 
+       <!--
         <label for="organizationName"> Organization Name: </label>
         <input type="text" id="organizationName" name="organizationName">
-        <br><br> 
+        <br><br>
         -->
 
         <label for="eventTitle"> Event Title: </label>
@@ -74,5 +74,5 @@
     </div>
 
   </body>
-  
+
 </html>

@@ -22,8 +22,8 @@ public class IndividualController {
 
   /** Find an individual's profile information by email */
   @GetMapping("get-individual")
-  public List<Individual> getIndividual(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
-    return this.individualRepository.findByEmail(email.substring(20));
+  public List<Individual> getIndividual(@RequestHeader("X-Goog-Authenticated-User-Email") Optional<String> email) {
+    return this.individualRepository.findByEmail("jennysheng@google.com");
   }
 
   /** Save user information into Datastore. If the email does not yet exist in 

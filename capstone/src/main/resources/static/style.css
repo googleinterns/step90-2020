@@ -154,6 +154,12 @@ input[type=submit]:hover {
   display: inline-block;
 
 }
+
+.public-org-name {
+  font-size: 1.17em;
+  font-weight: bolder;
+  color: #ffffff;
+}
 /* shared classes and styling */
 
 body {

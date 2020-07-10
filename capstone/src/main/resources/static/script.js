@@ -352,9 +352,11 @@ function createSavedOrgElement(data, deleteAllowed) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
  
-  const h3ElementName = document.createElement('h3');
-  h3ElementName.innerText = data.name;
-  divElement.appendChild(h3ElementName);
+  const aElementName = document.createElement('a');
+  aElementName.setAttribute("class", "public-org-name");
+  aElementName.innerText = data.name;
+  aElementName.setAttribute("href", "publicprofile.html#" + data.datastoreId);
+  divElement.appendChild(aElementName);
 
   const h5ElementEmail = document.createElement('h5');
   h5ElementEmail.innerText = data.email;
@@ -473,6 +475,13 @@ function createCalendar() {
     dateDiv.appendChild(dateDisplay);
     calendar.append(dateDiv);
   }
+}
 
+function getPublicProfile() {
+  var organizationId = window.location.hash.substring(1);
+  fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
+    createProfile(data, false, true);
+    // remember to add events once the other PR is merged
+  });
 }
 
