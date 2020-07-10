@@ -197,14 +197,12 @@ function getUserType() {
     the user entities */
     fetch('get-organization').then(response => response.json()).then((data) => {
       if (data.length != 0) {
-          sessionStorage.setItem("user-type", data[0].userType);
-          displayMain(true);
+          setupAndStore(data[0]);
       } else {
         fetch('get-individual').then(response => response.json()).then((newData) => {
           if (newData.length != 0) {
             // display information
-            sessionStorage.setItem("user-type", newData[0].userType);
-            displayMain(true);
+            setupAndStore(newData[0]);
           } else {
             // user does not exist at all, display message to them to submit a profile
             displayMain(false);
@@ -213,6 +211,13 @@ function getUserType() {
         });  
       }
   });
+}
+
+/** helper function to store information and set up display */
+function setupAndStore(data) {
+  sessionStorage.setItem("user-type", data.userType);
+  sessionStorage.setItem("university", data.university);
+  displayMain(true);
 }
 
 /* creates and populates the user profile */
@@ -336,12 +341,14 @@ function getIndividualOrganizations() {
 /* function to return the list of corresponding saved organizations */
 function getSavedOrgElements(email) {
   fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
-    data.forEach((org) => createSavedOrgElement(org));
+    const container = document.getElementById("saved-orgs");
+    container.innerHTML = '';
+    data.forEach((org) => container.appendChild(createSavedOrgElement(org, true)));
     });
 }
 
 /* Function to create the individual organization display divs*/
-function createSavedOrgElement(data) {
+function createSavedOrgElement(data, deleteAllowed) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
  
@@ -356,8 +363,16 @@ function createSavedOrgElement(data) {
   const h5ElementBio = document.createElement('h5');
   h5ElementBio.innerText = data.description;
   divElement.appendChild(h5ElementBio);
-
+  
   // create delete organization form
+  const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
+  divElement.appendChild(form);
+  
+  return divElement;
+}
+
+/* create delete buttons for the organization divs */
+function createDeleteButton(data) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
   form.setAttribute("action", "delete-saved-organization?&organization-id=" + data.datastoreId);
@@ -366,8 +381,20 @@ function createSavedOrgElement(data) {
   button.setAttribute("type", "submit");
   
   form.appendChild(button);
-  divElement.appendChild(form);
-  document.getElementById("saved-orgs").appendChild(divElement);
+  return form;
+}
+
+/* create save buttons for the organization divs */
+function createSaveButton(data) {
+  const form = document.createElement("form");
+  form.setAttribute("method", "POST");
+  form.setAttribute("action", "add-saved-organization?organization-id=" + data.datastoreId);
+  const button = document.createElement('button');
+  button.innerText = "Save this organization";
+  button.setAttribute("type", "submit");
+  
+  form.appendChild(button);
+  return form;
 }
 
 /* create the individual event containers for displaying events*/
@@ -382,7 +409,7 @@ function createSavedEventElement(event) {
   // create delete event form
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-event?event-name=" + event);
+  form.setAttribute("action", "delete-saved-event?event-id=" + event);
   const button = document.createElement('button');
   button.innerText = "Unsave this event";
   button.setAttribute("type", "submit");
@@ -397,10 +424,10 @@ function revealForm() {
 	var userType = sessionStorage.getItem("user-type");
 	if (userType == null) {
 		getUserType();
-    if (sessionStorage.getItem("user-type") == null) {
-        displayForm("individual", true);
-        return;
-    }
+        if (sessionStorage.getItem("user-type") == null) {
+            displayForm("individual", true);
+            return;
+        }
 	} 
     displayForm(userType, false);
 }
@@ -409,6 +436,27 @@ function revealForm() {
 function closeForm() {
 	document.getElementById("user").style.display = "none";
 	document.getElementById("organization").style.display = "none";
+}
+
+/* Function to support searching for organizations by name */
+function searchOrg() {
+  var university = sessionStorage.getItem("university");
+  if (university == null) {
+    getUserType();
+    if (sessionStorage.getItem("university") == null) {
+      return;
+    }
+  }
+  var name = document.getElementById("search-org").value;
+  fetch('search-organization?name=' + name + "&university=" + university).then(response => response.json()).then((organizations) => {
+
+    const orgListElement = document.getElementById('list-organizations');
+    orgListElement.innerHTML = '';
+    
+    organizations.forEach((org) => {
+      orgListElement.appendChild(createSavedOrgElement(org, false));
+    }) 
+  });
 }
 
 /* function to generate divs for the calendar */
