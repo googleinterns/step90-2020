@@ -34,6 +34,8 @@ function getEvents() {
 
 /**
  * Format event listing
+ * @param event Event from Get call
+ * @return Formatted event ready to add to document
  */
 function createEventElement(event) {
   const eventElement = document.createElement('li');
@@ -55,25 +57,15 @@ function createEventElement(event) {
 
 /**
  * Create event's review submission and format review listing
+ * @param event Event from Get call
+ * @return review section of event's listing
  */
 function createReviewElement(event) {
   const reviewElement = document.createElement('div');
 
-  //const reviewFormElement = document.createElement('form');
-  //reviewFormElement.setAttribute('action', newReview(event.datastoreID, reviewInputElement.value));
-
   const reviewInputElement = document.createElement('input');
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
   reviewInputElement.setAttribute('type', 'text');
-  //reviewInputElement.required = true;
-
-  //const reviewButtonElement = document.createElement("input"); //input element, Submit button
-  //reviewButtonElement.setAttribute('type','submit');
-  //reviewButtonElement.setAttribute('value','Submit');
-
-  //reviewFormElement.appendChild(reviewInputElement);
-  //reviewFormElement.appendChild(reviewButtonElement);
-  // Future: option to add image
 
   const reviewButtonElement = document.createElement('button');
   reviewButtonElement.innerText = 'Submit Review';
@@ -91,6 +83,8 @@ function createReviewElement(event) {
 
 /**
  * Format each review to add to review container
+ * @param reviews List of reviews within Event object
+ * @return List of event's reviews to add to document
  */
 function createReviewContainerElement(reviews) {
   const reviewsContainer = document.createElement('div');
@@ -123,7 +117,9 @@ function createReviewContainerElement(reviews) {
 }
 
 /**
- * Add review to event's list
+ * Create new review to add to event's list
+ * @paaram eventId Event's datastoreId
+ * @param text Text content of Review
  */
 async function newReview(eventId, text) {
   const params = new URLSearchParams();

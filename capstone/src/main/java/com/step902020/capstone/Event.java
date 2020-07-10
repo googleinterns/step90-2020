@@ -69,6 +69,11 @@ public class Event{
   public List<Review> getReviews() {
     return reviews;
   }
+
+  /**
+   * Add new review to list
+   * @param review Review object
+   */
   public void addReview(Review review) {
     reviews.add(review);
   }

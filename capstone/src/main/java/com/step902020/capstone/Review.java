@@ -23,6 +23,11 @@ public class Review {
   //@Field(name="image-filename")
   //String imageFilename;
 
+  /**
+   * Create a new Review
+   * @param text Text content of review
+   * @param name Review's author
+   */
   public Review(String text, String name) {
     this.timestamp = System.currentTimeMillis();
     this.text = text;
