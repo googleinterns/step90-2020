@@ -12,43 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var reviewsExist = false;
 /**
  * Retrieves events from server
  */
 function getEvents() {
-  fetch('list-events').then(response => response.json()).then((events) => {
+  fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
     eventListElement.innerText = "Events";
     
     events.forEach((event) => {
       eventListElement.appendChild(createEventElement(event));
-    }) 
+    })
+    // Format time to *** time ago
+    if (reviewsExist){
+      timeago.render(document.querySelectorAll('.timeago'));
+    }
   });
 }
 
 /**
  * Format event listing
+ * @param event Event from Get call
+ * @return Formatted event ready to add to document
  */
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
-
   // Name 
   const nameElement = document.createElement('p');
-  nameElement.innerText = event.name;
-
-  const idElement = document.createElement('p');
-  idElement.innerText = event.datastoreId;
-  idElement.style.display = 'none';
-
+  nameElement.innerText = event.eventTitle;
   /*
   Time
   Location
   Organization
   Description
   */
-  eventElement.appendChild(idElement);
   eventElement.appendChild(nameElement);
   eventElement.appendChild(createReviewElement(event));
   
@@ -56,74 +56,81 @@ function createEventElement(event) {
 }
 
 /**
- * Format review element and listing
+ * Create event's review submission and format review listing
+ * @param event Event from Get call
+ * @return review section of event's listing
  */
 function createReviewElement(event) {
-  const reviewElement = document.createElement('span');
+  const reviewElement = document.createElement('div');
 
-  // Submission
   const reviewInputElement = document.createElement('input');
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
   reviewInputElement.setAttribute('type', 'text');
 
-  // Future: option to add image
-
   const reviewButtonElement = document.createElement('button');
   reviewButtonElement.innerText = 'Submit Review';
   reviewButtonElement.addEventListener('click', () => {
-    newReview(event.datastoreId, reviewInputElement.value);
+    if (reviewInputElement.value != '') {
+      newReview(event.datastoreID, reviewInputElement.value);
+    }
   });
-
-  // Container
-  const reviewsContainer = document.createElement('div');
-  reviewsContainer.innerText = 'Reviews:'
-  const reviews = event.reviews;
-
-  reviews.forEach((review) => {
-      const reviewContainer = document.createElement('div');
-      reviewContainer.className = 'review';
-      const reviewTextElement = document.createElement('p');
-      reviewTextElement.innerText = review.text;
-      reviewTextElement.className = 'review-text'
-
-      const reviewUserElement = document.createElement('p');
-      reviewUserElement.innerText = review.name;
-      reviewUserElement.className = 'review-name';
-
-      reviewContainer.appendChild(reviewUserElement);
-      reviewContainer.appendChild(reviewTextElement);
-
-      reviewsContainer.appendChild(reviewContainer);
-    }) 
-
+ 
   reviewElement.appendChild(reviewInputElement);
   reviewElement.appendChild(reviewButtonElement);
-  reviewElement.appendChild(reviewsContainer);
-
+  reviewElement.appendChild(createReviewContainerElement(event.reviews));
   return reviewElement;
 }
 
 /**
- * Add review to event's list
+ * Format each review to add to review container
+ * @param reviews List of reviews within Event object
+ * @return List of event's reviews to add to document
+ */
+function createReviewContainerElement(reviews) {
+  const reviewsContainer = document.createElement('div');
+  reviewsContainer.innerText = 'Reviews:'
+
+  reviews.forEach((review) => {
+  reviewsExist = true;
+    const reviewContainer = document.createElement('div');
+    reviewContainer.className = 'review';
+
+    const reviewDetailsElement = document.createElement('div');
+    reviewDetailsElement.className = 'review-details';
+    reviewDetailsElement.innerText = review.name;
+
+    const reviewTimeElement = document.createElement('time');
+    reviewTimeElement.className = "timeago";
+    reviewTimeElement.setAttribute('datetime', review.timestamp);
+     
+    const reviewTextElement = document.createElement('p');
+    reviewTextElement.className = 'review-text';
+    reviewTextElement.innerText = review.text;
+
+    reviewDetailsElement.appendChild(document.createElement('br'));
+    reviewDetailsElement.appendChild(reviewTimeElement);
+    reviewContainer.appendChild(reviewDetailsElement);
+    reviewContainer.appendChild(reviewTextElement);
+    reviewsContainer.appendChild(reviewContainer);
+  })   
+  return reviewsContainer;
+}
+
+/**
+ * Create new review to add to event's list
+ * @paaram eventId Event's datastoreId
+ * @param text Text content of Review
  */
 async function newReview(eventId, text) {
-  var email = getEmail();
-  
-  const response = await fetch('get-individual?email=' + email);
-  const individual = await response.json();
-
   const params = new URLSearchParams();
   params.append('text', text);
   params.append('eventId', eventId);
-  params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
-  
+  //params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
+  //Quick fix until create a new way to attach user to review
+  params.append('name', 'quick-fix');
   await fetch('new-review', {method:'POST', body: params});
-  getEvents();
-}
 
-/** TEMP */
-async function newEvent() {
-  await fetch('new-event', {method: 'POST'});
+  getEvents();
 }
 
 /**
@@ -150,7 +157,7 @@ function createMap() {
 } 
 
 /* get the user information for the profile page */
-function getUser() {
+function getUser(fillForm) {
   var userType = sessionStorage.getItem("user-type");
 
   // if there is no userType stored in this session, that means this is a new user
@@ -159,12 +166,12 @@ function getUser() {
   } else {
     if (userType == "organization") {
       fetch('get-organization').then(response => response.json()).then((data) => {
-        createProfile(data[0], true);
+        createProfile(data[0], fillForm, true);
         sessionStorage.setItem("user-type", data[0].userType);
       });
     } else if (userType == "individual") {
       fetch('get-individual').then(response => response.json()).then((data) => {
-        createProfile(data[0], false);
+        createProfile(data[0], fillForm, false);
         sessionStorage.setItem("user-type", data[0].userType);
       });  
     }
@@ -172,13 +179,12 @@ function getUser() {
   }
 }
 
+
 /* function to toggle between displaying user profile and displaying an error message */
 function displayMain(display) {
   if (display) {
-    document.getElementById("main").style.display = "block";
     document.getElementById("no-profile").style.display = "none";
   } else {
-    document.getElementById("main").style.display = "none";
     document.getElementById("no-profile").style.display = "block";
   }
 }
@@ -191,14 +197,12 @@ function getUserType() {
     the user entities */
     fetch('get-organization').then(response => response.json()).then((data) => {
       if (data.length != 0) {
-          sessionStorage.setItem("user-type", data[0].userType);
-          displayMain(true);
+          setupAndStore(data[0]);
       } else {
         fetch('get-individual').then(response => response.json()).then((newData) => {
           if (newData.length != 0) {
             // display information
-            sessionStorage.setItem("user-type", newData[0].userType);
-            displayMain(true);
+            setupAndStore(newData[0]);
           } else {
             // user does not exist at all, display message to them to submit a profile
             displayMain(false);
@@ -209,74 +213,70 @@ function getUserType() {
   });
 }
 
+/** helper function to store information and set up display */
+function setupAndStore(data) {
+  sessionStorage.setItem("user-type", data.userType);
+  sessionStorage.setItem("university", data.university);
+  displayMain(true);
+}
+
 /* creates and populates the user profile */
-function createProfile(data, isOrganization) {
+function createProfile(data, fillForm, isOrganization) {
     const emailContainer = document.getElementById("email");
     const pElementEmail = document.createElement('p');
-    pElementEmail.innerText = "Email: " + data.email;
+    pElementEmail.innerText = data.email;
     emailContainer.appendChild(pElementEmail);
-
-    const userTypeContainer = document.getElementById("user-type");
-    const pElementUserType = document.createElement('p');
-    pElementUserType.innerText = "User Type: " + data.userType;
-    userTypeContainer.appendChild(pElementUserType);
 
     const universityContainer = document.getElementById("university");
     const pElementUniversity = document.createElement('p');
-    pElementUniversity.innerText = "University: " + data.university;
+    pElementUniversity.innerText = data.university;
     universityContainer.appendChild(pElementUniversity);
 
     // addresses the different fields for each user type
     if (isOrganization) {
-      createOrgProfile(data);
+      createOrgProfile(data, fillForm);
     } else {
-      createIndividualProfile(data);
+      createIndividualProfile(data, fillForm);
     }
 
 }
 
 /* populate individual specific fields of the profile */
-function createIndividualProfile(data) {
-  const firstNameContainer = document.getElementById("firstname");
-  const pElementFirstName = document.createElement('p');
-  pElementFirstName.innerText = "First Name: " + data.firstName;
-  firstNameContainer.appendChild(pElementFirstName);
-  
-  const lastNameContainer = document.getElementById("lastname");
-  const pElementLastName = document.createElement('p');
-  pElementLastName.innerText = "Last Name: " + data.lastName;
-  lastNameContainer.appendChild(pElementLastName);
+function createIndividualProfile(data, fillForm) {
+  const nameContainer = document.getElementById("name");
+  const pElementName = document.createElement('h1');
+  pElementName.innerText = data.firstName + " " + data.lastName;
+  nameContainer.appendChild(pElementName);
 
-  // prefill form
-  document.getElementById("ind-firstname").value = data.firstName;
-  document.getElementById("ind-lastname").value = data.lastName;
-  document.getElementById("university-form-display").innerText = data.university;
-  
   // hide fields that pertain to organizations only
-  document.getElementById("org-name").style.display = "none";
   document.getElementById("description").style.display = "none";
+
+  if (fillForm) {
+    // prefill form
+    document.getElementById("ind-firstname").value = data.firstName;
+    document.getElementById("ind-lastname").value = data.lastName;
+    document.getElementById("university-form-display").innerText = data.university;
+  }
 }
 
 /* populate organization specific fields of the profile */
-function createOrgProfile(data) {
-  const nameContainer = document.getElementById("org-name");
-  const pElementName = document.createElement('p');
-  pElementName.innerText = "Organization Name: " + data.name;
+function createOrgProfile(data, fillForm) {
+  const nameContainer = document.getElementById("name");
+  const pElementName = document.createElement('h1');
+  pElementName.innerText = data.name;
   nameContainer.appendChild(pElementName);
 
   const descriptionContainer = document.getElementById("description");
   const pElementDescription = document.createElement('p');
-  pElementDescription.innerText = "Description: " + data.description;
+  pElementDescription.innerText = "About Us: " + data.description;
   descriptionContainer.appendChild(pElementDescription);
 
-  // prefill form
-  document.getElementById("org-form-name").value = data.name;
-  document.getElementById("org-university-form-display").innerText = data.university;
-  document.getElementById("org-description").value = data.description;
-
-  // hide fields that pertain to individual users
-  document.getElementById("firstname").style.display = "none";
-  document.getElementById("lastname").style.display = "none";
+  if (fillForm) {
+    // prefill form
+    document.getElementById("org-form-name").value = data.name;
+    document.getElementById("org-university-form-display").innerText = data.university;
+    document.getElementById("org-description").value = data.description;
+  }
 }
 
 // function used to toggle after a change in the selected user type input
@@ -338,15 +338,17 @@ function getIndividualOrganizations() {
   });
 }
 
-/* function to return the list of correponding saved organizations */
+/* function to return the list of corresponding saved organizations */
 function getSavedOrgElements(email) {
   fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
-    data.forEach((org) => createSavedOrgElement(org));
+    const container = document.getElementById("saved-orgs");
+    container.innerHTML = '';
+    data.forEach((org) => container.appendChild(createSavedOrgElement(org, true)));
     });
 }
 
 /* Function to create the individual organization display divs*/
-function createSavedOrgElement(data) {
+function createSavedOrgElement(data, deleteAllowed) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
  
@@ -361,8 +363,16 @@ function createSavedOrgElement(data) {
   const h5ElementBio = document.createElement('h5');
   h5ElementBio.innerText = data.description;
   divElement.appendChild(h5ElementBio);
-
+  
   // create delete organization form
+  const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
+  divElement.appendChild(form);
+  
+  return divElement;
+}
+
+/* create delete buttons for the organization divs */
+function createDeleteButton(data) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
   form.setAttribute("action", "delete-saved-organization?&organization-id=" + data.datastoreId);
@@ -371,8 +381,20 @@ function createSavedOrgElement(data) {
   button.setAttribute("type", "submit");
   
   form.appendChild(button);
-  divElement.appendChild(form);
-  document.getElementById("saved-orgs").appendChild(divElement);
+  return form;
+}
+
+/* create save buttons for the organization divs */
+function createSaveButton(data) {
+  const form = document.createElement("form");
+  form.setAttribute("method", "POST");
+  form.setAttribute("action", "add-saved-organization?organization-id=" + data.datastoreId);
+  const button = document.createElement('button');
+  button.innerText = "Save this organization";
+  button.setAttribute("type", "submit");
+  
+  form.appendChild(button);
+  return form;
 }
 
 /* create the individual event containers for displaying events*/
@@ -387,7 +409,7 @@ function createSavedEventElement(event) {
   // create delete event form
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-event?event-name=" + event);
+  form.setAttribute("action", "delete-saved-event?event-id=" + event);
   const button = document.createElement('button');
   button.innerText = "Unsave this event";
   button.setAttribute("type", "submit");
@@ -402,10 +424,10 @@ function revealForm() {
 	var userType = sessionStorage.getItem("user-type");
 	if (userType == null) {
 		getUserType();
-    if (sessionStorage.getItem("user-type") == null) {
-        displayForm("individual", true);
-        return;
-    }
+        if (sessionStorage.getItem("user-type") == null) {
+            displayForm("individual", true);
+            return;
+        }
 	} 
     displayForm(userType, false);
 }
@@ -414,5 +436,43 @@ function revealForm() {
 function closeForm() {
 	document.getElementById("user").style.display = "none";
 	document.getElementById("organization").style.display = "none";
+}
+
+/* Function to support searching for organizations by name */
+function searchOrg() {
+  var university = sessionStorage.getItem("university");
+  if (university == null) {
+    getUserType();
+    if (sessionStorage.getItem("university") == null) {
+      return;
+    }
+  }
+  var name = document.getElementById("search-org").value;
+  fetch('search-organization?name=' + name + "&university=" + university).then(response => response.json()).then((organizations) => {
+
+    const orgListElement = document.getElementById('list-organizations');
+    orgListElement.innerHTML = '';
+    
+    organizations.forEach((org) => {
+      orgListElement.appendChild(createSavedOrgElement(org, false));
+    }) 
+  });
+}
+
+/* function to generate divs for the calendar */
+function createCalendar() {
+  const calendar = document.getElementById("calendar");
+  for (var i = 0; i < 14; i++) {
+    var nextDay = new Date();
+    var today = new Date();
+    nextDay.setDate(today.getDate() + i);
+    const dateDiv = document.createElement('div');
+    dateDiv.setAttribute("class", "date general-container");
+    const dateDisplay = document.createElement('p');
+    dateDisplay.innerText = nextDay.toDateString();
+    dateDiv.appendChild(dateDisplay);
+    calendar.append(dateDiv);
+  }
+
 }
 

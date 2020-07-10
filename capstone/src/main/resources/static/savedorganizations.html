@@ -6,34 +6,41 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
-<body onload="getIndividualOrganizations();">
+<body onload="getUser(false);getIndividualOrganizations();">
     <nav class="nav-bar">
         <ul>
-            <li class="home"><a href="index.html">College Activity Finder</a></li>
-            <li><a href="">Events</a></li>
-            <li><a href="">Organizations</a></li>
-            <li class="active"><a href="">My Account</a></li>
-            <li><a href="=">About Us</a></li>
+            <li class="home"><a href="">College Activity Finder</a></li>
+            <li><a href="index.html">Events</a></li>
+            <li><a href="organizationsearch.html">Organizations</a></li>
+            <li class="active"><a href="profile.html">My Account</a></li>
+            <li><a href="">About Us</a></li>
         </ul>
     </nav>
     <br/>
-    <div class="left nav-bar">
-        <ul>
-            <li><a href="profile.html">My Profile</a></li>
-            <li><a href="">Calendar of Events</a></li>
-            <li><a href="savedevents.html">Saved Events</a></li>
-            <li class="active"><a href="savedorganizations.html">Saved Organizations</a></li>
-        </ul>
-    </div>
-    <div class="row" id="no-profile">
-        <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
+    <div class="profile-head">
+        <div id="name"></div>
+        <div class="container">
+            <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
+        </div>
+        <div id="email"></div>
+        <div id="university"></div>
+        <div id="description"></div>
+        <div id="no-profile">
+            <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
+        </div>
+        <nav class="nav-bar-inverted">
+            <ul>
+                <li><a href="profile.html">My Profile</a></li>
+                <li><a href="usercalendar.html">Calendar of Events</a></li>
+                <li><a href="savedevents.html">Saved Events</a></li>
+                <li class="active-highlighted"><a href="savedorganizations.html">Saved Organizations</a></li>
+            </ul>
+        </nav>
     </div>
     <form action="add-saved-organization" method="POST">
         <input type="text" name="organization-id"></input>
         <button type="submit">Test add organization</button>
     </form>
-    <div id="main">
-        <div id="saved-orgs" class="right"></div>
-    </div>
+    <div id="saved-orgs" class="right"></div>
   </body>
 </html>

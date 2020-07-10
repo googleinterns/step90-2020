@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
-import com.google.common.collect.Lists;
+import java.time.LocalDateTime;
+import java.lang.Double;
+
+import java.io.IOException;
 
 /**
  * Event functionalities
@@ -23,28 +26,41 @@ public class EventController {
 
   @Autowired
   private EventRepository eventRepository;
+  @Autowired
+  private OrganizationRepository organizationRepository;
 
-  @GetMapping("/list-events")
-  public Iterable<EventTemp> getEvents() {
+  @GetMapping("get-all-events")
+  public Iterable<Event> getAllEvents() {
     return this.eventRepository.findAll();
   }
 
-  @PostMapping("/new-event")
-  public void saveEvent() throws IOException {
-    this.eventRepository.save(new EventTemp("EVENT_HOLDER"));
+  @PostMapping("save-event")
+  public RedirectView saveEvent (
+    @RequestParam("organizationId") Long organizationId,
+    @RequestParam("eventTitle") String eventTitle,
+    @RequestParam("eventDateTime") String eventDateTime,
+    @RequestParam("eventDescription") String eventDescription,
+    @RequestParam("eventLatitude") String eventLatitude,
+    @RequestParam("eventLongitude") String eventLongitude
+    ) throws IOException {
+      
+      Organization organization = organizationRepository.findById(organizationId).orElse(null);
+
+      Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
+
+      this.eventRepository.save(newEvent);
+      return new RedirectView("event.html", true);
   }
 
   @PostMapping("/new-review")
   public void addReview(
-      @RequestParam("text") String text,
-      @RequestParam("eventId") long eventId,
-      @RequestParam("name") String name) throws IOException {
- 
-  EventTemp event =this.eventRepository.findById(eventId);
-  LocalDateTime date = LocalDateTime.now();
+          @RequestParam("text") String text,
+          @RequestParam("eventId") Long eventId,
+          @RequestParam("name") String name) throws IOException {
 
-  event.addReview(new Review(date, text, name));
-  this.eventRepository.save(event);
+    Event event = this.eventRepository.findById(eventId).get();
+
+    event.addReview(new Review(text, name));
+    this.eventRepository.save(event);
   }
-
 }
