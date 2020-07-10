@@ -1,6 +1,7 @@
 
 package com.step902020.capstone;
 
+import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class OrganizationController {
   
   /** Find an organization's profile information by email */
   @GetMapping("get-organization")
-  public List<Organization> getOrganization(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
-    return this.organizationRepository.findByEmail(email.substring(20));
+  public List<Organization> getOrganization(CurrentUser currentUser) {
+    return this.organizationRepository.findByEmail(currentUser.getEmail());
   }
   
   /** Get the profile information of the list of saved organizations by id*/
@@ -47,13 +48,14 @@ public class OrganizationController {
   @PostMapping("save-organization")
   public RedirectView saveOrganization(
       @RequestParam("name") String name,
-      @RequestHeader("X-Goog-Authenticated-User-Email") String email, 
+      CurrentUser user,
       @RequestParam("user-type") String userType,
       @RequestParam("university") String university,
       @RequestParam("description") String description) throws IOException {
-    
+
+    String userEmail = user.getEmail();
     Organization current = null;
-    List<Organization> orgList = this.organizationRepository.findByEmail(email.substring(20));
+    List<Organization> orgList = this.organizationRepository.findByEmail(userEmail);
     
     // either edit the existing user or create a new one
     if (orgList.size() > 0) {
@@ -61,7 +63,7 @@ public class OrganizationController {
       current.setName(name);
       current.setDescription(description);
     } else {
-      current = new Organization(System.currentTimeMillis(), name, email.substring(20), university, userType, description, "");
+      current = new Organization(System.currentTimeMillis(), name, userEmail, university, userType, description, "");
     }
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);

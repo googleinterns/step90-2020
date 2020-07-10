@@ -1,24 +1,20 @@
 package com.step902020.capstone;
 
-import com.step902020.capstone.CapstoneApplication;
-import com.step902020.capstone.Individual;
-import com.step902020.capstone.IndividualRepository;
-import com.step902020.capstone.Organization;
-import com.step902020.capstone.OrganizationRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,23 +28,33 @@ import org.springframework.util.MultiValueMap;
     classes = CapstoneApplication.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserDatastoreTest {
-  @LocalServerPort private int port;
+
+  /* Properties for Test account from test/resources/application-local.properties */
+  @Value("${spring.security.user.name}")
+  private String currentUserEmail;
+
+  @Value("${spring.security.user.password}")
+  private String currentUserPassword;
+
   @Autowired private IndividualRepository individualRepository;
   @Autowired private OrganizationRepository organizationRepository;
   @Autowired private TestRestTemplate restTemplate;
+  private TestRestTemplate authRestTemplate;
+
   Individual expectedIndividual;
   Organization expectedOrganization;
 
   @Before
   public void setUp() {
     // append a random number to email to make a new user
+
     expectedIndividual =
         this.individualRepository.save(
             new Individual(
                 System.currentTimeMillis(),
                 "Jenny",
                 "Sheng",
-                "jennysheng@google.com" + new Random().nextInt(),
+                currentUserEmail,
                 "Princeton",
                 "individual",
                 ""));
@@ -57,70 +63,66 @@ public class UserDatastoreTest {
             new Organization(
                 System.currentTimeMillis(),
                 "new organization",
-                "newOrganization@google.com" + new Random().nextInt(),
+                currentUserEmail,
                 "Princeton",
                 "organization",
                 "hello world!",
                 ""));
 
-    this.restTemplate.withBasicAuth("student@uni.org", "test");
+    this.authRestTemplate = this.restTemplate
+        .withBasicAuth(currentUserEmail, currentUserPassword);
   }
 
   @After
   public void tearDown() {
     this.individualRepository.deleteByEmail(expectedIndividual.getEmail());
+    this.individualRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
   }
 
   @Test
   public void testGetIndividual() throws URISyntaxException {
     // getting the actual result
-    restTemplate = new TestRestTemplate();
-    String expectedEmail = expectedIndividual.getEmail();
-    final String baseUrl = "http://localhost:" + port + "/get-individual?email=" + expectedEmail;
-    URI uri = new URI(baseUrl);
-    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
-    Assert.assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
+    Individual[] result = authRestTemplate.getForObject("/get-individual", Individual[].class);
+    assertEquals("Wrong user returned", currentUserEmail, result[0].getEmail());
   }
 
   @Test
   public void testGetOrganization() throws URISyntaxException {
-    restTemplate = new TestRestTemplate();
     String expectedEmail = expectedOrganization.getEmail();
-    final String baseUrl = "http://localhost:" + port + "/get-organization?email=" + expectedEmail;
-    URI uri = new URI(baseUrl);
-    Organization[] result = restTemplate.getForObject(uri, Organization[].class);
-    Assert.assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
+    final String baseUrl = "/get-organization";
+    Organization[] result = authRestTemplate.getForObject(baseUrl, Organization[].class);
+    assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
   }
 
   @Test
   public void testAddEvent() throws URISyntaxException {
-    String url = "http://localhost:" + port + "/add-saved-event";
-    String expectedEmail = expectedIndividual.getEmail();
-    restTemplate = new TestRestTemplate();
+    String url = "/add-saved-event";
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-    map.add("email", expectedEmail);
-    map.add("event-name", "test");
-    HttpEntity<MultiValueMap<String, String>> request =
-        new HttpEntity<MultiValueMap<String, String>>(map, headers);
-    ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+    MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+    map.add("event-id", "123");
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
+    assertTrue(saveResponse.getHeaders().containsKey("Location"));
+    String redirectLocation = saveResponse.getHeaders().getFirst("Location");
+    assertTrue(redirectLocation.endsWith("savedevents.html"));
+
     // getting the actual result
-    final String baseUrl = "http://localhost:" + port + "/get-individual?email=" + expectedEmail;
-    URI uri = new URI(baseUrl);
-    Set<String> expectedSet = new HashSet<>();
-    expectedSet.add("test");
-    String result = restTemplate.getForObject(uri, String.class);
-    //Individual[] result = restTemplate.getForObject(uri, Individual[].class);
-    //Assert.assertEquals("Insert event error", expectedSet, result[0].getSavedEvents());
+    final String getIndividualUrl = "/get-individual";
+    Set<Long> expectedSet = new HashSet<>();
+    expectedSet.add(123L);
+
+    ResponseEntity<Individual[]> oddresult = authRestTemplate.getForEntity(getIndividualUrl, Individual[].class);
+    System.out.println(oddresult);
+    Individual[] result = authRestTemplate.getForObject(getIndividualUrl, Individual[].class);
+    assertEquals("Insert event error", expectedSet, result[0].getSavedEvents());
   }
 
   @Test
   public void testDeleteEvent() throws URISyntaxException {
-    String url = "http://localhost:" + port + "/delete-saved-event";
+    String url = "/delete-saved-event";
     String expectedEmail = expectedIndividual.getEmail();
-    restTemplate = new TestRestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
@@ -128,43 +130,41 @@ public class UserDatastoreTest {
     map.add("event-name", "hello 2");
     HttpEntity<MultiValueMap<String, String>> request =
         new HttpEntity<MultiValueMap<String, String>>(map, headers);
-    ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+    ResponseEntity<String> response = authRestTemplate.postForEntity(url, request, String.class);
     // getting the actual result
-    final String baseUrl = "http://localhost:" + port + "/get-individual?email=" + expectedEmail;
+    final String baseUrl = "/get-individual?email=" + expectedEmail;
     URI uri = new URI(baseUrl);
     Set<String> expectedSet = new HashSet<>();
-    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
-    Assert.assertEquals("Delete event error", expectedSet, result[0].getSavedEvents());
+    Individual[] result = authRestTemplate.getForObject(uri, Individual[].class);
+    assertEquals("Delete event error", expectedSet, result[0].getSavedEvents());
   }
 
   @Test
   public void testAddSavedOrganization() throws URISyntaxException {
-    String url = "http://localhost:" + port + "/add-saved-organization";
+    String url = "/add-saved-organization";
     String expectedEmail = expectedIndividual.getEmail();
-    restTemplate = new TestRestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
     map.add("email", expectedEmail);
-    map.add("organization-email", "org1@google.com");
+    map.add("organization-id", "234");
     HttpEntity<MultiValueMap<String, String>> request =
         new HttpEntity<MultiValueMap<String, String>>(map, headers);
-    ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+    ResponseEntity<String> response = authRestTemplate.postForEntity(url, request, String.class);
     // getting the actual result
-    final String baseUrl = "http://localhost:" + port + "/get-individual?email=" + expectedEmail;
+    final String baseUrl = "/get-individual?email=" + expectedEmail;
     URI uri = new URI(baseUrl);
-    Set<String> expectedSet = new HashSet<>();
-    expectedSet.add("org1@google.com");
-    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
-    Assert.assertEquals(
+    Set<Long> expectedSet = new HashSet<>();
+    expectedSet.add(234L);
+    Individual[] result = authRestTemplate.getForObject(uri, Individual[].class);
+    assertEquals(
         "Insert organization error", expectedSet, result[0].getSavedOrganizations());
   }
 
   @Test
   public void testDeleteSavedOrganization() throws URISyntaxException {
-    String url = "http://localhost:" + port + "/delete-saved-organization";
+    String url = "/delete-saved-organization";
     String expectedEmail = expectedIndividual.getEmail();
-    restTemplate = new TestRestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
@@ -172,13 +172,13 @@ public class UserDatastoreTest {
     map.add("organization-email", "org1@google.com");
     HttpEntity<MultiValueMap<String, String>> request =
         new HttpEntity<MultiValueMap<String, String>>(map, headers);
-    ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+    ResponseEntity<String> response = authRestTemplate.postForEntity(url, request, String.class);
     // getting the actual result
-    final String baseUrl = "http://localhost:" + port + "/get-individual?email=" + expectedEmail;
+    final String baseUrl = "/get-individual?email=" + expectedEmail;
     URI uri = new URI(baseUrl);
     Set<String> expectedSet = new HashSet<>();
-    Individual[] result = restTemplate.getForObject(uri, Individual[].class);
-    Assert.assertEquals(
+    Individual[] result = authRestTemplate.getForObject(uri, Individual[].class);
+    assertEquals(
         "Delete organization error", expectedSet, result[0].getSavedOrganizations());
   }
 }

@@ -92,10 +92,32 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
-          <deploy.projectId>elfel-spring</deploy.projectId>
+          <deploy.projectId>step90-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>local</id>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+              <arguments>
+                <argument>--spring.cloud.gcp.security.iap.enabled=false</argument>
+                <argument>--spring.security.user.name=student@uni.org</argument>
+                <argument>--spring.security.user.password=test</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

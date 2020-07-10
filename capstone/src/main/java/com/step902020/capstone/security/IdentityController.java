@@ -11,18 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IdentityController {
 
   @GetMapping("identity")
-  public String getIdentity() {
-    SecurityContext context = SecurityContextHolder.getContext();
-    Authentication authentication = context.getAuthentication();
-
-    String name;
-    if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
-      Jwt jwt = (Jwt) authentication.getPrincipal();
-      name = jwt.getSubject();
-    } else {
-      name = authentication.getName();
-    }
-
-    return name;
+  public String getIdentity(CurrentUser user) {
+    return user.getEmail();
   }
 }

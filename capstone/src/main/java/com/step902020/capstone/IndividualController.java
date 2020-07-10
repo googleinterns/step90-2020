@@ -1,6 +1,7 @@
 
 package com.step902020.capstone;
 
+import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,10 @@ public class IndividualController {
   @Autowired
   private IndividualRepository individualRepository;
 
-  /** Find an individual's profile information by email */
+  /** Find currently logged in individual. */
   @GetMapping("get-individual")
-  public List<Individual> getIndividual(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
-    return this.individualRepository.findByEmail(email.substring(20));
+  public List<Individual> getIndividual(CurrentUser user) {
+    return this.individualRepository.findByEmail(user.getEmail());
   }
 
   /** Save user information into Datastore. If the email does not yet exist in 
@@ -32,12 +33,13 @@ public class IndividualController {
   public RedirectView saveIndividual(
       @RequestParam("firstname") String firstname,
       @RequestParam("lastname") String lastname, 
-      @RequestHeader("X-Goog-Authenticated-User-Email") String email, 
+      CurrentUser user,
       @RequestParam("user-type") String userType,
       @RequestParam("university") String university) throws IOException {
 
+    String userEmail = user.getEmail();
     Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    List<Individual> userList = this.individualRepository.findByEmail(userEmail);
     
     // either edit the existing user or create a new one
     if (userList.size() > 0) {
@@ -46,7 +48,7 @@ public class IndividualController {
       current.setLastName(lastname);
     }
     else {
-        current = new Individual(System.currentTimeMillis(), firstname, lastname, email.substring(20), university, userType, "");
+        current = new Individual(System.currentTimeMillis(), firstname, lastname, userEmail, university, userType, "");
     }
     this.individualRepository.save(current);
     return new RedirectView("profile.html", true);
@@ -56,10 +58,10 @@ public class IndividualController {
   @PostMapping("add-saved-event")
   public RedirectView addSavedEvent(
       @RequestParam("event-id") String eventId,
-      @RequestHeader("X-Goog-Authenticated-User-Email") String email) throws IOException {
+      CurrentUser user) throws IOException {
 
     Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
     if (userList.size() > 0) {
       current = userList.get(0);
       current.addSavedEvents(Long.parseLong(eventId));
@@ -72,10 +74,10 @@ public class IndividualController {
   @PostMapping("delete-saved-event")
   public RedirectView deleteSavedEvent(
       @RequestParam("event-id") String eventId,
-      @RequestHeader("X-Goog-Authenticated-User-Email") String email) throws IOException {
+      CurrentUser user) throws IOException {
 
     Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
     if (userList.size() > 0) {
       current = userList.get(0);
       current.deleteSavedEvents(Long.parseLong(eventId));
@@ -88,11 +90,11 @@ public class IndividualController {
   individual's list of saved organizations */
   @PostMapping("add-saved-organization")
   public RedirectView addSavedOrganizations(
-      @RequestHeader("X-Goog-Authenticated-User-Email") String email,
+      CurrentUser user,
       @RequestParam("organization-id") String organizationId) throws IOException {
     
     Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
     if (userList.size() > 0) {
       current = userList.get(0);
       current.addSavedOrganizations(Long.parseLong(organizationId));
@@ -105,11 +107,11 @@ public class IndividualController {
   individual's list of saved organizations */
   @PostMapping("delete-saved-organization")
   public RedirectView deleteSavedOrganization(
-      @RequestHeader("X-Goog-Authenticated-User-Email") String email,
+      CurrentUser user,
       @RequestParam("organization-id") String organizationId) throws IOException {
     
     Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
     if (userList.size() > 0) {
       current = userList.get(0);
       current.deleteSavedOrganizations(Long.parseLong(organizationId));
