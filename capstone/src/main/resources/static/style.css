@@ -245,7 +245,7 @@ li a:hover, .active a {
   margin: 0px;
 }
 
-.review-name {
+.review-details {
   text-align: left;
   margin: 0px;
 }
@@ -254,4 +254,5 @@ li a:hover, .active a {
   background-color: Transparent;
   border-color: white;
   border-style: solid;
+  color: white;
 }

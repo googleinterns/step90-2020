@@ -3,15 +3,16 @@ package com.step902020.capstone;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
-import java.time.LocalDateTime;
 
 /**
  * 
  */
 @Entity(name = "review")
 public class Review {
+  @Id
+  Long datastoreId;
 
-  LocalDateTime date;
+  long timestamp;
 
   @Field(name="name")
   String name;
@@ -22,8 +23,13 @@ public class Review {
   //@Field(name="image-filename")
   //String imageFilename;
 
-  public Review(LocalDateTime date, String text, String name) {
-    this.date = date;
+  /**
+   * Create a new Review
+   * @param text Text content of review
+   * @param name Review's author
+   */
+  public Review(String text, String name) {
+    this.timestamp = System.currentTimeMillis();
     this.text = text;
     this.name = name;
   }
@@ -32,8 +38,8 @@ public class Review {
     return name;
   }
 
-  public LocalDateTime getDate() {
-    return date;
+  public long getTimestamp() {
+    return timestamp;
   }
 
   public String getText() {

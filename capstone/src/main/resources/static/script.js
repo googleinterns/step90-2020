@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var reviewsExist = false;
 /**
  * Retrieves events from server
  */
@@ -23,31 +24,31 @@ function getEvents() {
     
     events.forEach((event) => {
       eventListElement.appendChild(createEventElement(event));
-    }) 
+    })
+    // Format time to *** time ago
+    if (reviewsExist){
+      timeago.render(document.querySelectorAll('.timeago'));
+    }
   });
 }
 
 /**
  * Format event listing
+ * @param event Event from Get call
+ * @return Formatted event ready to add to document
  */
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
   // Name 
   const nameElement = document.createElement('p');
-  nameElement.innerText = event.name;
-
-  const idElement = document.createElement('p');
-  idElement.innerText = event.datastoreId;
-  idElement.style.display = 'none';
-
+  nameElement.innerText = event.eventTitle;
   /*
   Time
   Location
   Organization
   Description
   */
-  eventElement.appendChild(idElement);
   eventElement.appendChild(nameElement);
   eventElement.appendChild(createReviewElement(event));
   
@@ -55,74 +56,81 @@ function createEventElement(event) {
 }
 
 /**
- * Format review element and listing
+ * Create event's review submission and format review listing
+ * @param event Event from Get call
+ * @return review section of event's listing
  */
 function createReviewElement(event) {
-  const reviewElement = document.createElement('span');
+  const reviewElement = document.createElement('div');
 
-  // Submission
   const reviewInputElement = document.createElement('input');
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
   reviewInputElement.setAttribute('type', 'text');
 
-  // Future: option to add image
-
   const reviewButtonElement = document.createElement('button');
   reviewButtonElement.innerText = 'Submit Review';
   reviewButtonElement.addEventListener('click', () => {
-    newReview(event.datastoreId, reviewInputElement.value);
+    if (reviewInputElement.value != '') {
+      newReview(event.datastoreID, reviewInputElement.value);
+    }
   });
-
-  // Container
-  const reviewsContainer = document.createElement('div');
-  reviewsContainer.innerText = 'Reviews:'
-  const reviews = event.reviews;
-
-  reviews.forEach((review) => {
-      const reviewContainer = document.createElement('div');
-      reviewContainer.className = 'review';
-      const reviewTextElement = document.createElement('p');
-      reviewTextElement.innerText = review.text;
-      reviewTextElement.className = 'review-text'
-
-      const reviewUserElement = document.createElement('p');
-      reviewUserElement.innerText = review.name;
-      reviewUserElement.className = 'review-name';
-
-      reviewContainer.appendChild(reviewUserElement);
-      reviewContainer.appendChild(reviewTextElement);
-
-      reviewsContainer.appendChild(reviewContainer);
-    }) 
-
+ 
   reviewElement.appendChild(reviewInputElement);
   reviewElement.appendChild(reviewButtonElement);
-  reviewElement.appendChild(reviewsContainer);
-
+  reviewElement.appendChild(createReviewContainerElement(event.reviews));
   return reviewElement;
 }
 
 /**
- * Add review to event's list
+ * Format each review to add to review container
+ * @param reviews List of reviews within Event object
+ * @return List of event's reviews to add to document
+ */
+function createReviewContainerElement(reviews) {
+  const reviewsContainer = document.createElement('div');
+  reviewsContainer.innerText = 'Reviews:'
+
+  reviews.forEach((review) => {
+  reviewsExist = true;
+    const reviewContainer = document.createElement('div');
+    reviewContainer.className = 'review';
+
+    const reviewDetailsElement = document.createElement('div');
+    reviewDetailsElement.className = 'review-details';
+    reviewDetailsElement.innerText = review.name;
+
+    const reviewTimeElement = document.createElement('time');
+    reviewTimeElement.className = "timeago";
+    reviewTimeElement.setAttribute('datetime', review.timestamp);
+     
+    const reviewTextElement = document.createElement('p');
+    reviewTextElement.className = 'review-text';
+    reviewTextElement.innerText = review.text;
+
+    reviewDetailsElement.appendChild(document.createElement('br'));
+    reviewDetailsElement.appendChild(reviewTimeElement);
+    reviewContainer.appendChild(reviewDetailsElement);
+    reviewContainer.appendChild(reviewTextElement);
+    reviewsContainer.appendChild(reviewContainer);
+  })   
+  return reviewsContainer;
+}
+
+/**
+ * Create new review to add to event's list
+ * @paaram eventId Event's datastoreId
+ * @param text Text content of Review
  */
 async function newReview(eventId, text) {
-  var email = getEmail();
-  
-  const response = await fetch('get-individual?email=' + email);
-  const individual = await response.json();
-
   const params = new URLSearchParams();
   params.append('text', text);
   params.append('eventId', eventId);
-  params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
-  
+  //params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
+  //Quick fix until create a new way to attach user to review
+  params.append('name', 'quick-fix');
   await fetch('new-review', {method:'POST', body: params});
-  getEvents();
-}
 
-/** TEMP */
-async function newEvent() {
-  await fetch('save-event', {method: 'POST'});
+  getEvents();
 }
 
 /**
@@ -170,6 +178,7 @@ function getUser(fillForm) {
     displayMain(true);
   }
 }
+
 
 /* function to toggle between displaying user profile and displaying an error message */
 function displayMain(display) {
@@ -324,7 +333,7 @@ function getIndividualOrganizations() {
   });
 }
 
-/* function to return the list of correponding saved organizations */
+/* function to return the list of corresponding saved organizations */
 function getSavedOrgElements(email) {
   fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
     data.forEach((org) => createSavedOrgElement(org));
