@@ -20,8 +20,7 @@ function getEvents() {
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
-    eventListElement.innerText = "Events";
-    
+
     events.forEach((event) => {
       eventListElement.appendChild(createEventElement(event));
     })
@@ -40,16 +39,27 @@ function getEvents() {
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
+
   // Name 
-  const nameElement = document.createElement('p');
-  nameElement.innerText = event.eventTitle;
-  /*
-  Time
-  Location
-  Organization
-  Description
-  */
-  eventElement.appendChild(nameElement);
+  const eventNameElement = document.createElement('p');
+  eventNameElement.innerText = event.eventTitle;
+
+  // Time
+  const eventTimeElement = document.createElement('p');
+  eventTimeElement.innerText = event.eventDateTime;
+
+  // Location Using latitude as a filler until we finalize the location portion
+   const eventLocationElement = document.createElement('p');
+   eventLocationElement.innerText = event.eventLatitude;
+
+  // Organization
+  //const eventOrgElement = document.createElement('p');
+  //eventOrgElement.innerText = event.organization.name;
+
+  eventElement.appendChild(eventNameElement);
+  eventElement.appendChild(eventTimeElement);
+  eventElement.appendChild(eventLocationElement);
+  //eventElement.appendChild(eventOrgElement);
   eventElement.appendChild(createReviewElement(event));
   
   return eventElement;
@@ -62,6 +72,7 @@ function createEventElement(event) {
  */
 function createReviewElement(event) {
   const reviewElement = document.createElement('div');
+  reviewElement.className = 'reviews';
 
   const reviewInputElement = document.createElement('input');
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
@@ -250,6 +261,7 @@ function createIndividualProfile(data, fillForm) {
     // prefill form
     document.getElementById("ind-firstname").value = data.firstName;
     document.getElementById("ind-lastname").value = data.lastName;
+    document.getElementById("university-form-display").display = "block";
     document.getElementById("university-form-display").innerText = data.university;
   }
 }
@@ -425,6 +437,31 @@ function createCalendar() {
     dateDiv.appendChild(dateDisplay);
     calendar.append(dateDiv);
   }
+}
+/*
+ * If element is selected, border will change from white to green
+ * @param element id
+ */
+function toggleBorderSelection(elementId) {
+  var element = document.getElementById(elementId);
+  if (element.nodeName == 'BUTTON') {
+    element.classList.toggle('selected');
+  } else if (element.nodeName == 'SELECT') {
+    if (element.value != '') {
+      element.classList.add('selected');
+    } else {
+      element.classList.remove('selected');
+    }
+  }
+}
 
+/*
+ * Reviews are temp on event listing so remove to see finalized event search page
+ */
+function removeReviews() {
+  const reviews = document.getElementsByClassName('reviews');
+  while(reviews.length > 0){
+    reviews[0].parentNode.removeChild(reviews[0]);
+  }
 }
 

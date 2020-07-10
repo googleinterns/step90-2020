@@ -4,6 +4,7 @@
     <meta>
     <title>My Account</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="script.js"></script>
 </head>
 <body onload="getUser(true);">
@@ -55,7 +56,7 @@
             <label>Last Name:</label>
             <input type="text" name="lastname" id="ind-lastname" placeholder="Your last name.."></input>
             <label>University:</label>
-            <p id="university-form-display"></p>
+            <p id="university-form-display" style="display:none"></p>
             <input type="text" name="university" id="ind-uni" placeholder="Your university.."></input>
             <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
         </form>
