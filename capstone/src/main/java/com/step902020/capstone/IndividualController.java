@@ -20,10 +20,13 @@ public class IndividualController {
   @Autowired
   private IndividualRepository individualRepository;
 
+  @Autowired
+  private EventRepository eventRepository;
+
   /** Find an individual's profile information by email */
   @GetMapping("get-individual")
-  public List<Individual> getIndividual(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
-    return this.individualRepository.findByEmail(email.substring(20));
+  public List<Individual> getIndividual(@RequestHeader("X-Goog-Authenticated-User-Email") Optional<String> email) {
+    return this.individualRepository.findByEmail("jennysheng@google.com");
   }
 
   /** Save user information into Datastore. If the email does not yet exist in 
@@ -116,5 +119,16 @@ public class IndividualController {
     } 
     this.individualRepository.save(current);
     return new RedirectView("savedorganizations.html", true);
+  }
+
+  @GetMapping("get-calendar-events")
+  public Iterable<Event> getCalendarEvents() throws IOException {
+    /* full implementation blocked by the previous PR (because I changed some properties into references )
+     and those changes are not in this branch */
+    // get saved events
+    // get a list of organizations
+    // for each of the organizations get their list of saved events
+
+    return this.eventRepository.findAll();
   }
 }

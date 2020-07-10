@@ -462,17 +462,46 @@ function searchOrg() {
 /* function to generate divs for the calendar */
 function createCalendar() {
   const calendar = document.getElementById("calendar");
-  for (var i = 0; i < 14; i++) {
+
+  var today = new Date();
+  var endDate = new Date();
+  endDate.setDate(today.getDate() + 8);
+  for (var i = 0; i < 7; i++) {
     var nextDay = new Date();
-    var today = new Date();
     nextDay.setDate(today.getDate() + i);
     const dateDiv = document.createElement('div');
     dateDiv.setAttribute("class", "date general-container");
     const dateDisplay = document.createElement('p');
     dateDisplay.innerText = nextDay.toDateString();
     dateDiv.appendChild(dateDisplay);
+    const eventDiv = document.createElement('div');
+    eventDiv.setAttribute("class", "date row");
+    eventDiv.setAttribute("id", "date" + i);
     calendar.append(dateDiv);
+    calendar.append(eventDiv);
   }
+  fetch('get-calendar-events').then(response => response.json()).then((data) => {
+    data.forEach((event) => {
+      var eventDate = new Date(event.eventDateTime);
+      if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
+        var diff = eventDate.getDate() - today.getDate();
+        const eventDisplay = createCalendarEventElement(event, eventDate);
+        const generalDateDiv = document.getElementById("date" + diff);
+        generalDateDiv.appendChild(eventDisplay);
+      }
+    });
+  });
+}
 
+function createCalendarEventElement(event, eventTime) {
+  const eventDisplay = document.createElement("div");
+  eventDisplay.setAttribute("class", "event general-container col");
+  const pElementTitle = document.createElement('p');
+  pElementTitle.innerText = event.eventTitle;
+  eventDisplay.appendChild(pElementTitle);
+  const pElementTime = document.createElement('p');
+  pElementTime.innerText = eventTime.toDateString();
+  eventDisplay.appendChild(pElementTime);
+  return eventDisplay;
 }
 

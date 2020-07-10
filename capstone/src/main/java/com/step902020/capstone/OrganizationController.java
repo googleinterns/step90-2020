@@ -23,8 +23,8 @@ public class OrganizationController {
   
   /** Find an organization's profile information by email */
   @GetMapping("get-organization")
-  public List<Organization> getOrganization(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
-    return this.organizationRepository.findByEmail(email.substring(20));
+  public List<Organization> getOrganization(@RequestHeader("X-Goog-Authenticated-User-Email") Optional<String> email) {
+    return this.organizationRepository.findByEmail("jennysheng@google.com");
   }
   
   /** Get the profile information of the list of saved organizations by id*/
