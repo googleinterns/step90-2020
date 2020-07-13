@@ -24,7 +24,8 @@ public class OrganizationController {
   /** Find an organization's profile information by email */
   @GetMapping("get-organization")
   public List<Organization> getOrganization(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
-    return this.organizationRepository.findByEmail(email.substring(20));
+    List<Organization> temp = this.organizationRepository.findByEmail(email.substring(20));
+    return temp;
   }
   
   /** Get the profile information of the list of saved organizations by id*/
@@ -39,6 +40,12 @@ public class OrganizationController {
             result.add(org.get());
         }
     }
+    Collections.sort(result, new Comparator<Organization>() {
+      @Override
+      public int compare(Organization a, Organization b) {
+        return a.getName().compareTo(b.getName());
+      }
+    });
     return result;
   }
   
@@ -65,5 +72,17 @@ public class OrganizationController {
     }
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
+  }
+
+  @GetMapping("search-organization")
+  public List<Organization> searchOrganization(
+      @RequestParam("name") String name, 
+      @RequestParam("university") String university) throws IOException {
+    
+    if (name.equals("")) {
+        return this.organizationRepository.findByUniversity(university);
+    } else {
+        return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", university);
+    } 
   }
 }

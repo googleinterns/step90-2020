@@ -31,3 +31,19 @@ async function newEvent() {
   await fetch('save-event', {method: 'POST'});
 }
 
+/* Function to prefill event information if editing event */
+function loadEventInfo() {
+  const event = window.location.hash.substring(1);
+  if (event != "") {
+    fetch('get-event?event-id=' + event).then(response => response.json()).then((data) => {
+      document.getElementById("eventTitle").value = data.eventTitle;
+      document.getElementById("eventDateTime").value = data.eventDateTime;
+      document.getElementById("eventLatitude").value = data.eventLatitude;
+      document.getElementById("eventLongitude").value = data.eventLongitude;
+      document.getElementById("eventDescription").value = data.description;
+      document.getElementById("event-id").value = data.datastoreID;
+    });
+  }
+
+}
+

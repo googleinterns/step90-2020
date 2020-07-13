@@ -146,7 +146,7 @@ img {
   width: 60%;
 }
 
-#organization, #no-profile, #user {
+#organization, #no-profile, #user, #org-nav, #individual-nav {
   display: none;
 }
 
