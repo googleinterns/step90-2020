@@ -109,10 +109,18 @@ public class Individual {
     savedEvents.removeIf(e -> event.getDatastoreID().equals(e.getDatastoreID()));
   }
 
+  /**
+   * add a new organization to the list
+   * @param organization organization to be added
+   */
   public void addOrganizations(Organization organization) {
     organizations.add(organization);
   }
 
+  /**
+   * deletes an organization from the list
+   * @param organization organization to be deleted
+   */
   public void deleteOrganizations(Organization organization) {
     organizations.removeIf(o -> organization.getDatastoreId().equals(o.getDatastoreId()));
   }

@@ -167,6 +167,7 @@ function createMap() {
       document.getElementById('map'),
       {center: nycLatLng, zoom: 11});
 }
+
 /*
  * If element is selected, border will change from white to green
  * @param element id

@@ -361,15 +361,81 @@ function searchOrg() {
 /* function to generate divs for the calendar */
 function createCalendar() {
   const calendar = document.getElementById("calendar");
-  for (var i = 0; i < 14; i++) {
+
+  var today = new Date();
+  var endDate = new Date();
+  endDate.setDate(today.getDate() + 8);
+  for (var i = 0; i < 7; i++) {
     var nextDay = new Date();
-    var today = new Date();
     nextDay.setDate(today.getDate() + i);
     const dateDiv = document.createElement('div');
     dateDiv.setAttribute("class", "date general-container");
     const dateDisplay = document.createElement('p');
     dateDisplay.innerText = nextDay.toDateString();
     dateDiv.appendChild(dateDisplay);
+    const eventDiv = document.createElement('div');
+    eventDiv.setAttribute("class", "date row");
+    eventDiv.setAttribute("id", "date" + i);
     calendar.append(dateDiv);
+    calendar.append(eventDiv);
   }
+  fetch('get-calendar-events').then(response => response.json()).then((data) => {
+    data.forEach((event) => {
+      var eventDate = new Date(event.eventDateTime);
+      if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
+        var diff = eventDate.getDate() - today.getDate();
+        const eventDisplay = createCalendarEventElement(event, eventDate);
+        const generalDateDiv = document.getElementById("date" + diff);
+        generalDateDiv.appendChild(eventDisplay);
+      }
+    });
+  });
 }
+
+function createCalendarEventElement(event, eventTime) {
+  const eventDisplay = document.createElement("div");
+  eventDisplay.setAttribute("class", "event general-container col");
+  const pElementTitle = document.createElement('p');
+  pElementTitle.innerText = event.eventTitle;
+  eventDisplay.appendChild(pElementTitle);
+  const pElementTime = document.createElement('p');
+  pElementTime.innerText = eventTime.toDateString();
+  eventDisplay.appendChild(pElementTime);
+  return eventDisplay;
+}
+
+/* Function to create the individual organization display divs*/
+function createSavedOrgElement(data, deleteAllowed) {
+ const divElement = document.createElement('div');
+ divElement.setAttribute("class", "item-container general-container");
+
+ const aElementName = document.createElement('a');
+ aElementName.setAttribute("class", "public-org-name");
+ aElementName.innerText = data.name;
+ aElementName.setAttribute("href", "publicprofile.html#" + data.datastoreId);
+ divElement.appendChild(aElementName);
+
+ const h5ElementEmail = document.createElement('h5');
+ h5ElementEmail.innerText = data.email;
+ divElement.appendChild(h5ElementEmail);
+
+ const h5ElementBio = document.createElement('h5');
+ h5ElementBio.innerText = data.description;
+ divElement.appendChild(h5ElementBio);
+
+ // create delete organization form
+ const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
+ divElement.appendChild(form);
+
+ return divElement;
+}
+
+
+function getPublicProfile() {
+ var organizationId = window.location.hash.substring(1);
+ fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
+   createProfile(data, false, true);
+   // remember to add events once the other PR is merged
+ });
+}
+
