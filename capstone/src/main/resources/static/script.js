@@ -20,6 +20,7 @@ function getEvents() {
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
+    eventListElement.innerText = ""; // Clear elements in div
 
     events.forEach((event) => {
       eventListElement.appendChild(createEventElement(event));

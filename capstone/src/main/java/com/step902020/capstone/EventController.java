@@ -78,5 +78,4 @@ public class EventController {
     event.addReview(new Review(text, name));
     this.eventRepository.save(event);
   }
-
 }
