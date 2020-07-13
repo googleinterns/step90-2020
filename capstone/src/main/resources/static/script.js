@@ -47,7 +47,7 @@ function createEventElement(event) {
   // Time
   var date = new Date(event.eventDateTime);
   const eventTimeElement = document.createElement('p');
-  eventTimeElement.innerText = date.toString().substring(0, 21);
+  eventTimeElement.innerText = date.toString().substring(0, 21); // Exclude GMT time zone offset
 
   // Location Using latitude as a filler until we finalize the location portion
    const eventLocationElement = document.createElement('p');
