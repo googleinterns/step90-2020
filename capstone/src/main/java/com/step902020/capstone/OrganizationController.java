@@ -21,36 +21,27 @@ public class OrganizationController {
   @Autowired
   private OrganizationRepository organizationRepository;
   
-  /** Find an organization's profile information by email */
+  /**
+   * Find an organization's profile information by email
+   * @param email get the user email from IAP headers
+   * @return list of organizations with the same email as param
+   */
   @GetMapping("get-organization")
   public List<Organization> getOrganization(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
-    List<Organization> temp = this.organizationRepository.findByEmail(email.substring(20));
-    return temp;
+    return this.organizationRepository.findByEmail(email.substring(20));
   }
   
-  /** Get the profile information of the list of saved organizations by id*/
-  @GetMapping("get-saved-organizations")
-  public List<Organization> getSavedOrganizations(@RequestParam("emails") List<String> organizationIds) {
-    List<Organization> result = new ArrayList<Organization>();
-
-    // there should be a better way to do this using findByAllEmail() but I keep getting a Blob error
-    for (String id : organizationIds) {
-        Optional<Organization> org = this.organizationRepository.findById(Long.parseLong(id));
-        if (org.isPresent()) {
-            result.add(org.get());
-        }
-    }
-    Collections.sort(result, new Comparator<Organization>() {
-      @Override
-      public int compare(Organization a, Organization b) {
-        return a.getName().compareTo(b.getName());
-      }
-    });
-    return result;
-  }
-  
-  /** Save organization information into Datastore. If the email does not yet exist in 
-  Datastore, create a new entity. Otherwise do an update on the existing entity */
+  /**
+   * Save organization information into Datastore. If the email does not yet exist in
+  Datastore, create a new entity. Otherwise do an update on the existing entity
+   * @param name name of the organization
+   * @param email email of the current user from IAP header
+   * @param userType type of user, either individual or organization
+   * @param university affiliated university
+   * @param description short bio
+   * @return RedirectView to profile.html
+   * @throws IOException
+   */
   @PostMapping("save-organization")
   public RedirectView saveOrganization(
       @RequestParam("name") String name,
@@ -74,6 +65,13 @@ public class OrganizationController {
     return new RedirectView("profile.html", true);
   }
 
+  /**
+   * Find organizations that matches the current search input through prefix matching
+   * @param name input entered into the search
+   * @param university university of the current user
+   * @return list of organizations with names containing prefix of the input
+   * @throws IOException
+   */
   @GetMapping("search-organization")
   public List<Organization> searchOrganization(
       @RequestParam("name") String name, 
@@ -86,7 +84,11 @@ public class OrganizationController {
     } 
   }
 
-  /** Find an organization's profile information by email */
+  /**
+   * Find an organization's profile information by email
+   * @param organizationId id of the current user
+   * @return Organization object
+   */
   @GetMapping("get-public-profile")
   public Organization getPublicProfile(@RequestParam("organization-id") String organizationId) {
     return this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);

@@ -167,3 +167,4 @@ function createMap() {
       document.getElementById('map'),
       {center: nycLatLng, zoom: 11});
 }
+
