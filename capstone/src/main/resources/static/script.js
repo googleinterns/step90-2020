@@ -20,8 +20,7 @@ function getEvents() {
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
-    eventListElement.innerText = "Events";
-    
+
     events.forEach((event) => {
       eventListElement.appendChild(createEventElement(event));
     })
@@ -40,16 +39,28 @@ function getEvents() {
 function createEventElement(event) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
+
   // Name 
-  const nameElement = document.createElement('p');
-  nameElement.innerText = event.eventTitle;
-  /*
-  Time
-  Location
-  Organization
-  Description
-  */
-  eventElement.appendChild(nameElement);
+  const eventNameElement = document.createElement('p');
+  eventNameElement.innerText = event.eventTitle;
+
+  // Time
+  var date = new Date(event.eventDateTime);
+  const eventTimeElement = document.createElement('p');
+  eventTimeElement.innerText = date.toString().substring(0, 21); // Exclude GMT time zone offset
+
+  // Location Using latitude as a filler until we finalize the location portion
+   const eventLocationElement = document.createElement('p');
+   eventLocationElement.innerText = event.eventLatitude;
+
+  // Organization
+  //const eventOrgElement = document.createElement('p');
+  //eventOrgElement.innerText = event.organization.name;
+
+  eventElement.appendChild(eventNameElement);
+  eventElement.appendChild(eventTimeElement);
+  eventElement.appendChild(eventLocationElement);
+  //eventElement.appendChild(eventOrgElement);
   eventElement.appendChild(createReviewElement(event));
   
   return eventElement;
@@ -62,6 +73,7 @@ function createEventElement(event) {
  */
 function createReviewElement(event) {
   const reviewElement = document.createElement('div');
+  reviewElement.className = 'reviews';
 
   const reviewInputElement = document.createElement('input');
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
@@ -155,4 +167,3 @@ function createMap() {
       document.getElementById('map'),
       {center: nycLatLng, zoom: 11});
 } 
-
