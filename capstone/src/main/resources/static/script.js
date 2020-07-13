@@ -61,6 +61,7 @@ function createEventElement(event) {
   eventElement.appendChild(eventTimeElement);
   eventElement.appendChild(eventLocationElement);
   //eventElement.appendChild(eventOrgElement);
+  eventElement.appendChild(createSaveEventButton(event));
   eventElement.appendChild(createReviewElement(event));
   
   return eventElement;

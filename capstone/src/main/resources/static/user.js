@@ -173,7 +173,7 @@ function getIndividualEvents() {
   if(userType == "individual") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
       const eventDiv = document.getElementById("saved-events");
-      data[0].savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true)));
+      data[0].savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
       displayMain(true);
     });
   } else {
@@ -253,7 +253,7 @@ function createSaveButton(data) {
 }
 
 /* create the individual event containers for displaying events*/
-function createSavedEventElement(event, saveAllowed) {
+function createSavedEventElement(event, saveAllowed, editAllowed) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
 
@@ -266,7 +266,14 @@ function createSavedEventElement(event, saveAllowed) {
   divElement.appendChild(pElementTime);
 
   // create delete event form
-  const form = saveAllowed? createUnsaveEventButton(event) : createEditEventButton(event);
+  var form = null;
+  if (editAllowed) {
+    form = createDeleteButton(event);
+  } else if (saveAllowed) {
+    form = createSaveEventButton(event);
+  } else if (!saveAllowed) {
+    form = createUnsaveEventButton(event);
+  }
   divElement.appendChild(form);
 
   return divElement;
@@ -279,6 +286,19 @@ function createUnsaveEventButton(event) {
   form.setAttribute("action", "delete-saved-event?event-id=" + event.datastoreID);
   const button = document.createElement('button');
   button.innerText = "Unsave this event";
+  button.setAttribute("type", "submit");
+
+  form.appendChild(button);
+  return form;
+}
+
+/* creates a save button for event */
+function createSaveEventButton(event) {
+  const form = document.createElement("form");
+  form.setAttribute("method", "POST");
+  form.setAttribute("action", "add-saved-event?event-id=" + event.datastoreID);
+  const button = document.createElement('button');
+  button.innerText = "Save this event";
   button.setAttribute("type", "submit");
 
   form.appendChild(button);
@@ -325,7 +345,7 @@ function getOrganizationEvents() {
   if (userType == "organization") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
       const eventDiv = document.getElementById("created-events");
-      data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event), false));
+      data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event), false, true));
       displayMain(true);
     });
   } else {
@@ -412,7 +432,7 @@ function getPublicProfile() {
  fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
    createProfile(data, false, true);
    const eventDiv = document.getElementById("hosted-events");
-   data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true)));
+   data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true, false)));
  });
 }
 
