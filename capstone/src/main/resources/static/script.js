@@ -154,10 +154,10 @@ function showMore() {
 
   if (filterElement.style.display == 'block') {
     filterElement.style.display = 'none';
-    button.innerText = 'Show more';
+    button.innerText = 'MORE''';
   } else {
     filterElement.style.display = 'block';
-    button.innerText = 'Show less';
+    button.innerText = 'LESS';
   }
 }
 
