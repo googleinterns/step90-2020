@@ -166,4 +166,4 @@ function createMap() {
   const map = new google.maps.Map(
       document.getElementById('map'),
       {center: nycLatLng, zoom: 11});
-} 
+}
