@@ -4,7 +4,8 @@
     <meta>
     <title>My Profile</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="user.js"></script>
 </head>
 <body onload="getUser(true);">
     <nav class="nav-bar">
@@ -28,12 +29,19 @@
         <div id="no-profile">
             <p>You have not built your profile yet, please submit a profile </p>
         </div>
-        <nav class="nav-bar-inverted">
+        <nav class="nav-bar-inverted" id="individual-nav">
             <ul>
                 <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
                 <li><a href="usercalendar.html">Calendar of Events</a></li>
                 <li><a href="savedevents.html">Saved Events</a></li>
                 <li><a href="savedorganizations.html">Saved Organizations</a></li>
+            </ul>
+        </nav>
+        <nav class="nav-bar-inverted" id="org-nav">
+            <ul>
+                <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
+                <li><a href="manageevents.html">Manage my Events</a></li>
+                <li><a href="event.html">Create an Event</a></li>
             </ul>
         </nav>
     </div>
@@ -55,7 +63,7 @@
             <label>Last Name:</label>
             <input type="text" name="lastname" id="ind-lastname" placeholder="Your last name.."></input>
             <label>University:</label>
-            <p id="university-form-display"></p>
+            <p id="university-form-display" style="display:none"></p>
             <input type="text" name="university" id="ind-uni" placeholder="Your university.."></input>
             <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
         </form>
