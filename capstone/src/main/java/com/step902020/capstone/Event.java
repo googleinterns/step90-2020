@@ -13,7 +13,6 @@ public class Event{
   Long datastoreID;
 
   @Reference
-
   Organization organization;
 
   @Field(name="eventTitle")
@@ -32,16 +31,16 @@ public class Event{
   double eventLongitude;
 
   @Field(name="foodAvaliable")
-  boolean foodAvaliable;
+  Boolean foodAvaliable;
 
   @Field(name="requiredFee")
-  boolean requiredFee;
+  Boolean requiredFee;
   
   @Reference
   List<Review> reviews;
  
 
-  public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, boolean foodAvaliable, boolean requiredFee) {
+  public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvaliable, Boolean requiredFee) {
  
     this.organization = organization;
     this.eventTitle = eventTitle;
@@ -49,8 +48,8 @@ public class Event{
     this.eventDescription = eventDescription;
     this.eventLatitude = eventLatitude;
     this.eventLongitude = eventLongitude;
-    this.foodAvaliable = foodAvaliable;
-    this.requiredFee = requiredFee;
+    this.foodAvaliable = foodAvaliable == null ? false : foodAvaliable;
+    this.requiredFee = requiredFee == null ? false : requiredFee;
     this.reviews = new ArrayList();
   }
 
