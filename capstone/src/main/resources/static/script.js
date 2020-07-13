@@ -17,6 +17,13 @@ var reviewsExist = false;
  * Retrieves events from server
  */
 function getEvents() {
+  var userType = sessionStorage.getItem("user-type");
+  if (userType == null) {
+    getUserType(false);
+    if (sessionStorage.getItem("user-type") == null) {
+      return;
+    }
+  }
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');

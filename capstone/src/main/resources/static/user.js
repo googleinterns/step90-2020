@@ -4,7 +4,7 @@ function getUser(fillForm) {
 
   // if there is no userType stored in this session, that means this is a new user
   if (userType == null) {
-    getUserType();
+    getUserType(true);
   } else {
     if (userType == "organization") {
       fetch('get-organization').then(response => response.json()).then((data) => {
@@ -34,16 +34,20 @@ function displayMain(display) {
 
 /* get and store the user type (individual or organization). With this we determine whether
 this user exists in our database or not */
-function getUserType() {
+function getUserType(isProfile) {
     /* Since there is no way to know beforehand whether the user is an organization
     or an individual, we have to do two fetches to check the organization entities and
     the user entities */
     fetch('get-organization').then(response => response.json()).then((data) => {
       if (data.length != 0) {
+        if (isProfile) {
           displayNavToggle("individual-nav", "org-nav");
-          setupAndStore(data[0], true);
+        }
+        setupAndStore(data[0], true);
       } else {
-        displayNavToggle("org-nav", "individual-nav");
+        if (isProfile) {
+          displayNavToggle("org-nav", "individual-nav");
+        }
         fetch('get-individual').then(response => response.json()).then((newData) => {
           if (newData.length != 0) {
             // display information
@@ -51,7 +55,9 @@ function getUserType() {
           } else {
             // user does not exist at all, display message to them to submit a profile
             displayMain(false);
-            displayForm("individual", true);
+            if (isProfile) {
+              displayForm("individual", true);
+            }
           }
         });
       }
@@ -168,7 +174,7 @@ function hideFields(selectField, universityField) {
 function getIndividualEvents() {
   var userType = sessionStorage.getItem("user-type");
   if (userType == null) {
-    getUserType();
+    getUserType(true);
   }
   if(userType == "individual") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
@@ -186,7 +192,7 @@ function getIndividualEvents() {
 function getIndividualOrganizations() {
   var userType = sessionStorage.getItem("user-type");
   if (userType == null) {
-    getUserType();
+    getUserType(true);
   }
   if (userType == "individual") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
@@ -321,12 +327,12 @@ function createEditEventButton(event) {
 function revealForm() {
 	var userType = sessionStorage.getItem("user-type");
 	if (userType == null) {
-		getUserType();
-      if (sessionStorage.getItem("user-type") == null) {
-        displayForm("individual", true);
-        return;
-      }
+		getUserType(true);
+    if (sessionStorage.getItem("user-type") == null) {
+      displayForm("individual", true);
+      return;
     }
+  }
   displayForm(userType, false);
 }
 
@@ -340,7 +346,7 @@ function closeForm() {
 function getOrganizationEvents() {
   var userType = sessionStorage.getItem("user-type");
   if (userType == null) {
-    getUserType();
+    getUserType(true);
   }
   if (userType == "organization") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
@@ -357,7 +363,7 @@ function getOrganizationEvents() {
 function searchOrg() {
   var university = sessionStorage.getItem("university");
   if (university == null) {
-    getUserType();
+    getUserType(false);
     if (sessionStorage.getItem("university") == null) {
       return;
     }
@@ -381,36 +387,44 @@ function searchOrg() {
 
 /* function to generate divs for the calendar */
 function createCalendar() {
-  const calendar = document.getElementById("calendar");
-
-  var today = new Date();
-  var endDate = new Date();
-  endDate.setDate(today.getDate() + 8);
-  for (var i = 0; i < 7; i++) {
-    var nextDay = new Date();
-    nextDay.setDate(today.getDate() + i);
-    const dateDiv = document.createElement('div');
-    dateDiv.setAttribute("class", "date general-container");
-    const dateDisplay = document.createElement('p');
-    dateDisplay.innerText = nextDay.toDateString();
-    dateDiv.appendChild(dateDisplay);
-    const eventDiv = document.createElement('div');
-    eventDiv.setAttribute("class", "date row");
-    eventDiv.setAttribute("id", "date" + i);
-    calendar.append(dateDiv);
-    calendar.append(eventDiv);
+  var userType = sessionStorage.getItem("user-type");
+  if (userType == null) {
+    getUserType(true);
   }
-  fetch('get-calendar-events').then(response => response.json()).then((data) => {
-    data.forEach((event) => {
-      var eventDate = new Date(event.eventDateTime);
-      if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
-        var diff = eventDate.getDate() - today.getDate();
-        const eventDisplay = createCalendarEventElement(event, eventDate);
-        const generalDateDiv = document.getElementById("date" + diff);
-        generalDateDiv.appendChild(eventDisplay);
-      }
+  if (userType == "individual") {
+    const calendar = document.getElementById("calendar");
+
+    var today = new Date();
+    var endDate = new Date();
+    endDate.setDate(today.getDate() + 8);
+    for (var i = 0; i < 7; i++) {
+      var nextDay = new Date();
+      nextDay.setDate(today.getDate() + i);
+      const dateDiv = document.createElement('div');
+      dateDiv.setAttribute("class", "date general-container");
+      const dateDisplay = document.createElement('p');
+      dateDisplay.innerText = nextDay.toDateString();
+      dateDiv.appendChild(dateDisplay);
+      const eventDiv = document.createElement('div');
+      eventDiv.setAttribute("class", "date row");
+      eventDiv.setAttribute("id", "date" + i);
+      calendar.append(dateDiv);
+      calendar.append(eventDiv);
+    }
+    fetch('get-calendar-events').then(response => response.json()).then((data) => {
+      data.forEach((event) => {
+        var eventDate = new Date(event.eventDateTime);
+        if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
+          var diff = eventDate.getDate() - today.getDate();
+          const eventDisplay = createCalendarEventElement(event, eventDate);
+          const generalDateDiv = document.getElementById("date" + diff);
+          generalDateDiv.appendChild(eventDisplay);
+        }
+      });
     });
-  });
+  } else {
+    displayMain(false);
+  }
 }
 
 /* helper function to create calendar event elements */
