@@ -21,16 +21,18 @@ public class OrganizationController {
   @Autowired
   private OrganizationRepository organizationRepository;
   
-  /** Find an organization's profile information by email
+  /**
+   * Find an organization's profile information by email
    * @param email get the user email from IAP headers
    * @return list of organizations with the same email as param
    */
   @GetMapping("get-organization")
-  public List<Organization> getOrganization(@RequestHeader("X-Goog-Authenticated-User-Email") Optional<String> email) {
-    return this.organizationRepository.findByEmail("jennysheng@google.com");
+  public List<Organization> getOrganization(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
+    return this.organizationRepository.findByEmail(email.substring(20));
   }
   
-  /** Save organization information into Datastore. If the email does not yet exist in 
+  /**
+   * Save organization information into Datastore. If the email does not yet exist in
   Datastore, create a new entity. Otherwise do an update on the existing entity
    * @param name name of the organization
    * @param email email of the current user from IAP header
@@ -80,5 +82,15 @@ public class OrganizationController {
     } else {
         return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", university);
     } 
+  }
+
+  /**
+   * Find an organization's profile information by email
+   * @param organizationId id of the current user
+   * @return Organization object
+   */
+  @GetMapping("get-public-profile")
+  public Organization getPublicProfile(@RequestParam("organization-id") String organizationId) {
+    return this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
   }
 }

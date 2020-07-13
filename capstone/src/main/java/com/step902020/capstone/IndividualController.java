@@ -23,7 +23,11 @@ public class IndividualController {
   @Autowired
   private EventRepository eventRepository;
 
-  /** Find an individual's profile information by email
+  @Autowired
+  private OrganizationRepository organizationRepository;
+
+  /**
+   * Find an individual's profile information by email
    * @param email user's email from IAP header
    * @return list of individuals with the same email
    */
@@ -32,7 +36,8 @@ public class IndividualController {
     return this.individualRepository.findByEmail("jennysheng@google.com");
   }
 
-  /** Save user information into Datastore. If the email does not yet exist in 
+  /**
+   * Save user information into Datastore. If the email does not yet exist in
   Datastore, create a new entity. Otherwise do an update on the existing entity
    * @param firstname user's first name
    * @param lastname user's last name
@@ -66,7 +71,8 @@ public class IndividualController {
     return new RedirectView("profile.html", true);
   }
 
-  /** Add the event with the event id to the current individual's list of saved events
+  /**
+   * Add the event with the event id to the current individual's list of saved events
    * @param eventId datastoreId of the event being added
    * @param email email of the user from IAP header
    * @return RedirectView to savedevents.html
@@ -79,15 +85,17 @@ public class IndividualController {
 
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (userList.size() > 0) {
       current = userList.get(0);
-      current.addSavedEvents(Long.parseLong(eventId));
+      current.addSavedEvents(event);
     }
     this.individualRepository.save(current);
     return new RedirectView("savedevents.html", true);
   }
   
-  /** delete the event with the event id from the current individual's list of saved events
+  /**
+   * delete the event with the event id from the current individual's list of saved events
    * @param eventId datastoreId of the event being deleted
    * @param email email of the user from IAP header
    * @return RedirectView to savedevents.html
@@ -100,15 +108,17 @@ public class IndividualController {
 
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (userList.size() > 0) {
       current = userList.get(0);
-      current.deleteSavedEvents(Long.parseLong(eventId));
+      current.deleteSavedEvents(event);
     }
     this.individualRepository.save(current);
     return new RedirectView("savedevents.html", true);
   }
 
-  /** Add the organization with the organization id to the current 
+  /**
+   * Add the organization with the organization id to the current
   individual's list of saved organizations
    * @param email email of the user from IAP header
    * @param organizationId datastoreId of the organization being added
@@ -122,15 +132,17 @@ public class IndividualController {
     
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
     if (userList.size() > 0) {
       current = userList.get(0);
-      current.addSavedOrganizations(Long.parseLong(organizationId));
+      current.addOrganizations(organization);
     } 
     this.individualRepository.save(current);
     return new RedirectView("organizationsearch.html", true);
   }
 
-   /** delete the organization with the organization id from the current 
+   /**
+    * delete the organization with the organization id from the current
   individual's list of saved organizations
    * @param email email of the user from IAP headers
    * @param organizationId datastoreId of the organization being deleted
@@ -144,9 +156,11 @@ public class IndividualController {
     
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
+    
     if (userList.size() > 0) {
       current = userList.get(0);
-      current.deleteSavedOrganizations(Long.parseLong(organizationId));
+      current.deleteOrganizations(organization);
     } 
     this.individualRepository.save(current);
     return new RedirectView("savedorganizations.html", true);
