@@ -170,13 +170,6 @@ div.row {
   margin-bottom: 1em;
 }
 
-.public-org-name {
-  font-size: 1.17em;
-  font-weight: bolder;
-  color: #ffffff;
-}
-/* shared classes and styling */
-
 /* My Account Saved Events & Orgs */
 .item-container {
   border-radius: 10px;

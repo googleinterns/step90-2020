@@ -85,10 +85,4 @@ public class OrganizationController {
         return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", university);
     } 
   }
-
-  /** Find an organization's profile information by email */
-  @GetMapping("get-public-profile")
-  public Organization getPublicProfile(@RequestParam("organization-id") String organizationId) {
-    return this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
-  }
 }
