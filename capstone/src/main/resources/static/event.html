@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
   </head>
   
-  <body onload="getEvents()">
+  <body onload="getEvents();loadEventInfo();">
 
     <div class="menu">
       <nav>
@@ -18,14 +18,16 @@
 
     <h1>Create an Event </h1>
 
-    <div class="create-event-form">
+    <div class="event-form">
       <form id="event-form" action="save-event" method="POST">
         
         <label for="organizationId"> OrganizationId: </label>
         <input type="input" id="organizationId" name="organizationId">
+
         <br><br>
 
         <input type="hidden" id="university" name="university">
+        <input type="hidden" id="event-id" name="event-id">
 
         <label for="eventTitle"> Event Title: </label>
         <input type="text" id="eventTitle" name="eventTitle">

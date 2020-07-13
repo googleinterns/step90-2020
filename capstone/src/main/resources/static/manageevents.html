@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="user.js"></script>
 </head>
-<body onload="getUser(false);getIndividualOrganizations();">
+<body onload="getUser(false);getOrganizationEvents();">
     <nav class="nav-bar">
         <ul>
             <li class="home"><a href="">College Activity Finder</a></li>
@@ -26,28 +26,27 @@
         <div id="university"></div>
         <div id="description"></div>
         <div id="no-profile">
-            <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
+            <p>You have not built your profile yet, please submit a profile </p>
         </div>
         <nav class="nav-bar-inverted" id="individual-nav">
             <ul>
                 <li><a href="profile.html">My Profile</a></li>
                 <li><a href="usercalendar.html">Calendar of Events</a></li>
                 <li><a href="savedevents.html">Saved Events</a></li>
-                <li class="active-highlighted"><a href="savedorganizations.html">Saved Organizations</a></li>
+                <li><a href="savedorganizations.html">Saved Organizations</a></li>
             </ul>
         </nav>
         <nav class="nav-bar-inverted" id="org-nav">
             <ul>
                 <li><a href="profile.html">My Profile</a></li>
-                <li><a href="manageevents.html">Manage my Events</a></li>
+                <li class="active-highlighted"><a href="manageevents.html">Manage my Events</a></li>
                 <li><a href="event.html">Create an Event</a></li>
             </ul>
         </nav>
     </div>
-    <form action="add-saved-organization" method="POST">
-        <input type="text" name="organization-id"></input>
-        <button type="submit">Test add organization</button>
-    </form>
-    <div id="saved-orgs" class="right"></div>
+    <div id="main">
+        <div id="created-events" class="right"></div>
+    </div>
+    
   </body>
 </html>

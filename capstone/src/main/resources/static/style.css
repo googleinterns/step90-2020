@@ -1,36 +1,167 @@
+/* Shared General Features */
+body {
+  background-color: #073763ff;
+  color: #ffffff;
+  font-family: 'Lato', sans-serif;
+}
+
+button, input, select {
+  background-color: Transparent;
+  border: 2px solid white;
+  border-radius: 10px;
+  color: white;
+  font-size: medium;
+  padding: 10px 20px;
+}
+
+select option {
+  background: white;
+  color: #073763ff;
+}
+
+input[type=submit] {
+  cursor: pointer;
+  padding: 12px 20px;
+  width: auto;
+}
+
+input[type=submit]:hover {
+  border: 2px solid #4CAF50;
+}
+
+li a {
+  color: #073763ff;
+  display: block;
+  padding: 14px 16px;
+  text-align: center;
+  text-decoration: none;
+}
+
+nav li {
+  color: white;
+  display: inline-block;
+}
+
 ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
- 
-nav li {
-  display: inline-block;
-  color: white;
-}
- 
-li a {
-  display: block;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-family: Helvetica, Arial, sans-serif;
-  color: #073763ff;
-}
- 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
 
-button {
-  border-color: white;
-  background-color: Transparent;
+/* Shared Nav Bar */
+.active-highlighted {
+  background-color: #073763ff;
+  border-color: coral;
   border-radius: 10px;
   border-style: solid;
-  color: white;
-  padding: 10px;
-  margin: 10px;
+  color: #ffffff;
+}
+
+.home {
+  font-size: 18px;
+}
+
+/* Change color on hover */
+li a:hover, .active a {
+  background-color: #073763ff;
+  color: #ffffff;
+  border-style: solid;
+  border-color: #ffffff;
+  border-radius:10px;
+}
+
+.nav-bar {
+  background-color: #ffffff;
+  color: #073763ff;
+}
+
+/* Profile Page */
+.nav-bar-inverted {
+  background-color: #073763ff;
+  border-color: #ffffff;
+  border-radius: 30px;
+  border-style: solid;
+  color: #ffffff;
+  margin: auto;
+  max-width: 70%;
+  padding: auto;
+}
+
+.nav-bar-inverted li a {
+  color: #ffffff;
+  border-radius: 10px;
+}
+
+/* My Account Page */
+.general-container {
+  background-color: #073763ff;
+  border-style: solid;
+  border-color: #ffffff;
+  border-radius: 5px;
+}
+
+img {
+  max-width: 300px;
+  width: 70%;
+}
+
+.profile {
+  border-radius: 200px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.profile-button {
+  margin: 20px;
+}
+
+.profile-form {
+  border-radius: 5px;
+  display: block;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 3%;
+  width: 40%;
+}
+
+.profile-form input[type=text], .profile-form select {
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  padding: 12px;
+  resize: vertical;
+  width: 100%;
+}
+ 
+.profile-head {
+  display: block;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width: 60%;
+}
+
+#organization, #no-profile, #user, #org-nav, #individual-nav {
+  display: none;
+}
+
+/* My Account Calendar */
+.calendar {
+  margin: auto;
+  width: 83%;
+}
+
+.date {
+  display: block;
+  width: 100%;
+  margin: 2%;
+  padding: 2px;
+  width: 100%;
 }
 
 div.row {
@@ -39,220 +170,73 @@ div.row {
   margin-bottom: 1em;
 }
 
-.center ul {
-  text-align: center;
-  list-style-type: none;
-  margin: auto;
-}
-
-.profile-container {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 38%;
-  height: 100%;
-}
-
-.profile {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-img {
-  max-width: 300px;
-  width: 70%;
-}
-
-.intro {
-  display: inline-block;
-  float: left;
-  width: 45%;
-  padding: 15px;
-}
- 
-.profile-head {
-  width: 60%;
-  display: block;
-  height: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-.profile-button {
-  float: center;
-}
- 
-.profile {
-  border-radius: 200px;
-  width: 100%;
-  height: auto;
-}
-
-input[type=text], select, textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin-top: 6px;
-  margin-bottom: 16px;
-  resize: vertical;
-}
-
-input[type=submit] {
-  background-color: #64BBD7;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-input[type=submit]:hover {
-  background-color: #4CAF50;
-}
-
-.profile-form {
-  border-radius: 5px;
-  padding: 3%;
-  width: 40%;
-  display: block;
-  height: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
+/* My Account Saved Events & Orgs */
 .item-container {
-  padding: 10px;
-  margin: 10px;
   border-radius: 10px;
-  width: 80%;
-  max-width: 950px;
+  margin: 10px;
   margin-left: auto;
   margin-right: auto;
+  max-width: 950px;
+  padding: 10px;
+  width: 80%;
 }
 
-#organization, #no-profile, #user {
-  display: none;
+/* Event Search Page */
+#filters {
+ display: block;
 }
 
-.calendar {
-  width: 83%;
-  margin: auto;
-}
-.date {
-  width: 100%;
-  margin: 2%;
-  padding: 2px;
-  display: block;
+#events {
+  text-align: center;
 }
 .event {
-  width:10%;
-  height:80px;
+  border-color: white;
+  border-radius: 30px;
+  border-style: solid;
+  display: inline-block;
+  list-style-type: none;
   margin: 2%;
   padding: 2%;
-  display: inline-block;
-
-}
-/* shared classes and styling */
-
-body {
-  background-color: #073763ff;
-  color: #ffffff;
 }
 
-.nav-bar {
-  background-color: #ffffff;
-  color: #073763ff;
+#event-header {
+  text-align: center;;
+  margin-top: 100px;
+  margin-bottom: 30px;
+  font-size: 40px;
 }
 
-.nav-bar-inverted {
-  background-color: #073763ff;
-  color: #ffffff;
-  border-style: solid;
-  border-color: #ffffff;
-  border-radius: 30px;
-  max-width: 70%;
-  margin: auto;
-  padding: auto;
-}
-
-.active-highlighted {
-  border-style: solid;
-  border-color: coral;
-  background-color: #073763ff;
-  color: #ffffff;
-
-}
-
-.nav-bar-inverted li a {
-  color: #ffffff;
-}
-
-.general-container {
-  background-color: #073763ff;
-  border-style: solid;
-  border-color: #ffffff;
-  border-radius: 5px;
-}
-
-.button {
-  background-color: #64BBD7;
-  border: none;
-  padding: 10px 20px;
+#filters {
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin-bottom: 1em;
 }
 
-/* for changing color on hover in the nav  */
-li a:hover, .active a {
-  background-color: #073763ff;
-  color: #ffffff;
-  border-style: solid;
-  border-color: #ffffff;
+#filters button, #filters input, #filters select {
+  margin: 10px;
 }
 
-/* Make the home page button bigger */
-.home {
-  font-size: 18px;
+#filters select option[value=""] {
+  color: #999999;
 }
 
-/* Event Feed */
-.event {
-  list-style-type: none;
-  padding: 20px;
-}
-
-#events input {
-  width: auto;
+.selected {
+  border: 4px solid purple;
 }
 
 /* Reviews */
 .review {
-  border-style: solid;
-  border-color: white; /* subject to change in final stages */
+  border: 2px solid white;
+  border-radius: 20px;
   margin: 10px;
-  width: 25%;
   padding: 20px;
-  border-radius: 30px;
-}
-
-.review-text {
-  text-align: center;
-  margin: 0px;
+  width: 50%;
 }
 
 .review-details {
-  text-align: left;
   margin: 0px;
+  text-align: left;
 }
 
-.event input[type=text] {
-  background-color: Transparent;
-  border-color: white;
-  border-style: solid;
-  color: white;
+.review-text {
+  margin: 0px;
+  text-align: center;
 }

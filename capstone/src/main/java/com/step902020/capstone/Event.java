@@ -1,5 +1,8 @@
 package com.step902020.capstone;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Reference;
@@ -12,7 +15,7 @@ public class Event{
   @Id
   Long datastoreID;
 
-  @Reference
+  @JsonBackReference
   Organization organization;
 
   @Field(name="eventTitle")
@@ -60,6 +63,7 @@ public class Event{
   public String getEventTitle() {
     return eventTitle;
   }
+
   public Organization getOrganization() {
     return organization;
   }
@@ -77,6 +81,39 @@ public class Event{
   }
   public List<Review> getReviews() {
     return reviews;
+  }
+  public void setDatastoreID(Long datastoreID) {
+    this.datastoreID = datastoreID;
+  }
+
+  public void setOrganization(Organization organization) {
+    this.organization = organization;
+  }
+
+  public void setEventTitle(String eventTitle) {
+    this.eventTitle = eventTitle;
+  }
+
+  public void setEventDateTime(String eventDateTime) {
+    this.eventDateTime = eventDateTime;
+  }
+
+  public void setEventDescription(String eventDescription) {
+    this.eventDescription = eventDescription;
+  }
+
+  public void setEventLatitude(double eventLatitude) {
+    this.eventLatitude = eventLatitude;
+  }
+
+  public void setEventLongitude(double eventLongitude) {
+    this.eventLongitude = eventLongitude;
+  }
+  public void setFoodAvaliable(Boolean foodAvaliable) {
+    this.foodAvaliable = foodAvaliable;
+  }
+  public void setRequiredFee(Boolean requiredFee) {
+    this.requiredFee = requiredFee;
   }
 
   /**
