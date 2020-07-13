@@ -17,9 +17,6 @@
   </parent>
 
   <properties>
-    <!-- This project uses Java 8 -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <spring-cloud-gcp.version>1.2.3.RELEASE</spring-cloud-gcp.version>
@@ -103,6 +100,14 @@
         <version>2.2.0</version>
         <configuration>
           <deploy.projectId>step90-2020</deploy.projectId>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
     </plugins>

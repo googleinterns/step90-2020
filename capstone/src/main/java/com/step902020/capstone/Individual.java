@@ -3,6 +3,7 @@ package com.step902020.capstone;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import java.util.*;
 
 @Entity(name = "individual")
@@ -18,23 +19,20 @@ public class Individual {
   @Field(name="lastname")
   String lastName;
 
-  @Field(name="email")
   String email;
 
-  @Field(name="university")
   String university;
 
   @Field(name="user-type")
   String userType;
 
-  @Field(name="image")
   String image;
 
-  @Field(name="saved-events")
-  Set<Long> savedEvents;
+  @Reference
+  List<Event> savedEvents;
 
-  @Field(name="saved-organizations")
-  Set<Long> savedOrganizations;
+  @Reference
+  List<Organization> organizations;
 
   public Individual() {
   }
@@ -47,8 +45,8 @@ public class Individual {
     this.university = university;
     this.userType = userType;
     this.image = image;
-    savedEvents = new HashSet<Long>();
-    savedOrganizations = new HashSet<Long>();
+    savedEvents = new ArrayList<Event>();
+    organizations = new ArrayList<Organization>();
   }
   
   public Long getDatastoreId() {
@@ -83,12 +81,12 @@ public class Individual {
     return image;
   }
 
-  public Set<Long> getSavedEvents() {
+  public List<Event> getSavedEvents() {
     return savedEvents;
   }
 
-  public Set<Long> getSavedOrganizations() {
-    return savedOrganizations;
+  public List<Organization> getOrganizations() {
+    return organizations;
   }
 
   public void setFirstName(String firstName) {
@@ -103,19 +101,27 @@ public class Individual {
     this.image = image;
   }
 
-  public void addSavedEvents(long event) {
+  public void addSavedEvents(Event event) {
     savedEvents.add(event);
   }
 
-  public void deleteSavedEvents(long event) {
-    savedEvents.remove(event);
+  public void deleteSavedEvents(Event event) {
+    savedEvents.removeIf(e -> event.getDatastoreID().equals(e.getDatastoreID()));
   }
 
-  public void addSavedOrganizations(long organization) {
-    savedOrganizations.add(organization);
+  /**
+   * add a new organization to the list
+   * @param organization organization to be added
+   */
+  public void addOrganizations(Organization organization) {
+    organizations.add(organization);
   }
 
-  public void deleteSavedOrganizations(long organization) {
-    savedOrganizations.remove(organization);
+  /**
+   * deletes an organization from the list
+   * @param organization organization to be deleted
+   */
+  public void deleteOrganizations(Organization organization) {
+    organizations.removeIf(o -> organization.getDatastoreId().equals(o.getDatastoreId()));
   }
 }
