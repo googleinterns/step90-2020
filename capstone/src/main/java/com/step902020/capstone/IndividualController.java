@@ -32,8 +32,8 @@ public class IndividualController {
    * @return list of individuals with the same email
    */
   @GetMapping("get-individual")
-  public List<Individual> getIndividual(@RequestHeader("X-Goog-Authenticated-User-Email") Optional<String> email) {
-    return this.individualRepository.findByEmail("jennysheng@google.com");
+  public List<Individual> getIndividual(@RequestHeader("X-Goog-Authenticated-User-Email") String email) {
+    return this.individualRepository.findByEmail(email.substring(20));
   }
 
   /**
@@ -141,8 +141,8 @@ public class IndividualController {
     return new RedirectView("organizationsearch.html", true);
   }
 
-   /**
-    * delete the organization with the organization id from the current
+  /**
+   * delete the organization with the organization id from the current
   individual's list of saved organizations
    * @param email email of the user from IAP headers
    * @param organizationId datastoreId of the organization being deleted
@@ -169,17 +169,24 @@ public class IndividualController {
   /**
    * gets a combined list of events from the user's saved list of events and events from all the
    * saved organizations
-   * @return Iterable containing Events
+   * @param email current user email from IAP header
+   * @return list of events
    * @throws IOException
    */
   @GetMapping("get-calendar-events")
-  public Iterable<Event> getCalendarEvents() throws IOException {
-    /* full implementation blocked by the previous PR (because I changed some properties into references )
-     and those changes are not in this branch */
-    // get saved events
-    // get a list of organizations
-    // for each of the organizations get their list of saved events
-
-    return this.eventRepository.findAll();
+  public List<Event> getCalendarEvents(
+          @RequestHeader("X-Goog-Authenticated-User-Email") String email) throws IOException {
+    // get saved events and for each of the organizations get their list of saved events
+    Individual current = null;
+    List<Individual> userList = this.individualRepository.findByEmail(email.substring(20));
+    List<Event> calendarEvents = new ArrayList<Event>();
+    if (userList.size() > 0) {
+      current = userList.get(0);
+      calendarEvents.addAll(current.getSavedEvents());
+      for (Organization org : current.getOrganizations()) {
+        calendarEvents.addAll(org.getEvents());
+      }
+    }
+    return calendarEvents;
   }
 }

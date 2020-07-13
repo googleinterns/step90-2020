@@ -190,7 +190,9 @@ function getIndividualOrganizations() {
   }
   if (userType == "individual") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
-      data[0].organizations.forEach((org) => createSavedOrgElement(org));
+      const orgDiv = document.getElementById("saved-orgs");
+      orgDiv.innerHTML='';
+      data[0].organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true)));
       displayMain(true);
     });
   } else {
@@ -198,36 +200,30 @@ function getIndividualOrganizations() {
   }
 }
 
-function getSavedOrgElements(email) {
-  fetch('get-saved-organizations?emails=' + email).then(response => response.json()).then((data) => {
-    const container = document.getElementById("saved-orgs");
-    container.innerHTML = '';
-    data.forEach((org) => container.appendChild(createSavedOrgElement(org, true)));
-    });
-}
-
 /* Function to create the individual organization display divs*/
 function createSavedOrgElement(data, deleteAllowed) {
-  const divElement = document.createElement('div');
-  divElement.setAttribute("class", "item-container general-container");
+ const divElement = document.createElement('div');
+ divElement.setAttribute("class", "item-container general-container");
 
-  const h3ElementName = document.createElement('h3');
-  h3ElementName.innerText = data.name;
-  divElement.appendChild(h3ElementName);
+ const aElementName = document.createElement('a');
+ aElementName.setAttribute("class", "public-org-name");
+ aElementName.innerText = data.name;
+ aElementName.setAttribute("href", "publicprofile.html#" + data.datastoreId);
+ divElement.appendChild(aElementName);
 
-  const h5ElementEmail = document.createElement('h5');
-  h5ElementEmail.innerText = data.email;
-  divElement.appendChild(h5ElementEmail);
+ const h5ElementEmail = document.createElement('h5');
+ h5ElementEmail.innerText = data.email;
+ divElement.appendChild(h5ElementEmail);
 
-  const h5ElementBio = document.createElement('h5');
-  h5ElementBio.innerText = data.description;
-  divElement.appendChild(h5ElementBio);
+ const h5ElementBio = document.createElement('h5');
+ h5ElementBio.innerText = data.description;
+ divElement.appendChild(h5ElementBio);
 
-  // create delete organization form
-  const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
-  divElement.appendChild(form);
+ // create delete organization form
+ const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
+ divElement.appendChild(form);
 
-  return divElement;
+ return divElement;
 }
 
 /* create delete buttons for the organization divs */
@@ -348,13 +344,18 @@ function searchOrg() {
   }
   var name = document.getElementById("search-org").value;
   fetch('search-organization?name=' + name + "&university=" + university).then(response => response.json()).then((organizations) => {
-
     const orgListElement = document.getElementById('list-organizations');
     orgListElement.innerHTML = '';
 
-    organizations.forEach((org) => {
-      orgListElement.appendChild(createSavedOrgElement(org, false));
-    })
+    if (organizations.length == 0) {
+      const pElementNone = document.createElement('p');
+      pElementNone.innerText = "No organizations found. Please try to modify your search.";
+      orgListElement.appendChild(pElementNone);
+    } else {
+      organizations.forEach((org) => {
+        orgListElement.appendChild(createSavedOrgElement(org, false));
+      });
+    }
   });
 }
 
@@ -392,6 +393,7 @@ function createCalendar() {
   });
 }
 
+/* helper function to create calendar event elements */
 function createCalendarEventElement(event, eventTime) {
   const eventDisplay = document.createElement("div");
   eventDisplay.setAttribute("class", "event general-container col");
@@ -404,38 +406,13 @@ function createCalendarEventElement(event, eventTime) {
   return eventDisplay;
 }
 
-/* Function to create the individual organization display divs*/
-function createSavedOrgElement(data, deleteAllowed) {
- const divElement = document.createElement('div');
- divElement.setAttribute("class", "item-container general-container");
-
- const aElementName = document.createElement('a');
- aElementName.setAttribute("class", "public-org-name");
- aElementName.innerText = data.name;
- aElementName.setAttribute("href", "publicprofile.html#" + data.datastoreId);
- divElement.appendChild(aElementName);
-
- const h5ElementEmail = document.createElement('h5');
- h5ElementEmail.innerText = data.email;
- divElement.appendChild(h5ElementEmail);
-
- const h5ElementBio = document.createElement('h5');
- h5ElementBio.innerText = data.description;
- divElement.appendChild(h5ElementBio);
-
- // create delete organization form
- const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
- divElement.appendChild(form);
-
- return divElement;
-}
-
-
+/* function to create a public profile of an organization */
 function getPublicProfile() {
  var organizationId = window.location.hash.substring(1);
  fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
    createProfile(data, false, true);
-   // remember to add events once the other PR is merged
+   const eventDiv = document.getElementById("hosted-events");
+   data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true)));
  });
 }
 
