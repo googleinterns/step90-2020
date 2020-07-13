@@ -15,7 +15,6 @@ public class Event{
   @Id
   Long datastoreID;
 
-  @Reference
   @JsonBackReference
   Organization organization;
 
@@ -33,17 +32,27 @@ public class Event{
 
   @Field(name="eventLongitude")
   double eventLongitude;
+
+  @Field(name="foodAvaliable")
+  Boolean foodAvaliable;
+
+  @Field(name="requiredFee")
+  Boolean requiredFee;
   
   @Reference
   List<Review> reviews;
+ 
 
-  public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude) {
+  public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvaliable, Boolean requiredFee) {
+ 
     this.organization = organization;
     this.eventTitle = eventTitle;
     this.eventDateTime = eventDateTime;
     this.eventDescription = eventDescription;
     this.eventLatitude = eventLatitude;
     this.eventLongitude = eventLongitude;
+    this.foodAvaliable = foodAvaliable == null ? false : foodAvaliable;
+    this.requiredFee = requiredFee == null ? false : requiredFee;
     this.reviews = new ArrayList();
   }
 
@@ -99,6 +108,12 @@ public class Event{
 
   public void setEventLongitude(double eventLongitude) {
     this.eventLongitude = eventLongitude;
+  }
+  public void setFoodAvaliable(Boolean foodAvaliable) {
+    this.foodAvaliable = foodAvaliable;
+  }
+  public void setRequiredFee(Boolean requiredFee) {
+    this.requiredFee = requiredFee;
   }
 
   /**

@@ -40,13 +40,15 @@ public class EventController {
 
   @PostMapping("save-event")
   public RedirectView saveEvent (
-           @RequestHeader("X-Goog-Authenticated-User-Email") String email,
-           @RequestParam("eventTitle") String eventTitle,
-           @RequestParam("eventDateTime") String eventDateTime,
-           @RequestParam("eventDescription") String eventDescription,
-           @RequestParam("eventLatitude") String eventLatitude,
-           @RequestParam("eventLongitude") String eventLongitude,
-           @RequestParam("event-id") String eventId
+     @RequestHeader("X-Goog-Authenticated-User-Email") String email,
+     @RequestParam("eventTitle") String eventTitle,
+     @RequestParam("eventDateTime") String eventDateTime,
+     @RequestParam("eventDescription") String eventDescription,
+     @RequestParam("eventLatitude") String eventLatitude,
+     @RequestParam("eventLongitude") String eventLongitude,
+     @RequestParam("foodAvaliable") Optional<Boolean> foodAvaliable,
+     @RequestParam("requiredFee") Optional<Boolean> requiredFee,
+     @RequestParam("event-id") String eventId
     ) throws IOException {
       Organization organization = organizationRepository.findByEmail(email.substring(20)).get(0);
       Event event = eventId.length() <= 0? null : this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
@@ -59,7 +61,7 @@ public class EventController {
         event.setOrganization(organization);
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude));
+        Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvaliable.orElse(false), requiredFee.orElse(false));
         this.eventRepository.save(newEvent);
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);

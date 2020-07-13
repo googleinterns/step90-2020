@@ -1,9 +1,9 @@
 async function getEvents() {
   const response = await fetch('get-all-events');
   const jsonEvents = await response.json();
-  const eventList = document.getElementById('events-container');
+  //const eventList = document.getElementById('events-container');
 
-  jsonEvents.forEach(event => eventList.appendChild(createEvent(event)));
+  //jsonEvents.forEach(event => eventList.appendChild(createEvent(event)));
 }
 
 function createEvent(event) {
@@ -17,6 +17,8 @@ function createEvent(event) {
   createEventAttribute(event.eventDescription, listEventElement);
   createEventAttribute(event.eventLatitude, listEventElement);
   createEventAttribute(event.eventLongitude, listEventElement);
+  createEventAttribute(event.foodAvaliable, listEventElement);
+  createEventAttribute(event.requiredFee, listEventElement);
   
   return listEventElement;
 }
