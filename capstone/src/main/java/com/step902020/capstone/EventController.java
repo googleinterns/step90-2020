@@ -59,8 +59,8 @@ public class EventController {
         event.setEventLongitude(Double.parseDouble(eventLongitude));
         event.setEventTitle(eventTitle);
         event.setOrganization(organization);
-        event.setFoodAvalible(foodAvaliable);
-        event.setRequiredFee(requiredFee);
+        event.setFoodAvalible(foodAvaliable.orElse(false));
+        event.setRequiredFee(requiredFee.orElse(false));
         this.eventRepository.save(event);
       } else {
         Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvaliable.orElse(false), requiredFee.orElse(false));
