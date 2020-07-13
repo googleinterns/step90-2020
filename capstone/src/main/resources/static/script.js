@@ -167,3 +167,29 @@ function createMap() {
       document.getElementById('map'),
       {center: nycLatLng, zoom: 11});
 }
+/*
+ * If element is selected, border will change from white to green
+ * @param element id
+ */
+function toggleBorderSelection(elementId) {
+  var element = document.getElementById(elementId);
+  if (element.nodeName == 'BUTTON') {
+    element.classList.toggle('selected');
+  } else if (element.nodeName == 'SELECT') {
+    if (element.value != '') {
+      element.classList.add('selected');
+    } else {
+      element.classList.remove('selected');
+    }
+  }
+}
+
+/*
+ * Reviews are temp on event listing so remove to see finalized event search page
+ */
+function removeReviews() {
+  const reviews = document.getElementsByClassName('reviews');
+  while(reviews.length > 0){
+    reviews[0].parentNode.removeChild(reviews[0]);
+  }
+}
