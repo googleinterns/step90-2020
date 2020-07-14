@@ -430,7 +430,6 @@ function createSavedOrgElement(data, deleteAllowed) {
  return divElement;
 }
 
-
 function getPublicProfile() {
  var organizationId = window.location.hash.substring(1);
  fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {

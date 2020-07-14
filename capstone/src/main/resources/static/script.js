@@ -20,6 +20,7 @@ function getEvents() {
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
+    eventListElement.innerText = ""; // Clear elements in div
 
     events.forEach((event) => {
       eventListElement.appendChild(createEventElement(event));
@@ -154,10 +155,10 @@ function showMore() {
 
   if (filterElement.style.display == 'block') {
     filterElement.style.display = 'none';
-    button.innerText = 'Show more';
+    button.innerText = 'MORE';
   } else {
     filterElement.style.display = 'block';
-    button.innerText = 'Show less';
+    button.innerText = 'LESS';
   }
 }
 
@@ -168,3 +169,29 @@ function createMap() {
       {center: nycLatLng, zoom: 11});
 }
 
+/*
+ * If element is selected, border will change from white to green
+ * @param element id
+ */
+function toggleBorderSelection(elementId) {
+  var element = document.getElementById(elementId);
+  if (element.nodeName == 'BUTTON') {
+    element.classList.toggle('selected');
+  } else if (element.nodeName == 'SELECT') {
+    if (element.value != '') {
+      element.classList.add('selected');
+    } else {
+      element.classList.remove('selected');
+    }
+  }
+}
+
+/*
+ * Reviews are temp on event listing so remove to see finalized event search page
+ */
+function removeReviews() {
+  const reviews = document.getElementsByClassName('reviews');
+  while(reviews.length > 0){
+    reviews[0].parentNode.removeChild(reviews[0]);
+  }
+}
