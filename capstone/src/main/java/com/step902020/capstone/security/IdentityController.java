@@ -31,16 +31,23 @@ public class IdentityController {
   }
 
   @GetMapping("user-info")
-  public Object getUserType(CurrentUser user)  {
+  public Map<String, String> getUserType(CurrentUser user)  {
     Organization organization = this.organizationRepository.findByEmail(user.getEmail()).orElse(null);
+    Map<String, String> userInfo = new HashMap<String, String>();
     if (organization != null) {
-      return organization;
+      userInfo.put("userType", "organization");
+      userInfo.put("university", organization.getUniversity());
     } else {
       Individual individual = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
       if (individual != null) {
-        return individual;
+        userInfo.put("userType", "individual");
+        userInfo.put("university", individual.getUniversity());
+      }
+      else {
+        userInfo.put("userType", "");
+        userInfo.put("university", "");
       }
     }
-    return null;
+    return userInfo;
   }
 }

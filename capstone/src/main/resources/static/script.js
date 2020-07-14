@@ -17,25 +17,25 @@ var reviewsExist = false;
  * Retrieves events from server
  */
 function getEvents() {
-  var userType = sessionStorage.getItem("user-type");
-  if (userType == null) {
-    getUserType(false);
-    if (sessionStorage.getItem("user-type") == null) {
-      return;
-    }
-  }
-  var displaySaveButton = userType == "individual";
-  fetch('get-all-events').then(response => response.json()).then((events) => {
+  fetch('user-info').then(response => response.json()).then((data) => {
+    var userType = data.userType;
+    if (userType != null) {
+      var displaySaveButton = userType == "individual";
+      fetch('get-all-events').then(response => response.json()).then((events) => {
 
-    const eventListElement = document.getElementById('events');
-    eventListElement.innerText = ""; // Clear elements in div
+        const eventListElement = document.getElementById('events');
+        eventListElement.innerText = ""; // Clear elements in div
 
-    events.forEach((event) => {
-      eventListElement.appendChild(createEventElement(event, displaySaveButton));
-    })
-    // Format time to *** time ago
-    if (reviewsExist){
-      timeago.render(document.querySelectorAll('.timeago'));
+        events.forEach((event) => {
+          eventListElement.appendChild(createEventElement(event, displaySaveButton));
+        })
+        // Format time to *** time ago
+        if (reviewsExist){
+          timeago.render(document.querySelectorAll('.timeago'));
+        }
+      });
+    } else {
+      displayMain(false);
     }
   });
 }
