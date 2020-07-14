@@ -35,48 +35,10 @@ function displayMain(display) {
   }
 }
 
-
-//function getUserType(isProfile) {
-//    /* Since there is no way to know beforehand whether the user is an organization
-//    or an individual, we have to do two fetches to check the organization entities and
-//    the user entities */
-//    fetch('get-organization').then(response => response.json()).then((data) => {
-//      if (data.length != 0) {
-//        if (isProfile) {
-//          displayNavToggle("individual-nav", "org-nav")
-//        }
-//        setupAndStore(data[0], true);
-//      } else {
-//        if (isProfile) {
-//          displayNavToggle("org-nav", "individual-nav");
-//        }
-//        fetch('get-individual').then(response => response.json()).then((newData) => {
-//          if (newData.length != 0) {
-//            // display information
-//            setupAndStore(newData);
-//          } else {
-//            // user does not exist at all, display message to them to submit a profile
-//            displayMain(false);
-//            if (isProfile) {
-//              displayForm("individual", true);
-//            }
-//          }
-//        });
-//      }
-//  });
-//}
-
 function displayNavToggle(hide, display) {
   document.getElementById(display).style.display="block";
   document.getElementById(hide).style.display="none";
 }
-
-///** helper function to store information and set up display */
-//function setupAndStore(data) {
-//  sessionStorage.setItem("user-type", data.userType);
-//  sessionStorage.setItem("university", data.university);
-//  displayMain(true);
-//}
 
 /* creates and populates the user profile */
 function createProfile(data, fillForm, isOrganization) {
@@ -190,6 +152,7 @@ function getIndividualEvents() {
   });
 }
 
+/* Function to get the saved organizations */
 function getIndividualOrganizations() {
   fetch('user-info').then(response => response.json()).then((data) => {
     var userType = data.userType;
