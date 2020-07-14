@@ -50,7 +50,7 @@ public class EventController {
      @RequestParam("requiredFee") Optional<Boolean> requiredFee,
      @RequestParam("event-id") String eventId
     ) throws IOException {
-      Organization organization = organizationRepository.findByEmail(email.substring(20)).get(0);
+      Organization organization = organizationRepository.findByEmail(email.substring(20)).orElse(null);
       Event event = eventId.length() <= 0? null : this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
       if (event != null) {
         event.setEventDateTime(eventDateTime);

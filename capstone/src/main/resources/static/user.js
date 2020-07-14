@@ -8,15 +8,15 @@ function getUser(fillForm) {
   } else {
     if (userType == "organization") {
       fetch('get-organization').then(response => response.json()).then((data) => {
-        createProfile(data[0], fillForm, true);
+        createProfile(data, fillForm, true);
         displayNavToggle("individual-nav", "org-nav");
-        sessionStorage.setItem("user-type", data[0].userType);
+        sessionStorage.setItem("user-type", data.userType);
       });
     } else if (userType == "individual") {
       fetch('get-individual').then(response => response.json()).then((data) => {
-        createProfile(data[0], fillForm, false);
+        createProfile(data, fillForm, false);
         displayNavToggle("org-nav", "individual-nav");
-        sessionStorage.setItem("user-type", data[0].userType);
+        sessionStorage.setItem("user-type", data.userType);
       });
     }
     displayMain(true);
@@ -41,13 +41,13 @@ function getUserType() {
     fetch('get-organization').then(response => response.json()).then((data) => {
       if (data.length != 0) {
           displayNavToggle("individual-nav", "org-nav");
-          setupAndStore(data[0], true);
+          setupAndStore(data, true);
       } else {
         displayNavToggle("org-nav", "individual-nav");
         fetch('get-individual').then(response => response.json()).then((newData) => {
           if (newData.length != 0) {
             // display information
-            setupAndStore(newData[0]);
+            setupAndStore(newData);
           } else {
             // user does not exist at all, display message to them to submit a profile
             displayMain(false);
@@ -173,7 +173,7 @@ function getIndividualEvents() {
   if(userType == "individual") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
       const eventDiv = document.getElementById("saved-events");
-      data[0].savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true)));
+      data.savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true)));
       displayMain(true);
     });
   } else {
@@ -190,7 +190,7 @@ function getIndividualOrganizations() {
   }
   if (userType == "individual") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
-      data[0].organizations.forEach((org) => createSavedOrgElement(org));
+      data.organizations.forEach((org) => createSavedOrgElement(org));
       displayMain(true);
     });
   } else {
@@ -329,7 +329,7 @@ function getOrganizationEvents() {
   if (userType == "organization") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
       const eventDiv = document.getElementById("created-events");
-      data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event), false));
+      data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event), false));
       displayMain(true);
     });
   } else {
@@ -365,6 +365,8 @@ function createCalendar() {
   var today = new Date();
   var endDate = new Date();
   endDate.setDate(today.getDate() + 8);
+
+  // create the divs for each of the next seven days
   for (var i = 0; i < 7; i++) {
     var nextDay = new Date();
     nextDay.setDate(today.getDate() + i);
@@ -385,6 +387,7 @@ function createCalendar() {
       if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
         var diff = eventDate.getDate() - today.getDate();
         const eventDisplay = createCalendarEventElement(event, eventDate);
+        // place the event in the correct div based on the date difference
         const generalDateDiv = document.getElementById("date" + diff);
         generalDateDiv.appendChild(eventDisplay);
       }

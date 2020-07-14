@@ -18,7 +18,6 @@ public class IndividualController {
   @Autowired
   private IndividualRepository individualRepository;
 
-  /** Find currently logged in individual. */
   @Autowired
   private EventRepository eventRepository;
 
@@ -28,11 +27,11 @@ public class IndividualController {
   /**
    * Find an individual's profile information by email
    * @param user Currently logged-in user
-   * @return list of individuals with the same email
+   * @return individual with the same email
    */
   @GetMapping("get-individual")
-  public List<Individual> getIndividual(CurrentUser user) {
-    return this.individualRepository.findByEmail(user.getEmail());
+  public Individual getIndividual(CurrentUser user) {
+    return this.individualRepository.findByEmail(user.getEmail()).orElse(null);
   }
 
   /** Save user information into Datastore. If the email does not yet exist in 
@@ -46,12 +45,10 @@ public class IndividualController {
       @RequestParam("university") String university) throws IOException {
 
     String userEmail = user.getEmail();
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(userEmail);
+    Individual current = this.individualRepository.findByEmail(userEmail).orElse(null);
     
     // either edit the existing user or create a new one
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.setFirstName(firstname);
       current.setLastName(lastname);
     }
@@ -74,11 +71,9 @@ public class IndividualController {
       @RequestParam("event-id") String eventId,
       CurrentUser user) throws IOException {
 
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.addSavedEvents(event);
     }
     this.individualRepository.save(current);
@@ -97,11 +92,9 @@ public class IndividualController {
       @RequestParam("event-id") String eventId,
       CurrentUser user) throws IOException {
 
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.deleteSavedEvents(event);
     }
     this.individualRepository.save(current);
@@ -121,11 +114,9 @@ public class IndividualController {
       CurrentUser user,
       @RequestParam("organization-id") String organizationId) throws IOException {
     
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.addOrganizations(organization);
     } 
     this.individualRepository.save(current);
@@ -145,12 +136,10 @@ public class IndividualController {
       CurrentUser user,
       @RequestParam("organization-id") String organizationId) throws IOException {
     
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
 
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.deleteOrganizations(organization);
     } 
     this.individualRepository.save(current);
