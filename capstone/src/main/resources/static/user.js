@@ -274,7 +274,7 @@ function createSavedEventElement(event, saveAllowed, editAllowed) {
   // create delete event form
   var form = null;
   if (editAllowed) {
-    form = createDeleteButton(event);
+    form = createEditEventButton(event);
   } else if (saveAllowed) {
     form = createSaveEventButton(event);
   } else if (!saveAllowed) {
@@ -351,7 +351,7 @@ function getOrganizationEvents() {
   if (userType == "organization") {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
       const eventDiv = document.getElementById("created-events");
-      data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event), false, true));
+      data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, true)));
       displayMain(true);
     });
   } else {
