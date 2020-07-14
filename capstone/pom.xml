@@ -17,12 +17,22 @@
   </parent>
 
   <properties>
-    <!-- This project uses Java 8 -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
+    <spring-cloud-gcp.version>1.2.3.RELEASE</spring-cloud-gcp.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-gcp-dependencies</artifactId>
+        <version>${spring-cloud-gcp.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
 
@@ -34,8 +44,14 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-gcp-starter-data-datastore</artifactId>
-      <version>1.2.3.RELEASE</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-gcp-starter-security-iap</artifactId>
+    </dependency>
+
+    <!-- Test dependencies -->
 
     <dependency>
       <groupId>junit</groupId>
@@ -96,4 +112,26 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>local</id>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+              <arguments>
+                <argument>--spring.cloud.gcp.security.iap.enabled=false</argument>
+                <argument>--spring.security.user.name=student@uni.org</argument>
+                <argument>--spring.security.user.password=test</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
