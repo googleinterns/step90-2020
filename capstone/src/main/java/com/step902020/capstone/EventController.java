@@ -3,6 +3,8 @@ package com.step902020.capstone;
 import java.io.IOException;
 import java.util.*;
 import java.time.LocalDateTime;
+
+import com.step902020.capstone.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -40,7 +42,7 @@ public class EventController {
 
   @PostMapping("save-event")
   public RedirectView saveEvent (
-     @RequestHeader("X-Goog-Authenticated-User-Email") String email,
+     CurrentUser user,
      @RequestParam("eventTitle") String eventTitle,
      @RequestParam("eventDateTime") String eventDateTime,
      @RequestParam("eventDescription") String eventDescription,
@@ -50,7 +52,7 @@ public class EventController {
      @RequestParam("requiredFee") Optional<Boolean> requiredFee,
      @RequestParam("event-id") String eventId
     ) throws IOException {
-      Organization organization = organizationRepository.findByEmail(email.substring(20)).get(0);
+      Organization organization = organizationRepository.findByEmail(user.getEmail()).get(0);
       Event event = eventId.length() <= 0? null : this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
       if (event != null) {
         event.setEventDateTime(eventDateTime);

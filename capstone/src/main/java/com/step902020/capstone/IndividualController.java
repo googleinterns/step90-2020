@@ -130,7 +130,7 @@ public class IndividualController {
       current.addOrganizations(organization);
     } 
     this.individualRepository.save(current);
-    return new RedirectView("organizationsearch.html", true);
+    return new RedirectView("savedorganizations.html", true);
   }
 
   /**
