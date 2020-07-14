@@ -198,7 +198,7 @@ function getIndividualOrganizations() {
     fetch('get-' + userType).then(response => response.json()).then((data) => {
       const orgDiv = document.getElementById("saved-orgs");
       orgDiv.innerHTML='';
-      data[0].organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true)));
+      data[0].organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true, true)));
       displayMain(true);
     });
   } else {
@@ -207,7 +207,7 @@ function getIndividualOrganizations() {
 }
 
 /* Function to create the individual organization display divs*/
-function createSavedOrgElement(data, deleteAllowed) {
+function createSavedOrgElement(data, deleteAllowed, displayButton) {
  const divElement = document.createElement('div');
  divElement.setAttribute("class", "item-container general-container");
 
@@ -225,10 +225,10 @@ function createSavedOrgElement(data, deleteAllowed) {
  h5ElementBio.innerText = data.description;
  divElement.appendChild(h5ElementBio);
 
- // create delete organization form
- const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
- divElement.appendChild(form);
-
+ if (displayButton) {
+   const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
+   divElement.appendChild(form);
+ }
  return divElement;
 }
 
@@ -368,6 +368,8 @@ function searchOrg() {
       return;
     }
   }
+  var userType = sessionStorage.getItem("user-type");
+  var displaySaveButton = userType == "individual";
   var name = document.getElementById("search-org").value;
   fetch('search-organization?name=' + name + "&university=" + university).then(response => response.json()).then((organizations) => {
     const orgListElement = document.getElementById('list-organizations');
@@ -379,7 +381,7 @@ function searchOrg() {
       orgListElement.appendChild(pElementNone);
     } else {
       organizations.forEach((org) => {
-        orgListElement.appendChild(createSavedOrgElement(org, false));
+        orgListElement.appendChild(createSavedOrgElement(org, false, displaySaveButton));
       });
     }
   });

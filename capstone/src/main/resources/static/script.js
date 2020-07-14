@@ -24,12 +24,13 @@ function getEvents() {
       return;
     }
   }
+  var displaySaveButton = userType == "individual";
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = document.getElementById('events');
 
     events.forEach((event) => {
-      eventListElement.appendChild(createEventElement(event));
+      eventListElement.appendChild(createEventElement(event, displaySaveButton));
     })
     // Format time to *** time ago
     if (reviewsExist){
@@ -43,7 +44,7 @@ function getEvents() {
  * @param event Event from Get call
  * @return Formatted event ready to add to document
  */
-function createEventElement(event) {
+function createEventElement(event, displaySaveButton) {
   const eventElement = document.createElement('li');
   eventElement.className = 'event';
 
@@ -68,7 +69,9 @@ function createEventElement(event) {
   eventElement.appendChild(eventTimeElement);
   eventElement.appendChild(eventLocationElement);
   //eventElement.appendChild(eventOrgElement);
-  eventElement.appendChild(createSaveEventButton(event));
+  if (displaySaveButton) {
+    eventElement.appendChild(createSaveEventButton(event));
+  }
   eventElement.appendChild(createReviewElement(event));
   
   return eventElement;
