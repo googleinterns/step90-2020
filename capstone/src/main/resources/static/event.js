@@ -1,13 +1,7 @@
 async function getEvents() {
   const response = await fetch('get-all-events');
-<<<<<<< HEAD
-  const jsonEvents = await response.json();z
-  //const eventList = document.getElementById('events-container');
-=======
   const jsonEvents = await response.json();
   //const eventList = document.getElementById('events-container');
-
->>>>>>> 8f1817c701f47f86a77d52f2610a0fa604462698
   //jsonEvents.forEach(event => eventList.appendChild(createEvent(event)));
 }
 
@@ -15,10 +9,6 @@ function createEvent(event) {
   const listEventElement = document.createElement('li');
   listEventElement.className = 'list-events';
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 8f1817c701f47f86a77d52f2610a0fa604462698
   createEventAttribute(event.organizationId, listEventElement);
   createEventAttribute(event.eventTitle, listEventElement);
   createEventAttribute(event.eventDateTime, listEventElement);
