@@ -21,6 +21,16 @@ function getUser(fillForm) {
     }
     displayMain(true);
   }
+  fetch('get-image').then(response => {
+    const imageDiv = document.getElementById("profile-image");
+    const aImage = document.createElement('a');
+    aImage.setAttribute("href", data);
+    const imgImage = document.createElement('img');
+    imgImage.setAttribute("class", "image profile");
+    imgImage.setAttribute("src", data);
+    aImage.appendChild(imgImage);
+    imageDiv.appendChild(aImage);
+  });
 }
 
 /* function to toggle between displaying user profile and displaying an error message */
