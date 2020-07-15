@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta>
+    <title>Organization Search</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="user.js"></script>
+</head>
+<body onload="searchOrg();">
+    <nav class="nav-bar">
+        <ul>
+            <li class="home"><a href="index.html">College Activity Finder</a></li>
+            <li><a href="">Events</a></li>
+            <li class="active"><a href="organizationsearch.html">Organizations</a></li>
+            <li><a href="profile.html">My Account</a></li>
+            <li><a href="">About Us</a></li>
+        </ul>
+    </nav>
+    <br/>
+    
+    
+    <input type="text" placeholder="Search by organization name" id="search-org">
+    <button class="button submit" onclick="searchOrg();">Search</button>
+    <div id="no-profile">
+        <p>You have not built your profile yet, please submit a profile </p>
+    </div>
+    <div id="main">
+        <div id="list-organizations"></div>
+    </div>
+    
+      
+
+  </body>
+</html>

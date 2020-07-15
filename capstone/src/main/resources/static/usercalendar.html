@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta>
+    <title>Calendar of Events</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body onload="getUser(false);createCalendar()">
+    <nav class="nav-bar">
+        <ul>
+            <li class="home"><a href="index.html">College Activity Finder</a></li>
+            <li><a href="">Events</a></li>
+            <li><a href="organizationsearch.html">Organizations</a></li>
+            <li class="active"><a href="profile.html">My Account</a></li>
+            <li><a href="">About Us</a></li>
+        </ul>
+    </nav>
+    <br/>
+    <div class="profile-head">
+        <div id="name"></div>
+        <div class="container">
+            <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
+        </div>
+        <div id="email"></div>
+        <div id="university"></div>
+        <div id="description"></div>
+        <div id="no-profile">
+            <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
+        </div>
+        <nav class="nav-bar-inverted">
+            <ul>
+                <li><a href="profile.html">My Profile</a></li>
+                <li class="active-highlighted"><a href="usercalendar.html">Calendar of Events</a></li>
+                <li><a href="savedevents.html">Saved Events</a></li>
+                <li><a href="savedorganizations.html">Saved Organizations</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="calendar" id="calendar"></div>
+
+  </body>
+</html>

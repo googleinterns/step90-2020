@@ -2,18 +2,17 @@
 <html>
 <head>
     <meta>
-    <title>Saved Events</title>
+    <title>Saved Organizations</title>
     <link rel="stylesheet" href="style.css">
     <script src="user.js"></script>
 </head>
-<body onload="getUser(false);getIndividualEvents();">
+<body onload="getUser(false);getIndividualOrganizations();">
     <nav class="nav-bar">
         <ul>
             <li class="home"><a href="">College Activity Finder</a></li>
             <li><a href="index.html">Events</a></li>
             <li><a href="organizationsearch.html">Organizations</a></li>
             <li class="active"><a href="profile.html">My Account</a></li>
-            <li class=""><a href="map.html">Event Map</a> </li>
             <li><a href="">About Us</a></li>
         </ul>
     </nav>
@@ -33,8 +32,8 @@
             <ul>
                 <li><a href="profile.html">My Profile</a></li>
                 <li><a href="usercalendar.html">Calendar of Events</a></li>
-                <li class="active-highlighted"><a href="savedevents.html">Saved Events</a></li>
-                <li><a href="savedorganizations.html">Saved Organizations</a></li>
+                <li><a href="savedevents.html">Saved Events</a></li>
+                <li class="active-highlighted"><a href="savedorganizations.html">Saved Organizations</a></li>
             </ul>
         </nav>
         <nav class="nav-bar-inverted" id="org-nav">
@@ -45,11 +44,10 @@
             </ul>
         </nav>
     </div>
-    <form action="add-saved-event" method="POST">
-        <input type="text" name="event-id"></input>
-        <button type="submit">Test add event</button>
+    <form action="add-saved-organization" method="POST">
+        <input type="text" name="organization-id"></input>
+        <button type="submit">Test add organization</button>
     </form>
-    <div id="saved-events" class="right"></div>
-    
+    <div id="saved-orgs" class="right"></div>
   </body>
 </html>

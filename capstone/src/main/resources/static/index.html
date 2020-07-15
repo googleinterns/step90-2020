@@ -4,47 +4,45 @@
     <meta charset="UTF-8">
     <title>Events</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
   </head>
 
   <body>
     <nav class="nav-bar">
       <ul>
         <li class="home"><a href="index.html">College Activity Finder</a></li>
-        <li><a href="active">Events</a></li>
-        <li><a href="">Organizations</a></li>
+        <li class="active"><a href="index.html">Events</a></li>
+        <li><a href="organizationsearch.html">Organizations</a></li>
         <li class=""><a href="profile.html">My Account</a></li>
+        <li class=""><a href="map.html">Event Map</a> </li>
         <li><a href="=">About Us</a></li>
       </ul>
     </nav>
 
-    <h1>Events</h1>
+    <h1 id="event-header">FIND YOUR EVENT</h1>
     <div id="filters">
-      <p>Filters</p>
-      <label for="free">Free</label>
-      <input type="checkbox" id="free" name="free" value="free">
-      <label for="food">Food Provided</label>
-      <input type="checkbox" id="food" name="food" value="food">
-        
-        <label for="type">Event Type</label>
-        <select name="type" id="type">
-          <option disabled selected> -- select an option -- </option>
-          <option value="forum">Forum</option>
-          <option value="game">Game</option>
-          <option value="movie">Movie Screening</option>
-          <option value="party">Party</option>
-          <option value="performance">Performance</option>
-          <option value="speaker">Speaker</option>
-          <option value="volunteer">Volunteer</option>
-          <option value="workshop">Workshop</option>
+      <button id="free" value="free" onclick="toggleBorderSelection('free')">FREE</button>
+      <button id="food" value="food" onclick="toggleBorderSelection('food')">FOOD</button>
+
+        <select name="type" id="type" onclick="toggleBorderSelection('type')">
+          <option value="">EVENT TYPE</option>
+          <option value="forum">FORUM</option>
+          <option value="game">GAME</option>
+          <option value="movie">MOVIE</option>
+          <option value="party">PARTY</option>
+          <option value="performance">PERFORMANCE</option>
+          <option value="speaker">SPEAKER</option>
+          <option value="volunteer">VOLUNTEER</option>
+          <option value="workshop">WORKSHOP</option>
         </select>
 
-        <button onclick="showMore()" id="filterButton">Show more</button>
+        <button onclick="showMore(); toggleBorderSelection('filterButton')" id="filterButton">MORE</button>
 
         <div id="additionalFilters" style="display:none">
-          <label for="energy">Energy Level</label>
-          <select name="energy" id="energy">
-            <option disabled selected> -- select an option -- </option>
+          <select name="energy" id="energy" onclick="toggleBorderSelection('energy')">
+            <option value="">ENERGY LEVEL</option>
             <option value="1">1 (lowest)</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -52,23 +50,20 @@
             <option value="5">5 (highest)</option>
           </select>
 
-          <label for="location">Indoor/Outdoor</label>
-          <select name="location" id="location">
-            <option disabled selected> -- select an option -- </option>
-            <option value="indoor">Indoor</option>
-            <option value="outdoor">Outdoor</option>=
+          <select name="location" id="location" onclick="toggleBorderSelection('location')">
+            <option value=''>INDOOR/OUTDOOR</option>
+            <option value="indoor">INDOOR</option>
+            <option value="outdoor">OUTDOOR</option>=
           </select>
 
-          <label for="vistor">Visitors Allowed</label>
-          <input type="checkbox" id="vistor" name="vistor" value="vistor">
+          <button id="visitor" value="visitor" onclick="toggleBorderSelection('visitor')">VISITORS ALLOWED</button>
         </div>
-        <label for="searchEvent">Search Event</label>
-        <input type="text" id="searchEvent" name="searchEvent">
-        <button onclick="getEvents()">Search</button>
+        <input type="text" id="searchEvent" name="searchEvent"
+               style="display:block; margin:20px auto;" placeholder="KNOW THE NAME?">
+        <button onclick="getEvents()">SEARCH</button>
     </div>
-    <button onclick="newEvent()">make event (temp use)</button>
 
     <div id="events"></div>
-
+    <button onclick="removeReviews()">remove reviews</button>
   </body>
 </html>
