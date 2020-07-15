@@ -60,10 +60,9 @@ public class EventController {
         event.setEventLatitude(Double.parseDouble(eventLatitude));
         event.setEventLongitude(Double.parseDouble(eventLongitude));
         event.setEventTitle(eventTitle);
-        event.setOrganization(organization);
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvaliable.orElse(false), requiredFee.orElse(false));
+        Event newEvent = new Event(organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvaliable.orElse(false), requiredFee.orElse(false));
         this.eventRepository.save(newEvent);
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);

@@ -26,7 +26,6 @@ public class Organization {
   String image;
 
   @Reference
-  @JsonManagedReference
   List<Event> events;
   
   public Organization() {
