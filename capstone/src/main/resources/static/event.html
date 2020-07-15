@@ -18,13 +18,7 @@
     <h1>Create an Event </h1>
 
     <div class="event-form">
-
       <form id="event-form" action="save-event" method="POST">
-        
-        <label for="organizationId"> OrganizationId: </label>
-        <input type="input" id="organizationId" name="organizationId">
-
-        <br><br>
 
         <input type="hidden" id="university" name="university">
         <input type="hidden" id="event-id" name="event-id">
@@ -44,6 +38,17 @@
 
         <label for="eventDescription"> Event Description: </label> <br>
         <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
+        <br><br>
+
+        <label> Event Filters: </label>
+        <br>
+    
+        <input type="checkbox" id="foodAvaliable" name="foodAvaliable">
+        <label for="foodAvaliable"> Food Avaliable </label>
+        <br>
+
+        <input type="checkbox" id="requiredFee" name="requiredFee">
+        <label for="requiredFee"> Required Fee </label>
         <br><br>
 
         <input type="submit" form="event-form" value="submit">

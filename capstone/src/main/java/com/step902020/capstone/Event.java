@@ -54,13 +54,11 @@ public class Event{
     this.foodAvaliable = foodAvaliable == null ? false : foodAvaliable;
     this.requiredFee = requiredFee == null ? false : requiredFee;
     this.reviews = new ArrayList();
-
   }
 
   public Long getDatastoreID() {
     return datastoreID;
   }
-
   public String getEventTitle() {
     return eventTitle;
   }

@@ -3,6 +3,7 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -129,11 +130,11 @@ public class IndividualController {
       current.addOrganizations(organization);
     } 
     this.individualRepository.save(current);
-    return new RedirectView("organizationsearch.html", true);
+    return new RedirectView("savedorganizations.html", true);
   }
 
-   /**
-    * delete the organization with the organization id from the current
+  /**
+   * delete the organization with the organization id from the current
   individual's list of saved organizations
    * @param user Currently logged-in user
    * @param organizationId datastoreId of the organization being deleted
@@ -160,17 +161,23 @@ public class IndividualController {
   /**
    * gets a combined list of events from the user's saved list of events and events from all the
    * saved organizations
-   * @return Iterable containing Events
+   * @param user Currently logged-in user
+   * @return list of events
    * @throws IOException
    */
   @GetMapping("get-calendar-events")
-  public Iterable<Event> getCalendarEvents() throws IOException {
-    /* full implementation blocked by the previous PR (because I changed some properties into references )
-     and those changes are not in this branch */
-    // get saved events
-    // get a list of organizations
-    // for each of the organizations get their list of saved events
-
-    return this.eventRepository.findAll();
+  public List<Event> getCalendarEvents(CurrentUser user) throws IOException {
+    // get saved events and for each of the organizations get their list of saved events
+    Individual current = null;
+    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    List<Event> calendarEvents = new ArrayList<Event>();
+    if (userList.size() > 0) {
+      current = userList.get(0);
+      calendarEvents.addAll(current.getSavedEvents());
+      for (Organization org : current.getOrganizations()) {
+        calendarEvents.addAll(org.getEvents());
+      }
+    }
+    return calendarEvents;
   }
 }
