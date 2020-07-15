@@ -310,7 +310,7 @@ function getOrganizationEvents() {
     if (userType == "organization") {
       fetch('get-' + userType).then(response => response.json()).then((data) => {
         const eventDiv = document.getElementById("created-events");
-        data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, true)));
+        data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, true)));
         displayMain(true);
       });
     } else {

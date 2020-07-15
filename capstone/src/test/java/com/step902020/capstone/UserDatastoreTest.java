@@ -80,7 +80,7 @@ public class UserDatastoreTest {
                 "hello world!",
                 ""));
 
-    expectedEvent = this.eventRepository.save(new Event(expectedOrganization, "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
+    expectedEvent = this.eventRepository.save(new Event(expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
         40.769579, -73.973036, true, false));
 
     this.authRestTemplate = this.restTemplate
