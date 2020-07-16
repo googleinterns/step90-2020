@@ -129,7 +129,7 @@ img {
   width: 40%;
 }
 
-.profile-form input[type=text], .profile-form select {
+.profile-form input[type=text], input[type=file], .profile-form select {
   box-sizing: border-box;
   margin-top: 6px;
   margin-bottom: 16px;
@@ -147,7 +147,7 @@ img {
   width: 60%;
 }
 
-#organization, #no-profile, #user, #org-nav, #individual-nav {
+#organization, #no-profile, #user, #org-nav, #individual-nav, #user-image-form {
   display: none;
 }
 

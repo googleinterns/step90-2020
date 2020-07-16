@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="user.js"></script>
 </head>
-<body onload="getUser(true);">
+<body onload="getUser(true);addImageField('user-image-form');">
     <nav class="nav-bar">
         <ul>
             <li class="home"><a href="">College Activity Finder</a></li>
@@ -50,7 +50,7 @@
         <button class="button submit profile-button" onclick="revealForm()">Edit/Submit Your Profile</button>
     </div>
     <div class="profile-form general-container" id="user">
-        <form action="save-individual" method="POST" id="user-form" enctype="multipart/form-data">
+        <form action="save-individual" method="POST" id="user-form">
             <div id="user-select">
                 <label>Are you an individual or a club/organization?</label>
                 <select id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
@@ -70,7 +70,7 @@
     </div>
 
     <div class="profile-form general-container" id="organization">
-        <form action="save-organization" method="POST" id="organization-form" enctype="multipart/form-data">
+        <form action="save-organization" method="POST" id="organization-form">
             <div id="org-select">
                 <label>Are you an individual or an organization?</label>
                 <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
@@ -88,18 +88,6 @@
             <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
         </form>
     </div>
-    <form action="https://storage.googleapis.com/spring-bucket-jennysheng" method="post" enctype="multipart/form-data">
-        <input type="text" name="key" value="test-object">
-        <input type="hidden" name="Content-Type" value="image/jpeg">
-        <input type="hidden" name="success_action_redirect" value="https://www.example.com/success_notification.html">
-        <input type="hidden" name="policy" value="eyJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJ0cmF2ZWwtbWFwcyJ9LHsiY29udGVudC10eXBlIjoiaW1hZ2UvanBlZyJ9LHsic3VjY2Vzc19hY3Rpb25fcmVkaXJlY3QiOiJodHRwOi8vd3d3LmV4YW1wbGUuY29tL3N1Y2Nlc3Nfbm90aWZpY2F0aW9uLmh0bWwifSx7ImtleSI6InRlc3Qtb2JqZWN0In0seyJ4LWdvb2ctZGF0ZSI6IjIwMjAwMTIzVDA0MzUzMFoifSx7IngtZ29vZy1jcmVkZW50aWFsIjoiZXhhbXBsZV9hY2NvdW50QGV4YW1wbGVfcHJvamVjdC5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbS8yMDE5MTEwMi9hdXRvL3N0b3JhZ2UvZ29vZzRfcmVxdWVzdCJ9LHsieC1nb29nLWFsZ29yaXRobSI6IkdPT0c0LVJTQS1TSEEyNTYifV0sImV4cGlyYXRpb24iOiIyMDIwLTAxLTIzVDA0OjM1OjQwWiJ9">
-        <input type="hidden" name="x-goog-algorithm" value="GOOG4-RSA-SHA256">
-        <input type="hidden" name="x-goog-credential" value="example_account@example_project.iam.gserviceaccount.com/20191102/auto/storage/goog4_request">
-        <input type="hidden" name="x-goog-date" value="20191102T043530Z">
-        <input type="hidden" name="x-goog-signature" value="58bc39b8f604ee1f18171fee4828ef8967f3d2721676570e115d68c2f133820cbb833976f18955516b2b7d0c3d9660fea613a2ad90c240bd02c1eefa4a55e9038ce74dcfdd34e278ea0436e261131a36fa4e922f0a077ca1c9842f654928aac3ca7f9341075f9db275d8286b5ef13e7f91b4837e77b2a6dbea83f86b90f848331053d8a6b1fbc26787992e7fb819a2005bae9b3026b9c7d1158e88e4a2018f13757083c7873241d2dfe6ea46a17cd6f3d090f3e0da44ccfbd6bc425124de1bea744a32f3ab175672a991ef274cd83550eca57ea591b85fa9799098a38ec552dc3ec679c431491444820624f5c4ba0c8cf87d60af89899afce2a90325c6966dcf">
-
-        <input name="file" type="file">
-        <input type="submit" value="Upload">
-    </form>
+    <div class="profile-form general-container" id="user-image-form"></div>
   </body>
 </html>

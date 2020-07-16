@@ -17,12 +17,14 @@ public class IndividualController {
   @Autowired
   private IndividualRepository individualRepository;
 
-  /** Find currently logged in individual. */
   @Autowired
   private EventRepository eventRepository;
 
   @Autowired
   private OrganizationRepository organizationRepository;
+
+  @Autowired
+  private GcsStore gcsstore;
 
   /**
    * Find an individual's profile information by email
@@ -179,13 +181,24 @@ public class IndividualController {
     return calendarEvents;
   }
 
+  /**
+   * return the html form of the profile image form with a valid upload url
+   * @param user current user
+   * @return html in a String
+   */
   @GetMapping("upload-image")
-  public String uploadImage(CurrentUser user) {
-    return GcsStore.generateSignedPostPolicyV4("step90-2020", "spring-bucket-jennysheng", user.getEmail());
+  public String uploadImage(CurrentUser user) throws IOException{
+    return gcsstore.generateSignedPostPolicyV4("step90-2020", "spring-bucket-jennysheng", user.getEmail());
   }
 
+  /**
+   * returns image with the same name as the user email from cloud storage
+   * @param user current user
+   * @return image in a byte array
+   * @throws IOException
+   */
   @GetMapping(value = "get-image", produces = MediaType.IMAGE_JPEG_VALUE)
   public @ResponseBody byte[] getImage(CurrentUser user) throws IOException {
-    return GcsStore.generateV4GetObjectSignedUrl("step90-2020", "spring-bucket-jennysheng", user.getEmail());
+    return gcsstore.serveImage("step90-2020", "spring-bucket-jennysheng", user.getEmail());
   }
 }

@@ -21,16 +21,20 @@ function getUser(fillForm) {
     }
     displayMain(true);
   }
-//  fetch('get-image').then(response => response.text()).then((data) => {
-//    const imageDiv = document.getElementById("profile-image");
-//    const aImage = document.createElement('a');
-//    aImage.setAttribute("href", data);
-//    const imgImage = document.createElement('img');
-//    imgImage.setAttribute("class", "image profile");
-//    imgImage.setAttribute("src", data);
-//    aImage.appendChild(imgImage);
-//    imageDiv.appendChild(aImage);
-//  });
+}
+
+/* Add the image form to the profile page */
+function addImageField(formName) {
+  fetch('upload-image').then(response => response.text()).then((data) => {
+    const form = document.getElementById(formName);
+    form.innerHTML = data;
+  });
+}
+
+/* upon submission, hide the image form */
+function closeImageForm() {
+  document.getElementById("user-image-form").style.display = "none";
+  window.location.reload();
 }
 
 /* function to toggle between displaying user profile and displaying an error message */
@@ -74,6 +78,7 @@ function getUserType(isProfile) {
   });
 }
 
+/* toggle between the two nav bars */
 function displayNavToggle(hide, display) {
   document.getElementById(display).style.display="block";
   document.getElementById(hide).style.display="none";
@@ -104,7 +109,6 @@ function createProfile(data, fillForm, isOrganization) {
     } else {
       createIndividualProfile(data, fillForm);
     }
-
 }
 
 /* populate individual specific fields of the profile */
@@ -154,13 +158,16 @@ function toggleForm(formUserType) {
 // helper function for displaying forms
 // a new user will be able to toggle, but a returning user will not
 function displayForm(userType, displayBoth) {
+  document.getElementById("user-image-form").style.display = "block";
   if (userType == "individual") {
     updateUserTypeInForm("user", "organization", "user-type-toggle", "individual");
     if (!displayBoth) {
+      document.getElementById("university-form-display").style.display = "block";
       hideFields("user-select", "ind-uni");
     }
   } else if (userType == "organization") {
 		updateUserTypeInForm("organization", "user", "org-user-type", "organization");
+		document.getElementById("org-university-form-display").style.display = "block";
 		if (!displayBoth) {
 			hideFields("org-select", "org-uni");
 		}
