@@ -50,7 +50,7 @@ function createMap() {
   var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
   const campusMap = new google.maps.Map(
     document.getElementById('map'),
-    {center: princetonLatLng, zoom: 11});
+    {center: princetonLatLng, zoom: 16});
 
   const event1 = new google.maps.Marker({
       position: {lat: 40.344184,lng: -74.657645},

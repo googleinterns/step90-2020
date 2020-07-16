@@ -4,23 +4,27 @@
   <head>
     <meta charset="UTF-8">
     <title> Map </title>
+    <!--
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8"></script>
+    -->
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8&callback=createMap">
+    </script>
     <script src="event.js"> </script>
     <link rel="stylesheet" href="style.css">
   </head>
 
   <body onload="createMap()">
-
-  <nav class="nav-bar">
-    <ul>
-      <li class="home"><a href="index.html">College Activity Finder</a></li>
-      <li class="active"><a href="index.html">Events</a></li>
-      <li><a href="organizationsearch.html">Organizations</a></li>
-      <li class=""><a href="profile.html">My Account</a></li>
-      <li class=""><a href="map.html">Event Map</a> </li>
-      <li><a href="=">About Us</a></li>
-    </ul>
-  </nav>
+    <nav class="nav-bar">
+      <ul>
+        <li class="home"><a href="index.html">College Activity Finder</a></li>
+        <li class=""><a href="index.html">Events</a></li>
+        <li><a href="organizationsearch.html">Organizations</a></li>
+        <li class=""><a href="profile.html">My Account</a></li>
+        <li class="active"><a href="map.html">Event Map</a> </li>
+        <li><a href="=">About Us</a></li>
+      </ul>
+    </nav>
 
     <h1> Map </h1>
     <div id="map"> </div>
