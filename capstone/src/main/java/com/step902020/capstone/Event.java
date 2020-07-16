@@ -1,8 +1,6 @@
 package com.step902020.capstone;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Reference;
@@ -33,8 +31,8 @@ public class Event{
   @Field(name="eventLongitude")
   double eventLongitude;
 
-  @Field(name="foodAvaliable")
-  Boolean foodAvaliable;
+  @Field(name="foodAvailable")
+  Boolean foodAvailable;
 
   @Field(name="requiredFee")
   Boolean requiredFee;
@@ -43,7 +41,7 @@ public class Event{
   List<Review> reviews;
  
 
-  public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvaliable, Boolean requiredFee) {
+  public Event(Organization organization, String eventTitle, String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
  
     this.organization = organization;
     this.eventTitle = eventTitle;
@@ -51,7 +49,7 @@ public class Event{
     this.eventDescription = eventDescription;
     this.eventLatitude = eventLatitude;
     this.eventLongitude = eventLongitude;
-    this.foodAvaliable = foodAvaliable == null ? false : foodAvaliable;
+    this.foodAvailable = foodAvailable == null ? false : foodAvailable;
     this.requiredFee = requiredFee == null ? false : requiredFee;
     this.reviews = new ArrayList();
   }
@@ -59,11 +57,9 @@ public class Event{
   public Long getDatastoreID() {
     return datastoreID;
   }
-
   public String getEventTitle() {
     return eventTitle;
   }
-
   public Organization getOrganization() {
     return organization;
   }
@@ -82,35 +78,30 @@ public class Event{
   public List<Review> getReviews() {
     return reviews;
   }
+
   public void setDatastoreID(Long datastoreID) {
     this.datastoreID = datastoreID;
   }
-
   public void setOrganization(Organization organization) {
     this.organization = organization;
   }
-
   public void setEventTitle(String eventTitle) {
     this.eventTitle = eventTitle;
   }
-
   public void setEventDateTime(String eventDateTime) {
     this.eventDateTime = eventDateTime;
   }
-
   public void setEventDescription(String eventDescription) {
     this.eventDescription = eventDescription;
   }
-
   public void setEventLatitude(double eventLatitude) {
     this.eventLatitude = eventLatitude;
   }
-
   public void setEventLongitude(double eventLongitude) {
     this.eventLongitude = eventLongitude;
   }
-  public void setFoodAvaliable(Boolean foodAvaliable) {
-    this.foodAvaliable = foodAvaliable;
+  public void setFoodAvailable(Boolean foodAvailable) {
+    this.foodAvailable = foodAvailable;
   }
   public void setRequiredFee(Boolean requiredFee) {
     this.requiredFee = requiredFee;
@@ -123,4 +114,5 @@ public class Event{
   public void addReview(Review review) {
     reviews.add(review);
   }
+
 }
