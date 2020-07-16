@@ -71,7 +71,7 @@ function createEventElement(event, displaySaveButton) {
   eventElement.appendChild(eventLocationElement);
   //eventElement.appendChild(eventOrgElement);
   if (displaySaveButton) {
-    eventElement.appendChild(createSaveEventButton(event));
+    createSaveEventButton(eventElement, event);
   }
   eventElement.appendChild(createReviewElement(event));
   

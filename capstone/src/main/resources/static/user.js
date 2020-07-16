@@ -276,9 +276,9 @@ function createSavedEventElement(event, saveAllowed, editDeleteAllowed) {
     // if edit is allowed, then it means that delete is allowed as well
     createEditAndDeleteEventButton(divElement, event);
   } else if (saveAllowed) {
-    createSaveEventButton(event);
+    createSaveEventButton(divElement, event);
   } else if (!saveAllowed) {
-    createUnsaveEventButton(event);
+    createUnsaveEventButton(divElement, event);
   }
 
   return divElement;

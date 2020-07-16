@@ -3,8 +3,8 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -166,11 +166,11 @@ public class IndividualController {
    * @throws IOException
    */
   @GetMapping("get-calendar-events")
-  public List<Event> getCalendarEvents(CurrentUser user) throws IOException {
+  public Set<Event> getCalendarEvents(CurrentUser user) throws IOException {
     // get saved events and for each of the organizations get their list of saved events
     Individual current = null;
     List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
-    List<Event> calendarEvents = new ArrayList<Event>();
+    Set<Event> calendarEvents = new HashSet<Event>();
     if (userList.size() > 0) {
       current = userList.get(0);
       calendarEvents.addAll(current.getSavedEvents());
