@@ -259,7 +259,7 @@ function createSaveButton(data) {
 }
 
 /* create the individual event containers for displaying events*/
-function createSavedEventElement(event, saveAllowed, editAllowed) {
+function createSavedEventElement(event, saveAllowed, editDeleteAllowed) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
 
@@ -271,22 +271,21 @@ function createSavedEventElement(event, saveAllowed, editAllowed) {
   pElementTime.innerText = event.eventDateTime;
   divElement.appendChild(pElementTime);
 
-  // create delete event form
-  var form = null;
-  if (editAllowed) {
-    form = createEditEventButton(event);
+  // create save, unsave, delete, or edit event form
+  if (editDeleteAllowed) {
+    // if edit is allowed, then it means that delete is allowed as well
+    createEditAndDeleteEventButton(divElement, event);
   } else if (saveAllowed) {
-    form = createSaveEventButton(event);
+    createSaveEventButton(event);
   } else if (!saveAllowed) {
-    form = createUnsaveEventButton(event);
+    createUnsaveEventButton(event);
   }
-  divElement.appendChild(form);
 
   return divElement;
 }
 
 /* creates an unsave button for event */
-function createUnsaveEventButton(event) {
+function createUnsaveEventButton(divElement, event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
   form.setAttribute("action", "delete-saved-event?event-id=" + event.datastoreID);
@@ -295,11 +294,11 @@ function createUnsaveEventButton(event) {
   button.setAttribute("type", "submit");
 
   form.appendChild(button);
-  return form;
+  divElement.appendChild(form);
 }
 
 /* creates a save button for event */
-function createSaveEventButton(event) {
+function createSaveEventButton(divElement, event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
   form.setAttribute("action", "add-saved-event?event-id=" + event.datastoreID);
@@ -308,19 +307,33 @@ function createSaveEventButton(event) {
   button.setAttribute("type", "submit");
 
   form.appendChild(button);
-  return form;
+  divElement.appendChild(form);
 }
 
 /* creates an edit button for events */
-function createEditEventButton(event) {
-  const form = document.createElement("form");
-  form.setAttribute("action", "event.html#" + event.datastoreID);
-  const button = document.createElement('button');
-  button.innerText = "Edit this event";
-  button.setAttribute("type", "submit");
+function createEditAndDeleteEventButton(divElement, event) {
+  // create edit form
+  const editForm = document.createElement("form");
+  editForm.setAttribute("action", "event.html#" + event.datastoreID);
+  const editButton = document.createElement('button');
+  editButton.innerText = "Edit this event";
+  editButton.setAttribute("type", "submit");
 
-  form.appendChild(button);
-  return form;
+  editForm.appendChild(editButton);
+  divElement.appendChild(editForm);
+
+  divElement.appendChild(document.createElement('br'));
+
+  // create delete form
+  const deleteForm = document.createElement("form");
+  deleteForm.setAttribute("action", "delete-organization-event?event-id=" + event.datastoreID);
+  deleteForm.setAttribute("method", "POST");
+  const deleteButton = document.createElement('button');
+  deleteButton.innerText = "Delete this event";
+  deleteButton.setAttribute("type", "submit");
+
+  deleteForm.appendChild(deleteButton);
+  divElement.appendChild(deleteForm);
 }
 
 /* Function to control form display using button */
