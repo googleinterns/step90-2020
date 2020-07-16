@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -179,12 +180,12 @@ public class IndividualController {
   }
 
   @GetMapping("upload-image")
-  public String uploadImage() {
-    return GcsStore.generateSignedPostPolicyV4("step90-2020", "spring-bucket-jennysheng", "testAgain");
+  public String uploadImage(CurrentUser user) {
+    return GcsStore.generateSignedPostPolicyV4("step90-2020", "spring-bucket-jennysheng", user.getEmail());
   }
 
-  @GetMapping("get-image")
-  public String getImage() throws IOException {
-    return GcsStore.generateV4GetObjectSignedUrl("step90-2020", "spring-bucket-jennysheng", "default.jpg");
+  @GetMapping(value = "get-image", produces = MediaType.IMAGE_JPEG_VALUE)
+  public @ResponseBody byte[] getImage(CurrentUser user) throws IOException {
+    return GcsStore.generateV4GetObjectSignedUrl("step90-2020", "spring-bucket-jennysheng", user.getEmail());
   }
 }

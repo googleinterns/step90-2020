@@ -21,16 +21,16 @@ function getUser(fillForm) {
     }
     displayMain(true);
   }
-  fetch('get-image').then(response => {
-    const imageDiv = document.getElementById("profile-image");
-    const aImage = document.createElement('a');
-    aImage.setAttribute("href", data);
-    const imgImage = document.createElement('img');
-    imgImage.setAttribute("class", "image profile");
-    imgImage.setAttribute("src", data);
-    aImage.appendChild(imgImage);
-    imageDiv.appendChild(aImage);
-  });
+//  fetch('get-image').then(response => response.text()).then((data) => {
+//    const imageDiv = document.getElementById("profile-image");
+//    const aImage = document.createElement('a');
+//    aImage.setAttribute("href", data);
+//    const imgImage = document.createElement('img');
+//    imgImage.setAttribute("class", "image profile");
+//    imgImage.setAttribute("src", data);
+//    aImage.appendChild(imgImage);
+//    imageDiv.appendChild(aImage);
+//  });
 }
 
 /* function to toggle between displaying user profile and displaying an error message */
@@ -155,7 +155,7 @@ function toggleForm(formUserType) {
 // a new user will be able to toggle, but a returning user will not
 function displayForm(userType, displayBoth) {
   if (userType == "individual") {
-    updateUserTypeInForm("user", "oretuseranization", "user-type-toggle", "individual");
+    updateUserTypeInForm("user", "organization", "user-type-toggle", "individual");
     if (!displayBoth) {
       hideFields("user-select", "ind-uni");
     }
