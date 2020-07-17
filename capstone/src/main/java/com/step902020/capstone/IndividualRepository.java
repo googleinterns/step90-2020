@@ -7,7 +7,7 @@ import org.springframework.cloud.gcp.data.datastore.repository.DatastoreReposito
 
 public interface IndividualRepository extends DatastoreRepository<Individual, Long> {
 
-  public Optional<Individual> findByEmail(String email);
+  public Individual findFirstByEmail(String email);
 
   public long deleteByEmail(String email);
 }

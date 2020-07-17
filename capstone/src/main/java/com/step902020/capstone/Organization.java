@@ -1,6 +1,5 @@
 package com.step902020.capstone;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
@@ -95,7 +94,7 @@ public class Organization {
   }
 
   public void deleteEvent(Event event) {
-    events.removeIf(e -> event.getDatastoreID().equals(e.getDatastoreID()));
+    events.removeIf(e -> event.getDatastoreId().equals(e.getDatastoreId()));
   }
   
 }

@@ -32,16 +32,16 @@ public class IdentityController {
 
   @GetMapping("user-info")
   public Object getUserType(CurrentUser user)  {
-    Organization organization = this.organizationRepository.findByEmail(user.getEmail()).orElse(null);
+    Organization organization = this.organizationRepository.findFirstByEmail(user.getEmail());
     if (organization != null) {
       return organization;
     } else {
-      Individual individual = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
+      Individual individual = this.individualRepository.findFirstByEmail(user.getEmail());
       if (individual != null) {
         return individual;
       } else {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("userType", "null");
+        map.put("userType", "unknown");
         return map;
       }
     }

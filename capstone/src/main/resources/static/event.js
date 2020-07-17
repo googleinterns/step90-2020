@@ -43,7 +43,7 @@ function loadEventInfo() {
       document.getElementById("eventLatitude").value = data.eventLatitude;
       document.getElementById("eventLongitude").value = data.eventLongitude;
       document.getElementById("eventDescription").value = data.description;
-      document.getElementById("event-id").value = data.datastoreID;
+      document.getElementById("event-id").value = data.datastoreId;
     });
   }
 

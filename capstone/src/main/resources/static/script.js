@@ -16,29 +16,33 @@ var reviewsExist = false;
 /**
  * Retrieves events from server
  */
+
 function getEvents() {
   fetch('user-info').then(response => response.json()).then((data) => {
-    if (data.userType != "null") {
-      var displaySaveButton = data.userType == "individual";
-      fetch('get-all-events').then(response => response.json()).then((events) => {
-
-        const eventListElement = document.getElementById('events');
-        eventListElement.innerText = ""; // Clear elements in div
-
-        events.forEach((event) => {
-          eventListElement.appendChild(createEventElement(event, displaySaveButton));
-        })
-        // Format time to *** time ago
-        if (reviewsExist){
-          timeago.render(document.querySelectorAll('.timeago'));
-        }
-      });
+    if (data.userType != "unknown") {
+      getAllEventsForSearch(data);
     } else {
       displayMain(false);
     }
   });
 }
 
+function getAllEventsForSearch(data) {
+  var displaySaveButton = data.userType == "individual";
+  fetch('get-all-events').then(response => response.json()).then((events) => {
+
+    const eventListElement = document.getElementById('events');
+    eventListElement.innerText = ""; // Clear elements in div
+
+    events.forEach((event) => {
+      eventListElement.appendChild(createEventElement(event, displaySaveButton));
+    })
+    // Format time to *** time ago
+    if (reviewsExist){
+      timeago.render(document.querySelectorAll('.timeago'));
+    }
+  });
+}
 /**
  * Format event listing
  * @param event Event from Get call
@@ -94,7 +98,7 @@ function createReviewElement(event) {
   reviewButtonElement.innerText = 'Submit Review';
   reviewButtonElement.addEventListener('click', () => {
     if (reviewInputElement.value != '') {
-      newReview(event.datastoreID, reviewInputElement.value);
+      newReview(event.datastoreId, reviewInputElement.value);
     }
   });
  

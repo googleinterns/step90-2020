@@ -29,7 +29,7 @@ public class OrganizationController {
    */
   @GetMapping("get-organization")
   public Organization getOrganization(CurrentUser currentUser) {
-    return this.organizationRepository.findByEmail(currentUser.getEmail()).orElse(null);
+    return this.organizationRepository.findFirstByEmail(currentUser.getEmail());
   }
   
   /**

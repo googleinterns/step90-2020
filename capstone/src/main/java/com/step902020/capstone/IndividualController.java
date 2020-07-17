@@ -35,7 +35,7 @@ public class IndividualController {
    */
   @GetMapping("get-individual")
   public Individual getIndividual(CurrentUser user) {
-    return this.individualRepository.findByEmail(user.getEmail()).orElse(null);
+    return this.individualRepository.findFirstByEmail(user.getEmail());
   }
 
   /** Save user information into Datastore. If the email does not yet exist in 

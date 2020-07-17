@@ -2,22 +2,25 @@
 function getUser(fillForm) {
   fetch('user-info').then(response => response.json()).then((data) => {
     // if there is no data returned, that means this is a new user
-    if (data.userType == "null") {
+    if (data.userType == "unknown") {
       displayMain(false);
       displayForm("individual", true);
     } else {
       if (data.userType == "organization") {
-        createProfile(data, fillForm, true);
-        displayNavToggle("individual-nav", "org-nav");
-        sessionStorage.setItem("user-type", data.userType);
+        setUpAccountPage(true, fillForm, data, "individual-nav", "org-nav");
       } else {
-        createProfile(data, fillForm, false);
-        displayNavToggle("org-nav", "individual-nav");
-        sessionStorage.setItem("user-type", data.userType);
+        setUpAccountPage(false, fillForm, data, "org-nav", "individual-nav");
       }
       displayMain(true);
     }
   });
+}
+
+/* Helper function to setup account page */
+function setUpAccountPage(isOrganization, fillForm, data, hide, display) {
+  createProfile(data, fillForm, isOrganization);
+  displayNavToggle(hide, display);
+  sessionStorage.setItem("user-type", data.userType);
 }
 
 /* function to toggle between displaying user profile and displaying an error message */
@@ -130,25 +133,17 @@ function hideFields(selectField, universityField) {
   document.getElementById(universityField).style.display="none";
 }
 
-/* get the saved events for individual users */
-function getIndividualEvents() {
+/* get the saved events or organizations for individual users */
+function getIndividualEventsOrOrganizations(isEvent) {
   fetch('user-info').then(response => response.json()).then((data) => {
     if(data.userType == "individual") {
-      const eventDiv = document.getElementById("saved-events");
-      data.savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
-      displayMain(true);
-    } else {
-      displayMain(false);
-    }
-  });
-}
-
-/* Function to get the saved organizations */
-function getIndividualOrganizations() {
-  fetch('user-info').then(response => response.json()).then((data) => {
-    if(data.userType == "individual") {
-      const orgDiv = document.getElementById("saved-orgs");
-      data.organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true, true)));
+      if (isEvent) {
+        const eventDiv = document.getElementById("saved-events");
+        data.savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
+      } else {
+        const orgDiv = document.getElementById("saved-orgs");
+        data.organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true, true)));
+      }
       displayMain(true);
     } else {
       displayMain(false);
@@ -239,7 +234,7 @@ function createSavedEventElement(event, saveAllowed, editAllowed) {
 function createUnsaveEventButton(event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-event?event-id=" + event.datastoreID);
+  form.setAttribute("action", "delete-saved-event?event-id=" + event.datastoreId);
   const button = document.createElement('button');
   button.innerText = "Unsave this event";
   button.setAttribute("type", "submit");
@@ -252,7 +247,7 @@ function createUnsaveEventButton(event) {
 function createSaveEventButton(event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "add-saved-event?event-id=" + event.datastoreID);
+  form.setAttribute("action", "add-saved-event?event-id=" + event.datastoreId);
   const button = document.createElement('button');
   button.innerText = "Save this event";
   button.setAttribute("type", "submit");
@@ -264,7 +259,7 @@ function createSaveEventButton(event) {
 /* creates an edit button for events */
 function createEditEventButton(event) {
   const form = document.createElement("form");
-  form.setAttribute("action", "event.html#" + event.datastoreID);
+  form.setAttribute("action", "event.html#" + event.datastoreId);
   const button = document.createElement('button');
   button.innerText = "Edit this event";
   button.setAttribute("type", "submit");
@@ -276,7 +271,7 @@ function createEditEventButton(event) {
 /* Function to control form display using button */
 function revealForm() {
 	fetch('user-info').then(response => response.json()).then((data) => {
-    if (data.userType == "null") {
+    if (data.userType == "unknown") {
       displayMain(false);
       displayForm("individual", true);
     } else {
@@ -307,7 +302,7 @@ function getOrganizationEvents() {
 /* Function to support searching for organizations by name */
 function searchOrg() {
   fetch('user-info').then(response => response.json()).then((data) => {
-    if (data.userType == "null") {
+    if (data.userType == "unknown") {
       displayMain(false);
     } else {
       var displaySaveButton = data.userType == "individual";

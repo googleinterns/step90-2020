@@ -1,8 +1,5 @@
 package com.step902020.capstone;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Reference;
@@ -13,7 +10,7 @@ import java.util.*;
 public class Event{
 
   @Id
-  Long datastoreID;
+  Long datastoreId;
 
   String organizationName;
 
@@ -58,8 +55,8 @@ public class Event{
     this.reviews = new ArrayList();
   }
 
-  public Long getDatastoreID() {
-    return datastoreID;
+  public Long getDatastoreId() {
+    return datastoreId;
   }
 
   public String getEventTitle() {
@@ -99,8 +96,8 @@ public class Event{
     return requiredFee;
   }
 
-  public void setDatastoreID(Long datastoreID) {
-    this.datastoreID = datastoreID;
+  public void setDatastoreId(Long datastoreId) {
+    this.datastoreId = datastoreId;
   }
 
   public void setEventTitle(String eventTitle) {

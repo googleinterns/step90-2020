@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface OrganizationRepository extends DatastoreRepository<Organization, Long> {
 
-  public Optional<Organization> findByEmail(String email);
+  public Organization findFirstByEmail(String email);
 
   public long deleteByEmail(String email);
 
