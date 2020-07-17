@@ -5,19 +5,16 @@
     <meta charset="UTF-8">
     <title> Create an Event </title>
     <script src="event.js"> </script>
+    <script src="user.js"> </script>
+    <script src="script.js"> </script>
     <link rel="stylesheet" href="style.css">
   </head>
-  <body onload="getEvents();loadEventInfo();generalNavActive('general-profile');">
+
+  <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo();">
     <div th:insert="fragments/navbar::navbar"></div>
-    <div class="menu">
-      <nav>
-        <a href="map.html"> Campus Map </a>
-      </nav>
-    </div>
-
-    <h1>Create an Event </h1>
-
-    <div class="event-form">
+    <div th:insert="fragments/profilehead::profilehead"></div>
+    <br />
+    <div class="profile-form general-container">
       <form id="event-form" action="save-event" method="POST">
 
         <input type="hidden" id="university" name="university">
@@ -42,13 +39,13 @@
 
         <label> Event Filters: </label>
         <br>
-    
-        <input type="checkbox" id="foodAvaliable" name="foodAvaliable">
-        <label for="foodAvaliable"> Food Avaliable </label>
+
+        <label for="foodAvailable"> Food Available </label>
+        <input type="checkbox" id="foodAvailable" name="foodAvailable">
         <br>
 
-        <input type="checkbox" id="requiredFee" name="requiredFee">
         <label for="requiredFee"> Required Fee </label>
+        <input type="checkbox" id="requiredFee" name="requiredFee">
         <br><br>
 
         <input type="submit" form="event-form" value="submit">

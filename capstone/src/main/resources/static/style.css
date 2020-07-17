@@ -128,7 +128,7 @@ img {
   width: 40%;
 }
 
-.profile-form input[type=text], .profile-form select {
+.profile-form input[type=text], .profile-form input[type=datetime-local], .profile-form input[type=number], .profile-form textarea, .profile-form select {
   box-sizing: border-box;
   margin-top: 6px;
   margin-bottom: 16px;
@@ -290,4 +290,18 @@ div.row {
 .review-submission {
   border: 1px solid darkgreen;
   margin-right: 10px;
+}
+
+
+/* Map */
+
+#map {
+  text-align: center;
+  border: thin solid black;
+  height: 1200px;
+  width: 1200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 20px;
 }

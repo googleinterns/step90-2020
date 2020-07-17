@@ -7,21 +7,21 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA59BNac2K3n6PHyjjF5dxkZ9AbBHIxHSM"></script>
     <script src="script.js"> </script>
     <script src="user.js"></script>
-    <link rel="stylesheet" href="event.css">
+    <script src="event.js"> </script>
+    <link rel="stylesheet" href="style.css">
   </head>
 
-  <body onload="createMap();generalNavActive('general-index')">
+  <body onload="createMap();generalNavActive('general-map')">
     <div th:insert="fragments/navbar::navbar"></div>
 
     <div class="menu">
       <nav>
-        <a href="event.html"> Create Event </a>
+        <a href="event"> Create Event </a>
       </nav>
-    </div> 
+    </div>
 
-    <h1> Map of New York </h1>
+    <h1> Map </h1>
     <div id="map"> </div>
   </body>
-
 
 </html>
