@@ -48,7 +48,7 @@ function loadEventInfo() {
   }
 }
 
-function createMap() {
+async function createMap() {
   var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
   const campusMap = new google.maps.Map(
     document.getElementById('map'),
@@ -70,9 +70,13 @@ function createMap() {
       title: "Event 3"
   });
 
+   const response = await fetch('get-all-events');
+   const jsonEvents = await response.json();
+   jsonEvents.forEach(event => createMarker(event, campusMap));
+
 }
 
-function createMarker(event) {
+function createMarker(event,campusMap) {
   var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
   const newMarker = new google.maps.Marker({
     map: campusMap,
