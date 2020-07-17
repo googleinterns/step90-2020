@@ -1,29 +1,23 @@
 /* get the user information for the profile page */
 function getUser(fillForm) {
   fetch('user-info').then(response => response.json()).then((data) => {
-    var userType = data.userType;
-
-    // if there is no userType stored in this session, that means this is a new user
-    if (userType == '') {
+    // if there is no data returned, that means this is a new user
+    if (data.userType == "null") {
       displayMain(false);
       displayForm("individual", true);
     } else {
-      if (userType == "organization") {
-        fetch('get-organization').then(response => response.json()).then((data) => {
-          createProfile(data, fillForm, true);
-          displayNavToggle("individual-nav", "org-nav");
-          sessionStorage.setItem("user-type", data.userType);
-        });
-      } else if (userType == "individual") {
-        fetch('get-individual').then(response => response.json()).then((data) => {
-          createProfile(data, fillForm, false);
-          displayNavToggle("org-nav", "individual-nav");
-          sessionStorage.setItem("user-type", data.userType);
-        });
+      if (data.userType == "organization") {
+        createProfile(data, fillForm, true);
+        displayNavToggle("individual-nav", "org-nav");
+        sessionStorage.setItem("user-type", data.userType);
+      } else {
+        createProfile(data, fillForm, false);
+        displayNavToggle("org-nav", "individual-nav");
+        sessionStorage.setItem("user-type", data.userType);
       }
       displayMain(true);
     }
-   });
+  });
 }
 
 /* function to toggle between displaying user profile and displaying an error message */
@@ -139,13 +133,10 @@ function hideFields(selectField, universityField) {
 /* get the saved events for individual users */
 function getIndividualEvents() {
   fetch('user-info').then(response => response.json()).then((data) => {
-    var userType = data.userType;
-    if(userType == "individual") {
-      fetch('get-' + userType).then(response => response.json()).then((data) => {
-        const eventDiv = document.getElementById("saved-events");
-        data.savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
-        displayMain(true);
-      });
+    if(data.userType == "individual") {
+      const eventDiv = document.getElementById("saved-events");
+      data.savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
+      displayMain(true);
     } else {
       displayMain(false);
     }
@@ -155,13 +146,10 @@ function getIndividualEvents() {
 /* Function to get the saved organizations */
 function getIndividualOrganizations() {
   fetch('user-info').then(response => response.json()).then((data) => {
-    var userType = data.userType;
-    if (userType == "individual") {
-      fetch('get-' + userType).then(response => response.json()).then((data) => {
-        const orgDiv = document.getElementById("saved-orgs");
-        data.organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true, true)));
-        displayMain(true);
-      });
+    if(data.userType == "individual") {
+      const orgDiv = document.getElementById("saved-orgs");
+      data.organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true, true)));
+      displayMain(true);
     } else {
       displayMain(false);
     }
@@ -288,12 +276,12 @@ function createEditEventButton(event) {
 /* Function to control form display using button */
 function revealForm() {
 	fetch('user-info').then(response => response.json()).then((data) => {
-    var userType = data.userType;
-    if (userType == '') {
+    if (data.userType == "null") {
       displayMain(false);
       displayForm("individual", true);
+    } else {
+      displayForm(data.userType, false);
     }
-    displayForm(userType, false);
   });
 }
 
@@ -306,13 +294,10 @@ function closeForm() {
 /* function to get all events hosted by the current organization */
 function getOrganizationEvents() {
   fetch('user-info').then(response => response.json()).then((data) => {
-    var userType = data.userType;
-    if (userType == "organization") {
-      fetch('get-' + userType).then(response => response.json()).then((data) => {
-        const eventDiv = document.getElementById("created-events");
-        data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, true)));
-        displayMain(true);
-      });
+    if (data.userType == "organization") {
+      const eventDiv = document.getElementById("created-events");
+      data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, true)));
+      displayMain(true);
     } else {
       displayMain(false);
     }
@@ -322,14 +307,12 @@ function getOrganizationEvents() {
 /* Function to support searching for organizations by name */
 function searchOrg() {
   fetch('user-info').then(response => response.json()).then((data) => {
-    var university = data.university;
-    var userType = data.userType;
-    if (university == '' || userType == '') {
+    if (data.userType == "null") {
       displayMain(false);
     } else {
-      var displaySaveButton = userType == "individual";
+      var displaySaveButton = data.userType == "individual";
       var name = document.getElementById("search-org").value;
-      fetch('search-organization?name=' + name + "&university=" + university).then(response => response.json()).then((organizations) => {
+      fetch('search-organization?name=' + name + "&university=" + data.university).then(response => response.json()).then((organizations) => {
         const orgListElement = document.getElementById('list-organizations');
         orgListElement.innerHTML = '';
 
@@ -350,8 +333,7 @@ function searchOrg() {
 /* function to generate divs for the calendar */
 function createCalendar() {
   fetch('user-info').then(response => response.json()).then((data) => {
-    var userType = data.userType;
-    if (userType == "individual") {
+    if (data.userType == "individual") {
       const calendar = document.getElementById("calendar");
 
       var today = new Date();

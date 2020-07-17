@@ -49,7 +49,7 @@ public class IndividualController {
       @RequestParam("university") String university) throws IOException {
 
     String userEmail = user.getEmail();
-    Individual current = this.individualRepository.findByEmail(userEmail).orElse(null);
+    Individual current = getIndividual(user);
     
     // either edit the existing user or create a new one
     if (current != null) {
@@ -75,7 +75,7 @@ public class IndividualController {
       @RequestParam("event-id") String eventId,
       CurrentUser user) throws IOException {
 
-    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
+    Individual current = getIndividual(user);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (current != null) {
       current.addSavedEvents(event);
@@ -96,7 +96,7 @@ public class IndividualController {
       @RequestParam("event-id") String eventId,
       CurrentUser user) throws IOException {
 
-    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
+    Individual current = getIndividual(user);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (current != null) {
       current.deleteSavedEvents(event);
@@ -118,7 +118,7 @@ public class IndividualController {
       CurrentUser user,
       @RequestParam("organization-id") String organizationId) throws IOException {
     
-    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
+    Individual current = getIndividual(user);
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
     if (current != null) {
       current.addOrganizations(organization);
@@ -140,7 +140,7 @@ public class IndividualController {
       CurrentUser user,
       @RequestParam("organization-id") String organizationId) throws IOException {
     
-    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
+    Individual current = getIndividual(user);
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
 
     if (current != null) {
@@ -160,7 +160,7 @@ public class IndividualController {
   @GetMapping("get-calendar-events")
   public Set<Event> getCalendarEvents(CurrentUser user) throws IOException {
     // get saved events and for each of the organizations get their list of saved events
-    Individual current = this.individualRepository.findByEmail(user.getEmail()).orElse(null);
+    Individual current = getIndividual(user);
     Set<Event> calendarEvents = new HashSet<Event>();
     if (current != null) {
       calendarEvents.addAll(current.getSavedEvents());

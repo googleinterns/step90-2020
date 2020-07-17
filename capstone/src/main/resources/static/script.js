@@ -18,9 +18,8 @@ var reviewsExist = false;
  */
 function getEvents() {
   fetch('user-info').then(response => response.json()).then((data) => {
-    var userType = data.userType;
-    if (userType != null) {
-      var displaySaveButton = userType == "individual";
+    if (data.userType != "null") {
+      var displaySaveButton = data.userType == "individual";
       fetch('get-all-events').then(response => response.json()).then((events) => {
 
         const eventListElement = document.getElementById('events');
