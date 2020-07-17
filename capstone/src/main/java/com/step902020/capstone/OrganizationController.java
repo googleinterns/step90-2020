@@ -64,7 +64,7 @@ public class OrganizationController {
       current = new Organization(System.currentTimeMillis(), name, userEmail, university, userType, description, "");
     }
     this.organizationRepository.save(current);
-    return new RedirectView("profile.html", true);
+    return new RedirectView("profile", true);
   }
 
   /**

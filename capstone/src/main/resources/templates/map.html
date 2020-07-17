@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
   
   <head>
     <meta charset="UTF-8">
     <title> Map </title>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA59BNac2K3n6PHyjjF5dxkZ9AbBHIxHSM"></script>
     <script src="script.js"> </script>
+    <script src="user.js"></script>
     <link rel="stylesheet" href="event.css">
   </head>
 
-  <body onload="createMap()">
+  <body onload="createMap();generalNavActive('general-index')">
+    <div th:insert="fragments/navbar::navbar"></div>
 
     <div class="menu">
       <nav>

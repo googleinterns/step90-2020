@@ -1,21 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta>
     <title>Organization Search</title>
     <link rel="stylesheet" href="style.css">
     <script src="user.js"></script>
 </head>
-<body onload="searchOrg();">
-    <nav class="nav-bar">
-        <ul>
-            <li class="home"><a href="">College Activity Finder</a></li>
-            <li><a href="index.html">Events</a></li>
-            <li class="active"><a href="organizationsearch.html">Organizations</a></li>
-            <li><a href="profile.html">My Account</a></li>
-            <li><a href="">About Us</a></li>
-        </ul>
-    </nav>
+<body onload="searchOrg();generalNavActive('general-organizationsearch')">
+    <div th:insert="fragments/navbar::navbar"></div>
     <br/>
     
     

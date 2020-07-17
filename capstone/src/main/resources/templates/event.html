@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
   <head>
     <meta charset="UTF-8">
@@ -7,8 +7,8 @@
     <script src="event.js"> </script>
     <link rel="stylesheet" href="style.css">
   </head>
-  <body onload="getEvents();loadEventInfo();">
-
+  <body onload="getEvents();loadEventInfo();generalNavActive('general-profile');">
+    <div th:insert="fragments/navbar::navbar"></div>
     <div class="menu">
       <nav>
         <a href="map.html"> Campus Map </a>

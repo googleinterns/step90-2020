@@ -1,5 +1,23 @@
+/* helper function to highlight active tab for general nav */
+function profileNavActive(tab) {
+  if (tab == "profile") {
+    document.getElementById("ind-profile").setAttribute("class", "active-highlighted");
+    document.getElementById("org-profile").setAttribute("class", "active-highlighted");
+  } else {
+    document.getElementById(tab).setAttribute("class", "active-highlighted");
+  }
+}
+
+/* helper function to highlight active tab for profile nav */
+function generalNavActive(tab) {
+  document.getElementById(tab).setAttribute("class", "active");
+}
+
 /* get the user information for the profile page */
-function getUser(fillForm) {
+function getUser(fillForm, generalTab, profileTab) {
+  generalNavActive(generalTab);
+  profileNavActive(profileTab);
+
   var userType = sessionStorage.getItem("user-type");
 
   // if there is no userType stored in this session, that means this is a new user
@@ -214,7 +232,7 @@ function createSavedOrgElement(data, deleteAllowed, displayButton) {
  const aElementName = document.createElement('a');
  aElementName.setAttribute("class", "public-org-name");
  aElementName.innerText = data.name;
- aElementName.setAttribute("href", "publicprofile.html#" + data.datastoreId);
+ aElementName.setAttribute("href", "publicprofile#" + data.datastoreId);
  divElement.appendChild(aElementName);
 
  const h5ElementEmail = document.createElement('h5');
@@ -314,7 +332,7 @@ function createSaveEventButton(event) {
 /* creates an edit button for events */
 function createEditEventButton(event) {
   const form = document.createElement("form");
-  form.setAttribute("action", "event.html#" + event.datastoreID);
+  form.setAttribute("action", "event#" + event.datastoreID);
   const button = document.createElement('button');
   button.innerText = "Edit this event";
   button.setAttribute("type", "submit");

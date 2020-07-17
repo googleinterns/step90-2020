@@ -11,8 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
   </head>
 
-  <body>
-    <div th:insert="navbar::navbar"></div>
+  <body onload="generalNavActive('general-index');">
+    <div th:insert="fragments/navbar::navbar"></div>
     <div id="no-profile">
       <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
     </div>
