@@ -12,22 +12,22 @@ function getEvents() {
   var displaySaveButton = userType == "individual";
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
-    const eventListElement = document.getElementById('events');
-    eventListElement.innerText = ""; // Clear elements in div
+    const eventListElement = setElementInnerText('events', ''); // Clear elements in div
 
     events.forEach((event) => {
-      eventListElement.appendChild(createEventElement(event, displaySaveButton));
+      createEventElement(eventListElement, event, displaySaveButton);
     })
   });
 }
 
 /**
- * Format event listing
+ * Create a formatted list of events
+ * @param eventListElement DOM element to append
  * @param event Event from Get call
- * @return Formatted event ready to add to document
+ * @param displaySaveButton button to save event
  */
-function createEventElement(event, displaySaveButton) {
-  const eventElement = document.createElement('li');
+function createEventElement(eventListElement, event, displaySaveButton) {
+  const eventElement = createElement(eventListElement, 'li', '');
   eventElement.className = 'event';
 
   // Click for event detail modal
@@ -36,93 +36,79 @@ function createEventElement(event, displaySaveButton) {
   });
 
   // Name
-  const eventNameElement = document.createElement('p');
-  eventNameElement.innerText = event.eventTitle;
+  const eventNameElement = createElement(eventElement, 'p', event.eventTitle);
 
   // Time
   var date = new Date(event.eventDateTime);
-  const eventTimeElement = document.createElement('p');
-  eventTimeElement.innerText = date.toString().substring(0, 21); // Exclude GMT time zone offset
+  const eventTimeElement = createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
 
   // Location Using latitude as a filler until we finalize the location portion
-   const eventLocationElement = document.createElement('p');
-   eventLocationElement.innerText = event.eventLatitude;
+  const eventLocationElement = createElement(eventElement, 'p', event.eventLatitude);
 
   // Organization
   //const eventOrgElement = document.createElement('p');
   //eventOrgElement.innerText = event.organization.name;
-
-  eventElement.appendChild(eventNameElement);
-  eventElement.appendChild(eventTimeElement);
   //eventElement.appendChild(eventOrgElement);
+
+  // Displays only for individual users
   if (displaySaveButton) {
     eventElement.appendChild(createSaveEventButton(event));
   }
-  return eventElement;
 }
 
 /**
- * Create event's review submission and format review listing
+ * Create event's review submission elements and formats review listing
  * @param event Event from Get call
- * @return review section of event's listing
  */
 function createReviewElement(event) {
-  const reviewElement = document.createElement('div');
-  reviewElement.className = 'reviews';
+  const reviewElement = document.getElementById('review-container');
 
-  const reviewInputElement = document.createElement('input');
+  const reviewTitleElement = createElement(reviewElement, 'h1', 'Reviews');
+
+  const reviewInputElement = createElement(reviewElement, 'input', '');
   reviewInputElement.className = 'review-submission';
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
   reviewInputElement.setAttribute('type', 'text');
 
-  reviewButtonElement = document.createElement('button');
+  reviewButtonElement = createElement(reviewElement, 'button', 'Submit');
   reviewButtonElement.className = 'review-submission';
-  reviewButtonElement.innerText = 'Submit Review';
+
   reviewButtonElement.addEventListener('click', () => {
     if (reviewInputElement.value != '') {
-      newReview(event.datastoreID, reviewInputElement.value);
+      newReview(event.datastoreID, reviewInputElement.value).then((reviews) => {
+        reviewsContainer.innerHTML = '';
+        createReviewContainerElement(reviewsContainer, reviews);
+       });
     }
   });
+  const reviewsContainer = createElement(reviewElement, 'div', '');
+  reviewsContainer.id = 'review-list-container';
+  createReviewContainerElement(reviewsContainer, event.reviews);
+  console.log(event.reviews);
 
-  reviewElement.appendChild(reviewInputElement);
-  reviewElement.appendChild(reviewButtonElement);
-  reviewElement.appendChild(createReviewContainerElement(event.reviews));
-  return reviewElement;
 }
 
 /**
- * Format each review to add to review container
+ * Formats each review to add to review container
  * @param reviews List of reviews within Event object
- * @return List of event's reviews to add to document
  */
-function createReviewContainerElement(reviews) {
-  const reviewsContainer = document.createElement('div');
-
+async function createReviewContainerElement(reviewsContainer, reviews) {
   reviews.forEach((review) => {
-    const reviewContainer = document.createElement('div');
+    const reviewContainer = createElement(reviewsContainer, 'div', '');
     reviewContainer.className = 'review';
 
-    const reviewDetailsElement = document.createElement('div');
+    const reviewDetailsElement = createElement(reviewContainer, 'div', '');
     reviewDetailsElement.className = 'review-details';
 
-    const reviewNameElement = document.createElement('p');
-    reviewNameElement.innerText = review.name;
+    const reviewNameElement = createElement(reviewDetailsElement, 'p', review.name);
 
-    const reviewTimeElement = document.createElement('time');
-    reviewTimeElement.className = "timeago";
+    const reviewTimeElement = createElement(reviewDetailsElement, 'time', '');
+    reviewTimeElement.className = 'timeago';
     reviewTimeElement.setAttribute('datetime', review.timestamp);
 
-    const reviewTextElement = document.createElement('p');
+    const reviewTextElement = createElement(reviewContainer, 'p', review.text);
     reviewTextElement.className = 'review-text';
-    reviewTextElement.innerText = review.text;
-
-    reviewDetailsElement.appendChild(reviewNameElement);
-    reviewDetailsElement.appendChild(reviewTimeElement);
-    reviewContainer.appendChild(reviewDetailsElement);
-    reviewContainer.appendChild(reviewTextElement);
-    reviewsContainer.appendChild(reviewContainer);
   })
-  return reviewsContainer;
 }
 
 /**
@@ -137,8 +123,11 @@ async function newReview(eventId, text) {
   //params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
   //Quick fix until create a new way to attach user to review
   params.append('name', 'quick-fix');
-  await fetch('new-review', {method:'POST', body: params});
+  const response = await fetch('new-review', {method:'POST', body: params});
+  const reviews = response.json();
   getEvents();
+  return reviews;
+
 }
 
 /* Function to prefill event information if editing event */
@@ -161,18 +150,38 @@ function loadEventInfo() {
  * @param eventId event's datastore id
  */
 function fillDetails(event) {
-  const eventName = document.getElementById("eventName");
-  eventName.innerText = event.eventTitle;
-
   var date = new Date(event.eventDateTime);
-  const eventTime = document.getElementById("eventTime");
-  eventTime.innerText = date.toString().substring(0, 21);
 
-  const eventLocation = document.getElementById("eventLocation");
-  eventLocation.innerText = event.eventLatitude;
+  setElementInnerText("eventName", event.eventTitle);
+  setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
+  setElementInnerText("eventLocation", event.eventLatitude);
+  setElementInnerText("eventDescription", event.description);
+}
 
-  const eventDescription = document.getElementById("eventDescription");
-  eventDescription.innerText = event.description;
+/**
+ * Fill an existing document element's inner text
+ * @param elementId document element's id
+ * @param innerText text for inner text
+ * @return element with added text
+ */
+function setElementInnerText(elementId, innerText){
+  const element = document.getElementById(elementId);
+  element.innerText = innerText;
+  return element;
+}
+
+/**
+ * Create new element with inner text and appended to an element
+ * @param elementElement element to append
+ * @param elementType element to create
+ * @param innerText text for inner text
+ * @return created element
+ */
+function createElement(appendElement, elementType, innerText){
+  const element = document.createElement(elementType);
+  element.innerText = innerText;
+  appendElement.appendChild(element);
+  return element;
 }
 
 /**
@@ -180,17 +189,16 @@ function fillDetails(event) {
  * @param eventId event's datastore id
  */
 function showEventPage(event) {
-    fillDetails(event);
-    const modal = document.getElementById('modal');
-    modal.style.display = "block";
-    const reviewContainer = document.getElementById("reviews-container");
-    reviewContainer.innerText = "Reviews:";
-    console.log(event);
-    reviewContainer.appendChild(createReviewElement(event));
+  fillDetails(event);
+  const modal = document.getElementById('modal');
+  modal.style.display = "block";
+  const myNode = document.getElementById("review-container");
+  myNode.innerHTML = '';
+  createReviewElement(event);
 
-    if (event.reviews.length) { // Format time to *** time ago
-      timeago.render(document.querySelectorAll('.timeago'));
-    }
+  if (event.reviews.length) { // Format time to *** time ago
+    timeago.render(document.querySelectorAll('.timeago'));
+  }
 }
 
 // When the user clicks anywhere outside of the modal, close it
