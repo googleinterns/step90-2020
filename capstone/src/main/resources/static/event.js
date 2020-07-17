@@ -84,8 +84,6 @@ function createReviewElement(event) {
   const reviewsContainer = createElement(reviewElement, 'div', '');
   reviewsContainer.id = 'review-list-container';
   createReviewContainerElement(reviewsContainer, event.reviews);
-  console.log(event.reviews);
-
 }
 
 /**
@@ -166,7 +164,6 @@ function createMap() {
       map: campusMap,
       title: "Event 3"
   });
-
 }
 
 function createMarker(event) {
@@ -176,6 +173,7 @@ function createMarker(event) {
     title: event.eventTitle,
     position: eventPosition
   })
+}
   
 /**
  * Create a page to view event details
