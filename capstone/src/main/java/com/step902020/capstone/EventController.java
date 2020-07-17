@@ -74,14 +74,15 @@ public class EventController {
   }
 
   @PostMapping("/new-review")
-  public void addReview(
+  public List<Review> addReview(
           @RequestParam("text") String text,
           @RequestParam("eventId") Long eventId,
           @RequestParam("name") String name) throws IOException {
 
     Event event = this.eventRepository.findById(eventId).get();
-
-    event.addReview(new Review(text, name));
+    Review review = new Review(text, name);
+    event.addReview(review);
     this.eventRepository.save(event);
+    return event.reviews;
   }
 }

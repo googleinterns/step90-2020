@@ -20,9 +20,6 @@ public class Review {
   @Field(name="text")
   String text;
 
-  //@Field(name="image-filename")
-  //String imageFilename;
-
   /**
    * Create a new Review
    * @param text Text content of review
@@ -45,8 +42,4 @@ public class Review {
   public String getText() {
     return text;
   }
-
- // public String getImageFilename() {
-  //  return imageFilename;
-  //}
 }
