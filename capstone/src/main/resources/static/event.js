@@ -2,14 +2,18 @@
  * Retrieves events from server
  */
 function getEvents() {
-  var userType = sessionStorage.getItem("user-type");
-  if (userType == null) {
-    getUserType(false);
-    if (sessionStorage.getItem("user-type") == null) {
-      return;
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType != "unknown") {
+      getAllEventsForSearch(data);
+    } else {
+      displayMain(false);
     }
-  }
-  var displaySaveButton = userType == "individual";
+  });
+}
+
+/* helper function to get all events for search page */
+function getAllEventsForSearch(data) {
+  var displaySaveButton = data.userType == "individual";
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
@@ -138,7 +142,7 @@ function loadEventInfo() {
       document.getElementById("eventLatitude").value = data.eventLatitude;
       document.getElementById("eventLongitude").value = data.eventLongitude;
       document.getElementById("eventDescription").value = data.description;
-      document.getElementById("event-id").value = data.datastoreID;
+      document.getElementById("event-id").value = data.datastoreId;
     });
   }
 }

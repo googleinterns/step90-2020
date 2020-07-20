@@ -24,19 +24,19 @@ public class OrganizationController {
   
   /**
    * Find an organization's profile information by email
-   * @param email get the user email from IAP headers
-   * @return list of organizations with the same email as param
+   * @param currentUser current user
+   * @return organization with the same email as param
    */
   @GetMapping("get-organization")
-  public List<Organization> getOrganization(CurrentUser currentUser) {
-    return this.organizationRepository.findByEmail(currentUser.getEmail());
+  public Organization getOrganization(CurrentUser currentUser) {
+    return this.organizationRepository.findFirstByEmail(currentUser.getEmail());
   }
   
   /**
    * Save organization information into Datastore. If the email does not yet exist in
   Datastore, create a new entity. Otherwise do an update on the existing entity
    * @param name name of the organization
-   * @param email email of the current user from IAP header
+   * @param user current user
    * @param userType type of user, either individual or organization
    * @param university affiliated university
    * @param description short bio
@@ -51,17 +51,14 @@ public class OrganizationController {
       @RequestParam("university") String university,
       @RequestParam("description") String description) throws IOException {
 
-    String userEmail = user.getEmail();
-    Organization current = null;
-    List<Organization> orgList = this.organizationRepository.findByEmail(userEmail);
+    Organization current = getOrganization(user);
     
     // either edit the existing user or create a new one
-    if (orgList.size() > 0) {
-      current = orgList.get(0);
+    if (current != null) {
       current.setName(name);
       current.setDescription(description);
     } else {
-      current = new Organization(System.currentTimeMillis(), name, userEmail, university, userType, description, "");
+      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), university, userType, description, "");
     }
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
