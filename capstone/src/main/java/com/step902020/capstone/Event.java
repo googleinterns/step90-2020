@@ -31,8 +31,8 @@ public class Event{
   @Field(name="eventLongitude")
   double eventLongitude;
 
-  @Field(name="foodAvaliable")
-  Boolean foodAvaliable;
+  @Field(name="foodAvailable")
+  Boolean foodAvailable;
 
   @Field(name="requiredFee")
   Boolean requiredFee;
@@ -40,9 +40,8 @@ public class Event{
   @Reference
   List<Review> reviews;
  
-
-  public Event(String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvaliable, Boolean requiredFee) {
- 
+  public Event(String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
+    
     this.organizationName = organizationName;
     this.organizationId = organizationId;
     this.eventTitle = eventTitle;
@@ -50,7 +49,7 @@ public class Event{
     this.eventDescription = eventDescription;
     this.eventLatitude = eventLatitude;
     this.eventLongitude = eventLongitude;
-    this.foodAvaliable = foodAvaliable == null ? false : foodAvaliable;
+    this.foodAvailable = foodAvailable == null ? false : foodAvailable;
     this.requiredFee = requiredFee == null ? false : requiredFee;
     this.reviews = new ArrayList();
   }
@@ -58,7 +57,6 @@ public class Event{
   public Long getDatastoreId() {
     return datastoreId;
   }
-
   public String getEventTitle() {
     return eventTitle;
   }
@@ -88,8 +86,8 @@ public class Event{
     return eventDescription;
   }
 
-  public Boolean getFoodAvaliable() {
-    return foodAvaliable;
+  public Boolean getFoodAvailable() {
+    return foodAvailable;
   }
 
   public Boolean getRequiredFee() {
@@ -99,28 +97,23 @@ public class Event{
   public void setDatastoreId(Long datastoreId) {
     this.datastoreId = datastoreId;
   }
-
   public void setEventTitle(String eventTitle) {
     this.eventTitle = eventTitle;
   }
-
   public void setEventDateTime(String eventDateTime) {
     this.eventDateTime = eventDateTime;
   }
-
   public void setEventDescription(String eventDescription) {
     this.eventDescription = eventDescription;
   }
-
   public void setEventLatitude(double eventLatitude) {
     this.eventLatitude = eventLatitude;
   }
-
   public void setEventLongitude(double eventLongitude) {
     this.eventLongitude = eventLongitude;
   }
-  public void setFoodAvaliable(Boolean foodAvaliable) {
-    this.foodAvaliable = foodAvaliable;
+  public void setFoodAvailable(Boolean foodAvailable) {
+    this.foodAvailable = foodAvailable;
   }
   public void setRequiredFee(Boolean requiredFee) {
     this.requiredFee = requiredFee;
@@ -133,4 +126,5 @@ public class Event{
   public void addReview(Review review) {
     reviews.add(review);
   }
+
 }

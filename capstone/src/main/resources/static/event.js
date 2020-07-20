@@ -147,30 +147,23 @@ function loadEventInfo() {
   }
 }
 
-function createMap() {
+/* Function to create Google Map */
+async function createMap() {
   var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
   const campusMap = new google.maps.Map(
     document.getElementById('map'),
     {center: princetonLatLng, zoom: 16});
 
-  const event1 = new google.maps.Marker({
-      position: {lat: 40.344184,lng: -74.657645},
-      map: campusMap,
-      title: "Event 1"
-  });
-  const event2 = new google.maps.Marker({
-      position: {lat: 40.346875,lng: -74.65002},
-      map: campusMap,
-      title: "Event 2"
-  });
-  const event3 = new google.maps.Marker({
-      position: {lat: 40.348357,lng: -74.660553},
-      map: campusMap,
-      title: "Event 3"
-  });
+   const response = await fetch('get-all-events');
+   const jsonEvents = await response.json();
+   jsonEvents.forEach(event => createMarker(event, campusMap));
 }
 
-function createMarker(event) {
+/* Create a new marker for each event
+ * @param event - event object
+ * @param campusMap - Google Map object
+ */
+function createMarker(event,campusMap) {
   var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
   const newMarker = new google.maps.Marker({
     map: campusMap,
