@@ -48,7 +48,7 @@ public class EventController {
      @RequestParam("eventDescription") String eventDescription,
      @RequestParam("eventLatitude") String eventLatitude,
      @RequestParam("eventLongitude") String eventLongitude,
-     @RequestParam("foodAvailable") Optional<Boolean> foodAvailable,
+     @RequestParam("foodAvaliable") Optional<Boolean> foodAvailable,
      @RequestParam("requiredFee") Optional<Boolean> requiredFee,
      @RequestParam("event-id") String eventId
     ) throws IOException {

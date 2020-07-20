@@ -39,10 +39,8 @@ public class Event{
   
   @Reference
   List<Review> reviews;
- 
 
   public Event(String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
- 
     this.organizationName = organizationName;
     this.organizationId = organizationId;
     this.eventTitle = eventTitle;
@@ -58,7 +56,6 @@ public class Event{
   public Long getDatastoreId() {
     return datastoreId;
   }
-
   public String getEventTitle() {
     return eventTitle;
   }
@@ -99,23 +96,18 @@ public class Event{
   public void setDatastoreId(Long datastoreId) {
     this.datastoreId = datastoreId;
   }
-
   public void setEventTitle(String eventTitle) {
     this.eventTitle = eventTitle;
   }
-
   public void setEventDateTime(String eventDateTime) {
     this.eventDateTime = eventDateTime;
   }
-
   public void setEventDescription(String eventDescription) {
     this.eventDescription = eventDescription;
   }
-
   public void setEventLatitude(double eventLatitude) {
     this.eventLatitude = eventLatitude;
   }
-
   public void setEventLongitude(double eventLongitude) {
     this.eventLongitude = eventLongitude;
   }
@@ -141,4 +133,5 @@ public class Event{
   public void addReview(Review review) {
     reviews.add(review);
   }
+
 }
