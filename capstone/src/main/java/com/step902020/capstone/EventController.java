@@ -52,7 +52,7 @@ public class EventController {
      @RequestParam("requiredFee") Optional<Boolean> requiredFee,
      @RequestParam("event-id") String eventId
     ) throws IOException {
-      Organization organization = organizationRepository.findByEmail(user.getEmail()).get(0);
+      Organization organization = organizationRepository.findFirstByEmail(user.getEmail());
       Event event = eventId.length() <= 0? null : this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
       if (event != null) {
         event.setEventDateTime(eventDateTime);
@@ -60,12 +60,13 @@ public class EventController {
         event.setEventLatitude(Double.parseDouble(eventLatitude));
         event.setEventLongitude(Double.parseDouble(eventLongitude));
         event.setEventTitle(eventTitle);
-        event.setOrganization(organization);
-        event.setfoodAvailable(foodAvailable.orElse(false));
+        event.setOrganizationId(organization.getDatastoreId());
+        event.setOrganizationName(organization.getName());
+        event.setFoodAvailable(foodAvailable.orElse(false));
         event.setRequiredFee(requiredFee.orElse(false));
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvailable.orElse(false), requiredFee.orElse(false));
+        Event newEvent = new Event(organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvailable.orElse(false), requiredFee.orElse(false));
         this.eventRepository.save(newEvent);
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);

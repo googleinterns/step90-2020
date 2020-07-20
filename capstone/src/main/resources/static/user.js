@@ -17,28 +17,26 @@ function generalNavActive(tab) {
 function getUser(fillForm, generalTab, profileTab) {
   generalNavActive(generalTab);
   profileNavActive(profileTab);
-
-  var userType = sessionStorage.getItem("user-type");
-
-  // if there is no userType stored in this session, that means this is a new user
-  if (userType == null) {
-    getUserType(true);
-  } else {
-    if (userType == "organization") {
-      fetch('get-organization').then(response => response.json()).then((data) => {
-        createProfile(data[0], fillForm, true);
-        displayNavToggle("individual-nav", "org-nav");
-        sessionStorage.setItem("user-type", data[0].userType);
-      });
-    } else if (userType == "individual") {
-      fetch('get-individual').then(response => response.json()).then((data) => {
-        createProfile(data[0], fillForm, false);
-        displayNavToggle("org-nav", "individual-nav");
-        sessionStorage.setItem("user-type", data[0].userType);
-      });
+  fetch('user-info').then(response => response.json()).then((data) => {
+    // if there is no data returned, that means this is a new user
+    if (data.userType == "unknown") {
+      displayMain(false);
+      displayForm("individual", true);
+    } else {
+      if (data.userType == "organization") {
+        setUpAccountPage(true, fillForm, data, "individual-nav", "org-nav");
+      } else {
+        setUpAccountPage(false, fillForm, data, "org-nav", "individual-nav");
+      }
+      displayMain(true);
     }
-    displayMain(true);
-  }
+  });
+}
+
+/* Helper function to setup account page */
+function setUpAccountPage(isOrganization, fillForm, data, hide, display) {
+  createProfile(data, fillForm, isOrganization);
+  displayNavToggle(hide, display);
 }
 
 /* function to toggle between displaying user profile and displaying an error message */
@@ -50,48 +48,9 @@ function displayMain(display) {
   }
 }
 
-/* get and store the user type (individual or organization). With this we determine whether
-this user exists in our database or not */
-function getUserType(isProfile) {
-    /* Since there is no way to know beforehand whether the user is an organization
-    or an individual, we have to do two fetches to check the organization entities and
-    the user entities */
-    fetch('get-organization').then(response => response.json()).then((data) => {
-      if (data.length != 0) {
-        if (isProfile) {
-          displayNavToggle("individual-nav", "org-nav");
-        }
-        setupAndStore(data[0], true);
-      } else {
-        if (isProfile) {
-          displayNavToggle("org-nav", "individual-nav");
-        }
-        fetch('get-individual').then(response => response.json()).then((newData) => {
-          if (newData.length != 0) {
-            // display information
-            setupAndStore(newData[0]);
-          } else {
-            // user does not exist at all, display message to them to submit a profile
-            displayMain(false);
-            if (isProfile) {
-              displayForm("individual", true);
-            }
-          }
-        });
-      }
-  });
-}
-
 function displayNavToggle(hide, display) {
   document.getElementById(display).style.display="block";
   document.getElementById(hide).style.display="none";
-}
-
-/** helper function to store information and set up display */
-function setupAndStore(data) {
-  sessionStorage.setItem("user-type", data.userType);
-  sessionStorage.setItem("university", data.university);
-  displayMain(true);
 }
 
 /* creates and populates the user profile */
@@ -112,7 +71,6 @@ function createProfile(data, fillForm, isOrganization) {
     } else {
       createIndividualProfile(data, fillForm);
     }
-
 }
 
 /* populate individual specific fields of the profile */
@@ -163,14 +121,16 @@ function toggleForm(formUserType) {
 // a new user will be able to toggle, but a returning user will not
 function displayForm(userType, displayBoth) {
   if (userType == "individual") {
-    updateUserTypeInForm("user", "oretuseranization", "user-type-toggle", "individual");
+    updateUserTypeInForm("user", "organization", "user-type-toggle", "individual");
     if (!displayBoth) {
       hideFields("user-select", "ind-uni");
+      document.getElementById("university-form-display").style.display = "block";
     }
   } else if (userType == "organization") {
 		updateUserTypeInForm("organization", "user", "org-user-type", "organization");
 		if (!displayBoth) {
 			hideFields("org-select", "org-uni");
+			document.getElementById("org-university-form-display").style.display = "block";
 		}
   }
 }
@@ -188,40 +148,22 @@ function hideFields(selectField, universityField) {
   document.getElementById(universityField).style.display="none";
 }
 
-/* get the saved events for individual users */
-function getIndividualEvents() {
-  var userType = sessionStorage.getItem("user-type");
-  if (userType == null) {
-    getUserType(true);
-  }
-  if(userType == "individual") {
-    fetch('get-' + userType).then(response => response.json()).then((data) => {
-      const eventDiv = document.getElementById("saved-events");
-      data[0].savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
+/* get the saved events or organizations for individual users */
+function getIndividualEventsOrOrganizations(isEvent) {
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if(data.userType == "individual") {
+      if (isEvent) {
+        const eventDiv = document.getElementById("saved-events");
+        data.savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
+      } else {
+        const orgDiv = document.getElementById("saved-orgs");
+        data.organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true, true)));
+      }
       displayMain(true);
-    });
-  } else {
-    displayMain(false);
-  }
-
-}
-
-/* get the saved organizations for individual users */
-function getIndividualOrganizations() {
-  var userType = sessionStorage.getItem("user-type");
-  if (userType == null) {
-    getUserType(true);
-  }
-  if (userType == "individual") {
-    fetch('get-' + userType).then(response => response.json()).then((data) => {
-      const orgDiv = document.getElementById("saved-orgs");
-      orgDiv.innerHTML='';
-      data[0].organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true, true)));
-      displayMain(true);
-    });
-  } else {
-    displayMain(false);
-  }
+    } else {
+      displayMain(false);
+    }
+  });
 }
 
 /* Function to create the individual organization display divs*/
@@ -277,7 +219,7 @@ function createSaveButton(data) {
 }
 
 /* create the individual event containers for displaying events*/
-function createSavedEventElement(event, saveAllowed, editAllowed) {
+function createSavedEventElement(event, saveAllowed, editDeleteAllowed) {
   const divElement = document.createElement('div');
   divElement.setAttribute("class", "item-container general-container");
 
@@ -289,69 +231,81 @@ function createSavedEventElement(event, saveAllowed, editAllowed) {
   pElementTime.innerText = event.eventDateTime;
   divElement.appendChild(pElementTime);
 
-  // create delete event form
-  var form = null;
-  if (editAllowed) {
-    form = createEditEventButton(event);
+  // create save, unsave, delete, or edit event form
+  if (editDeleteAllowed) {
+    // if edit is allowed, then it means that delete is allowed as well
+    createEditAndDeleteEventButton(divElement, event);
   } else if (saveAllowed) {
-    form = createSaveEventButton(event);
+    createSaveEventButton(divElement, event);
   } else if (!saveAllowed) {
-    form = createUnsaveEventButton(event);
+    createUnsaveEventButton(divElement, event);
   }
-  divElement.appendChild(form);
 
   return divElement;
 }
 
 /* creates an unsave button for event */
-function createUnsaveEventButton(event) {
+function createUnsaveEventButton(divElement, event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-event?event-id=" + event.datastoreID);
+  form.setAttribute("action", "delete-saved-event?event-id=" + event.datastoreId);
   const button = document.createElement('button');
   button.innerText = "Unsave this event";
   button.setAttribute("type", "submit");
 
   form.appendChild(button);
-  return form;
+  divElement.appendChild(form);
 }
 
 /* creates a save button for event */
-function createSaveEventButton(event) {
+function createSaveEventButton(divElement, event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "add-saved-event?event-id=" + event.datastoreID);
+  form.setAttribute("action", "add-saved-event?event-id=" + event.datastoreId);
   const button = document.createElement('button');
   button.innerText = "Save this event";
   button.setAttribute("type", "submit");
 
   form.appendChild(button);
-  return form;
+  divElement.appendChild(form);
 }
 
 /* creates an edit button for events */
-function createEditEventButton(event) {
-  const form = document.createElement("form");
-  form.setAttribute("action", "event#" + event.datastoreID);
-  const button = document.createElement('button');
-  button.innerText = "Edit this event";
-  button.setAttribute("type", "submit");
+function createEditAndDeleteEventButton(divElement, event) {
+  // create edit form
+  const editForm = document.createElement("form");
+  editForm.setAttribute("action", "event.html#" + event.datastoreId);
+  const editButton = document.createElement('button');
+  editButton.innerText = "Edit this event";
+  editButton.setAttribute("type", "submit");
 
-  form.appendChild(button);
-  return form;
+  editForm.appendChild(editButton);
+  divElement.appendChild(editForm);
+
+  divElement.appendChild(document.createElement('br'));
+
+  // create delete form
+  const deleteForm = document.createElement("form");
+  deleteForm.setAttribute("action", "delete-organization-event?event-id=" + event.datastoreId);
+  deleteForm.setAttribute("method", "POST");
+  const deleteButton = document.createElement('button');
+  deleteButton.innerText = "Delete this event";
+  deleteButton.setAttribute("type", "submit");
+
+  deleteForm.appendChild(deleteButton);
+  divElement.appendChild(deleteForm);
 }
 
 /* Function to control form display using button */
 function revealForm() {
-	var userType = sessionStorage.getItem("user-type");
-	if (userType == null) {
-		getUserType(true);
-    if (sessionStorage.getItem("user-type") == null) {
+	fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType == "unknown") {
+      displayMain(false);
       displayForm("individual", true);
-      return;
+    } else {
+      displayForm(data.userType, false);
     }
-  }
-  displayForm(userType, false);
+  });
 }
 
 /* Function to close form display after submission */
@@ -362,44 +316,38 @@ function closeForm() {
 
 /* function to get all events hosted by the current organization */
 function getOrganizationEvents() {
-  var userType = sessionStorage.getItem("user-type");
-  if (userType == null) {
-    getUserType(true);
-  }
-  if (userType == "organization") {
-    fetch('get-' + userType).then(response => response.json()).then((data) => {
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType == "organization") {
       const eventDiv = document.getElementById("created-events");
-      data[0].events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, true)));
+      data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, true)));
       displayMain(true);
-    });
-  } else {
-    displayMain(false);
-  }
+    } else {
+      displayMain(false);
+    }
+  });
 }
 
 /* Function to support searching for organizations by name */
 function searchOrg() {
-  var university = sessionStorage.getItem("university");
-  if (university == null) {
-    getUserType(false);
-    if (sessionStorage.getItem("university") == null) {
-      return;
-    }
-  }
-  var userType = sessionStorage.getItem("user-type");
-  var displaySaveButton = userType == "individual";
-  var name = document.getElementById("search-org").value;
-  fetch('search-organization?name=' + name + "&university=" + university).then(response => response.json()).then((organizations) => {
-    const orgListElement = document.getElementById('list-organizations');
-    orgListElement.innerHTML = '';
-
-    if (organizations.length == 0) {
-      const pElementNone = document.createElement('p');
-      pElementNone.innerText = "No organizations found. Please try to modify your search.";
-      orgListElement.appendChild(pElementNone);
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType == "unknown") {
+      displayMain(false);
     } else {
-      organizations.forEach((org) => {
-        orgListElement.appendChild(createSavedOrgElement(org, false, displaySaveButton));
+      var displaySaveButton = data.userType == "individual";
+      var name = document.getElementById("search-org").value;
+      fetch('search-organization?name=' + name + "&university=" + data.university).then(response => response.json()).then((organizations) => {
+        const orgListElement = document.getElementById('list-organizations');
+        orgListElement.innerHTML = '';
+
+        if (organizations.length == 0) {
+          const pElementNone = document.createElement('p');
+          pElementNone.innerText = "No organizations found. Please try to modify your search.";
+          orgListElement.appendChild(pElementNone);
+        } else {
+          organizations.forEach((org) => {
+            orgListElement.appendChild(createSavedOrgElement(org, false, displaySaveButton));
+          });
+        }
       });
     }
   });
@@ -407,44 +355,42 @@ function searchOrg() {
 
 /* function to generate divs for the calendar */
 function createCalendar() {
-  var userType = sessionStorage.getItem("user-type");
-  if (userType == null) {
-    getUserType(true);
-  }
-  if (userType == "individual") {
-    const calendar = document.getElementById("calendar");
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType == "individual") {
+      const calendar = document.getElementById("calendar");
 
-    var today = new Date();
-    var endDate = new Date();
-    endDate.setDate(today.getDate() + 8);
-    for (var i = 0; i < 7; i++) {
-      var nextDay = new Date();
-      nextDay.setDate(today.getDate() + i);
-      const dateDiv = document.createElement('div');
-      dateDiv.setAttribute("class", "date general-container");
-      const dateDisplay = document.createElement('p');
-      dateDisplay.innerText = nextDay.toDateString();
-      dateDiv.appendChild(dateDisplay);
-      const eventDiv = document.createElement('div');
-      eventDiv.setAttribute("class", "date row");
-      eventDiv.setAttribute("id", "date" + i);
-      calendar.append(dateDiv);
-      calendar.append(eventDiv);
-    }
-    fetch('get-calendar-events').then(response => response.json()).then((data) => {
-      data.forEach((event) => {
-        var eventDate = new Date(event.eventDateTime);
-        if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
-          var diff = eventDate.getDate() - today.getDate();
-          const eventDisplay = createCalendarEventElement(event, eventDate);
-          const generalDateDiv = document.getElementById("date" + diff);
-          generalDateDiv.appendChild(eventDisplay);
-        }
+      var today = new Date();
+      var endDate = new Date();
+      endDate.setDate(today.getDate() + 8);
+      for (var i = 0; i < 7; i++) {
+        var nextDay = new Date();
+        nextDay.setDate(today.getDate() + i);
+        const dateDiv = document.createElement('div');
+        dateDiv.setAttribute("class", "date general-container");
+        const dateDisplay = document.createElement('p');
+        dateDisplay.innerText = nextDay.toDateString();
+        dateDiv.appendChild(dateDisplay);
+        const eventDiv = document.createElement('div');
+        eventDiv.setAttribute("class", "date row");
+        eventDiv.setAttribute("id", "date" + i);
+        calendar.append(dateDiv);
+        calendar.append(eventDiv);
+      }
+      fetch('get-calendar-events').then(response => response.json()).then((data) => {
+        data.forEach((event) => {
+          var eventDate = new Date(event.eventDateTime);
+          if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
+            var diff = eventDate.getDate() - today.getDate();
+            const eventDisplay = createCalendarEventElement(event, eventDate);
+            const generalDateDiv = document.getElementById("date" + diff);
+            generalDateDiv.appendChild(eventDisplay);
+          }
+        });
       });
-    });
-  } else {
-    displayMain(false);
-  }
+    } else {
+      displayMain(false);
+    }
+  });
 }
 
 /* helper function to create calendar event elements */
