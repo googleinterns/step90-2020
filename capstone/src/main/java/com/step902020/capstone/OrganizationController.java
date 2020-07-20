@@ -24,7 +24,7 @@ public class OrganizationController {
   
   /**
    * Find an organization's profile information by email
-   * @param email get the user email from IAP headers
+   * @param currentUser current user
    * @return list of organizations with the same email as param
    */
   @GetMapping("get-organization")
@@ -36,7 +36,7 @@ public class OrganizationController {
    * Save organization information into Datastore. If the email does not yet exist in
   Datastore, create a new entity. Otherwise do an update on the existing entity
    * @param name name of the organization
-   * @param email email of the current user from IAP header
+   * @param user current user
    * @param userType type of user, either individual or organization
    * @param university affiliated university
    * @param description short bio
@@ -61,7 +61,7 @@ public class OrganizationController {
       current.setName(name);
       current.setDescription(description);
     } else {
-      current = new Organization(System.currentTimeMillis(), name, userEmail, university, userType, description, "");
+      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), university, userType, description);
     }
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);

@@ -23,7 +23,6 @@ public class Organization {
   @Field(name="user-type")
   String userType;
   String description;
-  String image;
 
   @Reference
   @JsonManagedReference
@@ -32,14 +31,13 @@ public class Organization {
   public Organization() {
   }
   
-  public Organization(Long timestamp, String name, String email, String university, String userType, String description, String image) {
+  public Organization(Long timestamp, String name, String email, String university, String userType, String description) {
     this.timestamp = timestamp;
     this.name = name;
     this.email = email;
     this.university = university;
     this.userType = userType;
     this.description = description;
-    this.image = image;
     events = new ArrayList<Event>();
   }
   
@@ -70,10 +68,6 @@ public class Organization {
   public String getDescription() {
     return description;
   }
-
-  public String getImage() {
-    return image;
-  }
   
   public List<Event> getEvents() {
     return events;
@@ -85,10 +79,6 @@ public class Organization {
 
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  public void setImage(String image) {
-    this.image = image;
   }
 
   public void addEvent(Event event) {

@@ -56,7 +56,7 @@ public class UserDatastoreTest {
 
     Organization organization = new Organization(System.currentTimeMillis(), "OrganizationThatExists",
         "org@uni.edu", "UNI", "organization",
-        "Organization already saved by a user", null);
+        "Organization already saved by a user");
     this.organizationSavedByUser = this.organizationRepository.save(organization);
     Individual individual = new Individual(
         System.currentTimeMillis(),
@@ -64,8 +64,7 @@ public class UserDatastoreTest {
         "ThatExists",
         currentUserEmail,
         "Princeton",
-        "individual",
-        "");
+        "individual");
     individual.addOrganizations(this.organizationSavedByUser);
 
     expectedIndividual =
@@ -78,8 +77,7 @@ public class UserDatastoreTest {
                 currentUserEmail,
                 "Princeton",
                 "organization",
-                "hello world!",
-                ""));
+                "hello world!"));
 
     expectedEvent = this.eventRepository.save(new Event(expectedOrganization, "pizza party", "2020-08-02T20:30", "Turtles bring pizza",
         40.769579, -73.973036, true, false));

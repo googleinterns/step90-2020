@@ -57,7 +57,7 @@ public class IndividualController {
       current.setLastName(lastname);
     }
     else {
-        current = new Individual(System.currentTimeMillis(), firstname, lastname, userEmail, university, userType, "");
+        current = new Individual(System.currentTimeMillis(), firstname, lastname, userEmail, university, userType);
     }
     this.individualRepository.save(current);
     return new RedirectView("profile.html", true);
