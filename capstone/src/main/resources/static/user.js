@@ -401,3 +401,16 @@ function getPublicProfile() {
  });
 }
 
+
+document.onreadystatechange = function () {
+  var state = document.readyState
+  if (state != "complete") {
+    document.getElementById('contents').style.display="none";
+  } else {
+    setTimeout(function(){
+    document.getElementById('load').style.display="none";
+    document.getElementById('contents').style.display="block";
+    },0);
+  }
+}
+

@@ -8,6 +8,7 @@
     <script src="user.js"></script>
 </head>
 <body onload="getUser(true);">
+
     <nav class="nav-bar">
         <ul>
             <li class="home"><a href="">College Activity Finder</a></li>
@@ -19,75 +20,79 @@
         </ul>
     </nav>
     <br/>
-    <div class="profile-head">
-        <div id="name"></div>
-        <div class="container">
-            <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
-        </div>
-        <div id="email"></div>
-        <div id="university"></div>
-        <div id="description"></div>
-        <div id="no-profile">
-            <p>You have not built your profile yet, please submit a profile </p>
-        </div>
-        <nav class="nav-bar-inverted" id="individual-nav">
-            <ul>
-                <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
-                <li><a href="usercalendar.html">Calendar of Events</a></li>
-                <li><a href="savedevents.html">Saved Events</a></li>
-                <li><a href="savedorganizations.html">Saved Organizations</a></li>
-            </ul>
-        </nav>
-        <nav class="nav-bar-inverted" id="org-nav">
-            <ul>
-                <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
-                <li><a href="manageevents.html">Manage my Events</a></li>
-                <li><a href="event.html">Create an Event</a></li>
-            </ul>
-        </nav>
-    </div>
-    
-    <div class="profile-head">
-        <button class="button submit profile-button" onclick="revealForm()">Edit/Submit Your Profile</button>
-    </div>
-    <div class="profile-form general-container" id="user">
-        <form action="save-individual" method="POST" id="user-form">
-            <div id="user-select">
-                <label>Are you an individual or a club/organization?</label>
-                <select id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
-                    <option value="individual">Individual</option>
-                    <option value="organization">Organization</option>
-                </select>
-            </div>
-            <label>First Name:</label>
-            <input type="text" name="firstname" id="ind-firstname" placeholder="Your first name.."></input>
-            <label>Last Name:</label>
-            <input type="text" name="lastname" id="ind-lastname" placeholder="Your last name.."></input>
-            <label>University:</label>
-            <p id="university-form-display" style="display:none"></p>
-            <input type="text" name="university" id="ind-uni" placeholder="Your university.."></input>
-            <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
-        </form>
-    </div>
 
-    <div class="profile-form general-container" id="organization">
-        <form action="save-organization" method="POST" id="organization-form">
-            <div id="org-select">
-                <label>Are you an individual or an organization?</label>
-                <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
-                    <option value="individual">Individual</option>
-                    <option value="organization">Organization</option>
-                </select>
+    <div class="loader" id="load"></div>
+    <div id="contents">
+        <div class="profile-head">
+            <div id="name"></div>
+            <div class="container">
+                <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
             </div>
-            <label>Organization Name:</label>
-            <input type="text" name="name" id="org-form-name" placeholder="Your organization name.."></input>
-            <label>Affiliated University:</label>
-            <p id="org-university-form-display"></p>
-            <input type="text" name="university" id="org-uni" placeholder="Your university.."></input>
-            <label>Description:</label>
-            <input type="text" name="description" id="org-description" placeholder="Description of your organization.."></input>
-            <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
-        </form>
+            <div id="email"></div>
+            <div id="university"></div>
+            <div id="description"></div>
+            <div id="no-profile">
+                <p>You have not built your profile yet, please submit a profile </p>
+            </div>
+            <nav class="nav-bar-inverted" id="individual-nav">
+                <ul>
+                    <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
+                    <li><a href="usercalendar.html">Calendar of Events</a></li>
+                    <li><a href="savedevents.html">Saved Events</a></li>
+                    <li><a href="savedorganizations.html">Saved Organizations</a></li>
+                </ul>
+            </nav>
+            <nav class="nav-bar-inverted" id="org-nav">
+                <ul>
+                    <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
+                    <li><a href="manageevents.html">Manage my Events</a></li>
+                    <li><a href="event.html">Create an Event</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="profile-head">
+            <button class="button submit profile-button" onclick="revealForm()">Edit/Submit Your Profile</button>
+        </div>
+        <div class="profile-form general-container" id="user">
+            <form action="save-individual" method="POST" id="user-form">
+                <div id="user-select">
+                    <label>Are you an individual or a club/organization?</label>
+                    <select id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
+                        <option value="individual">Individual</option>
+                        <option value="organization">Organization</option>
+                    </select>
+                </div>
+                <label>First Name:</label>
+                <input type="text" name="firstname" id="ind-firstname" placeholder="Your first name.."></input>
+                <label>Last Name:</label>
+                <input type="text" name="lastname" id="ind-lastname" placeholder="Your last name.."></input>
+                <label>University:</label>
+                <p id="university-form-display" style="display:none"></p>
+                <input type="text" name="university" id="ind-uni" placeholder="Your university.."></input>
+                <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
+            </form>
+        </div>
+
+        <div class="profile-form general-container" id="organization">
+            <form action="save-organization" method="POST" id="organization-form">
+                <div id="org-select">
+                    <label>Are you an individual or an organization?</label>
+                    <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
+                        <option value="individual">Individual</option>
+                        <option value="organization">Organization</option>
+                    </select>
+                </div>
+                <label>Organization Name:</label>
+                <input type="text" name="name" id="org-form-name" placeholder="Your organization name.."></input>
+                <label>Affiliated University:</label>
+                <p id="org-university-form-display"></p>
+                <input type="text" name="university" id="org-uni" placeholder="Your university.."></input>
+                <label>Description:</label>
+                <input type="text" name="description" id="org-description" placeholder="Description of your organization.."></input>
+                <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
+            </form>
+        </div>
     </div>
-  </body>
+</body>
 </html>
