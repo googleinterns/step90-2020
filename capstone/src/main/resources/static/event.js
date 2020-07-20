@@ -2,14 +2,18 @@
  * Retrieves events from server
  */
 function getEvents() {
-  var userType = sessionStorage.getItem("user-type");
-  if (userType == null) {
-    getUserType(false);
-    if (sessionStorage.getItem("user-type") == null) {
-      return;
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType != "unknown") {
+      getAllEventsForSearch(data);
+    } else {
+      displayMain(false);
     }
-  }
-  var displaySaveButton = userType == "individual";
+  });
+}
+
+/* helper function to get all events for search page */
+function getAllEventsForSearch(data) {
+  var displaySaveButton = data.userType == "individual";
   fetch('get-all-events').then(response => response.json()).then((events) => {
 
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
@@ -75,7 +79,7 @@ function createReviewElement(event) {
 
   reviewButtonElement.addEventListener('click', () => {
     if (reviewInputElement.value != '') {
-      newReview(event.datastoreID, reviewInputElement.value).then((reviews) => {
+      newReview(event.datastoreId, reviewInputElement.value).then((reviews) => {
         reviewsContainer.innerHTML = '';
         createReviewContainerElement(reviewsContainer, reviews);
        });
@@ -84,8 +88,6 @@ function createReviewElement(event) {
   const reviewsContainer = createElement(reviewElement, 'div', '');
   reviewsContainer.id = 'review-list-container';
   createReviewContainerElement(reviewsContainer, event.reviews);
-  console.log(event.reviews);
-
 }
 
 /**
@@ -140,7 +142,7 @@ function loadEventInfo() {
       document.getElementById("eventLatitude").value = data.eventLatitude;
       document.getElementById("eventLongitude").value = data.eventLongitude;
       document.getElementById("eventDescription").value = data.description;
-      document.getElementById("event-id").value = data.datastoreID;
+      document.getElementById("event-id").value = data.datastoreId;
     });
   }
 }
@@ -152,30 +154,13 @@ async function createMap() {
     document.getElementById('map'),
     {center: princetonLatLng, zoom: 16});
 
-  const testEvent1 = new google.maps.Marker({
-      position: {lat: 40.344184,lng: -74.657645},
-      map: campusMap,
-      title: "Event 1"
-  });
-  const testEvent2 = new google.maps.Marker({
-      position: {lat: 40.346875,lng: -74.65002},
-      map: campusMap,
-      title: "Event 2"
-  });
-  const testEvent3 = new google.maps.Marker({
-      position: {lat: 40.348357,lng: -74.660553},
-      map: campusMap,
-      title: "Event 3"
-  });
-
    const response = await fetch('get-all-events');
    const jsonEvents = await response.json();
    jsonEvents.forEach(event => createMarker(event, campusMap));
-
 }
 
 /* Create a new marker for each event
- * @pram event - event object
+ * @param event - event object
  * @param campusMap - Google Map object
  */
 function createMarker(event,campusMap) {

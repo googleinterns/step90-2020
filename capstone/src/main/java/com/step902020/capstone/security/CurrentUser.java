@@ -24,5 +24,4 @@ public class CurrentUser {
 
     return name;
   }
-
 }
