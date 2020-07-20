@@ -160,7 +160,7 @@ async function createMap() {
 }
 
 /* Create a new marker for each event
- * @pram event - event object
+ * @param event - event object
  * @param campusMap - Google Map object
  */
 function createMarker(event,campusMap) {
