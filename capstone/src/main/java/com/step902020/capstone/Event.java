@@ -39,7 +39,7 @@ public class Event{
   
   @Reference
   List<Review> reviews;
-
+ 
   public Event(String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
     
     this.organizationName = organizationName;
@@ -60,6 +60,7 @@ public class Event{
   public String getEventTitle() {
     return eventTitle;
   }
+
   public String getEventDateTime() {
     return eventDateTime;
   }
