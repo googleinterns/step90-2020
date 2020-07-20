@@ -37,7 +37,7 @@ public class GcsStore {
                     "<form action='"
                             + policy.getUrl()
                             + "' method='POST' enctype='multipart/form-data'>\n");
-    htmlForm.append("<label>Profile Image (after clicking submit please refresh the page to see the change):</label>");
+    htmlForm.append("<label>Profile Image (File needs to be at least 70KB. After clicking submit please refresh the page to see the change):</label>");
     for (Map.Entry<String, String> entry : policy.getFields().entrySet()) {
       htmlForm.append(
               "  <input name='"
