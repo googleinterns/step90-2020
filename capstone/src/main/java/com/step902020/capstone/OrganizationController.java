@@ -21,6 +21,9 @@ public class OrganizationController {
 
   @Autowired
   private OrganizationRepository organizationRepository;
+
+  @Autowired
+  private EventRepository eventRepository;
   
   /**
    * Find an organization's profile information by email
@@ -89,7 +92,25 @@ public class OrganizationController {
    * @return Organization object
    */
   @GetMapping("get-public-profile")
-  public Organization getPublicProfile(@RequestParam("organization-id") String organizationId) {
+  public Organization getPublicProfile(@RequestParam("organization-id") String organizationId) throws IOException {
     return this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
+  }
+
+  /**
+   * deletes event from the organization's event list and deletes the event entity
+   * @param eventId datastore id of the event to be deleted
+   * @param user current user
+   * @return RedirectView to manage event page
+   * @throws IOException
+   */
+  @PostMapping("delete-organization-event")
+  public RedirectView deleteOrganizationEvent(@RequestParam("event-id") String eventId, CurrentUser user) throws IOException {
+    Organization current = getOrganization(user);
+    Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
+    if (event != null) {
+      current.deleteEvent(event);
+      this.eventRepository.deleteById(Long.parseLong(eventId));
+    }
+    return new RedirectView("manageevents.html", true);
   }
 }

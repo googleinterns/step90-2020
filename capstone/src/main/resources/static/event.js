@@ -79,7 +79,7 @@ function createReviewElement(event) {
 
   reviewButtonElement.addEventListener('click', () => {
     if (reviewInputElement.value != '') {
-      newReview(event.datastoreID, reviewInputElement.value).then((reviews) => {
+      newReview(event.datastoreId, reviewInputElement.value).then((reviews) => {
         reviewsContainer.innerHTML = '';
         createReviewContainerElement(reviewsContainer, reviews);
        });
