@@ -79,10 +79,10 @@ public class UserDatastoreTest {
                 "organization",
                 "hello world!"));
 
-    expectedEvent = this.eventRepository.save(new Event(expectedOrganization, "pizza party", "2020-08-02T20:30", "Turtles bring pizza",
+    expectedEvent = this.eventRepository.save(new Event(expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
         40.769579, -73.973036, true, false));
 
-    expectedEventId = expectedEvent.getDatastoreID();
+    expectedEventId = expectedEvent.getDatastoreId();
 
     this.authRestTemplate = this.restTemplate
         .withBasicAuth(currentUserEmail, currentUserPassword);
@@ -118,7 +118,7 @@ public class UserDatastoreTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-    map.add("event-id", expectedEvent.getDatastoreID());
+    map.add("event-id", expectedEvent.getDatastoreId());
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
     ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
     assertTrue(saveResponse.getHeaders().containsKey("Location"));
@@ -130,7 +130,7 @@ public class UserDatastoreTest {
 
     Individual[] result = authRestTemplate.getForObject(getIndividualUrl, Individual[].class);
     assertEquals("Wrong number of saved events", 1, result[0].getSavedEvents().size());
-    assertEquals("Wrong saved event -- ID", expectedEvent.getDatastoreID(), result[0].getSavedEvents().get(0).getDatastoreID());
+    assertEquals("Wrong saved event -- ID", expectedEvent.getDatastoreId(), result[0].getSavedEvents().get(0).getDatastoreId());
     assertEquals("Wrong saved event -- title", expectedEvent.getEventTitle(), result[0].getSavedEvents().get(0).getEventTitle());
   }
 
@@ -142,7 +142,7 @@ public class UserDatastoreTest {
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
     map.add("email", expectedEmail);
-    map.add("event-id", expectedEvent.getDatastoreID());
+    map.add("event-id", expectedEvent.getDatastoreId());
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
     ResponseEntity<String> response = authRestTemplate.postForEntity(url, request, String.class);
     // getting the actual result

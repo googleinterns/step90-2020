@@ -95,7 +95,7 @@ public class Individual {
   }
 
   public void deleteSavedEvents(Event event) {
-    savedEvents.removeIf(e -> event.getDatastoreID().equals(e.getDatastoreID()));
+    savedEvents.removeIf(e -> event.getDatastoreId().equals(e.getDatastoreId()));
   }
 
   /**

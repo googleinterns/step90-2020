@@ -1,8 +1,5 @@
 package com.step902020.capstone;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Reference;
@@ -13,10 +10,11 @@ import java.util.*;
 public class Event{
 
   @Id
-  Long datastoreID;
+  Long datastoreId;
 
-  @JsonBackReference
-  Organization organization;
+  String organizationName;
+
+  Long organizationId;
 
   @Field(name="eventTitle")
   String eventTitle;
@@ -43,9 +41,10 @@ public class Event{
   List<Review> reviews;
  
 
-  public Event(Organization organization, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvaliable, Boolean requiredFee) {
+  public Event(String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvaliable, Boolean requiredFee) {
  
-    this.organization = organization;
+    this.organizationName = organizationName;
+    this.organizationId = organizationId;
     this.eventTitle = eventTitle;
     this.eventDateTime = eventDateTime;
     this.eventDescription = eventDescription;
@@ -56,22 +55,16 @@ public class Event{
     this.reviews = new ArrayList();
   }
 
-  public Long getDatastoreID() {
-    return datastoreID;
+  public Long getDatastoreId() {
+    return datastoreId;
   }
 
   public String getEventTitle() {
     return eventTitle;
   }
 
-  public Organization getOrganization() {
-    return organization;
-  }
   public String getEventDateTime() {
     return eventDateTime;
-  }
-  public String getDescription() {
-    return eventDescription;
   }
   public double getEventLatitude() {
     return eventLatitude;
@@ -82,12 +75,29 @@ public class Event{
   public List<Review> getReviews() {
     return reviews;
   }
-  public void setDatastoreID(Long datastoreID) {
-    this.datastoreID = datastoreID;
+
+  public String getOrganizationName() {
+    return organizationName;
   }
 
-  public void setOrganization(Organization organization) {
-    this.organization = organization;
+  public Long getOrganizationId() {
+    return organizationId;
+  }
+
+  public String getEventDescription() {
+    return eventDescription;
+  }
+
+  public Boolean getFoodAvaliable() {
+    return foodAvaliable;
+  }
+
+  public Boolean getRequiredFee() {
+    return requiredFee;
+  }
+
+  public void setDatastoreId(Long datastoreId) {
+    this.datastoreId = datastoreId;
   }
 
   public void setEventTitle(String eventTitle) {

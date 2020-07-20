@@ -52,7 +52,7 @@ public class EventController {
      @RequestParam("requiredFee") Optional<Boolean> requiredFee,
      @RequestParam("event-id") String eventId
     ) throws IOException {
-      Organization organization = organizationRepository.findByEmail(user.getEmail()).get(0);
+      Organization organization = organizationRepository.findFirstByEmail(user.getEmail());
       Event event = eventId.length() <= 0? null : this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
       if (event != null) {
         event.setEventDateTime(eventDateTime);
@@ -60,10 +60,9 @@ public class EventController {
         event.setEventLatitude(Double.parseDouble(eventLatitude));
         event.setEventLongitude(Double.parseDouble(eventLongitude));
         event.setEventTitle(eventTitle);
-        event.setOrganization(organization);
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization, eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvaliable.orElse(false), requiredFee.orElse(false));
+        Event newEvent = new Event(organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvaliable.orElse(false), requiredFee.orElse(false));
         this.eventRepository.save(newEvent);
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);
@@ -72,14 +71,15 @@ public class EventController {
   }
 
   @PostMapping("/new-review")
-  public void addReview(
+  public List<Review> addReview(
           @RequestParam("text") String text,
           @RequestParam("eventId") Long eventId,
           @RequestParam("name") String name) throws IOException {
 
     Event event = this.eventRepository.findById(eventId).get();
-
-    event.addReview(new Review(text, name));
+    Review review = new Review(text, name);
+    event.addReview(review);
     this.eventRepository.save(event);
+    return event.reviews;
   }
 }

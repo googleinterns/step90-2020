@@ -1,13 +1,15 @@
 package com.step902020.capstone;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
 import org.springframework.cloud.gcp.data.datastore.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface OrganizationRepository extends DatastoreRepository<Organization, Long> {
 
-  public List<Organization> findByEmail(String email);
+  public Organization findFirstByEmail(String email);
 
   public long deleteByEmail(String email);
 
