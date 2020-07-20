@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="script.js"></script>
     <script src="user.js"></script>
+    <script src="event.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
   </head>
 
@@ -17,9 +18,13 @@
         <li class="active"><a href="index.html">Events</a></li>
         <li><a href="organizationsearch.html">Organizations</a></li>
         <li class=""><a href="profile.html">My Account</a></li>
+        <li><a href="map.html">Event Map</a> </li>
         <li><a href="=">About Us</a></li>
       </ul>
     </nav>
+    <div id="no-profile">
+      <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
+    </div>
 
     <h1 id="event-header">FIND YOUR EVENT</h1>
     <div id="filters">
@@ -64,9 +69,14 @@
     </div>
 
     <div id="events"></div>
-    <button onclick="removeReviews()">remove reviews</button>
-    <div id="no-profile">
-      <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
+    <div id="modal">
+      <div class="modal-content">
+        <h1 id="eventName"></h1>
+        <p id="eventTime"></p>
+        <p id="eventLocation"></p>
+        <p id="eventDescription"></p>
+        <div id="review-container"></div>
+      </div>
     </div>
   </body>
 </html>

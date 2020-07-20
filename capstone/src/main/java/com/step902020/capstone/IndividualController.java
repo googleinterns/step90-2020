@@ -3,7 +3,10 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +22,6 @@ public class IndividualController {
   @Autowired
   private IndividualRepository individualRepository;
 
-  /** Find currently logged in individual. */
   @Autowired
   private EventRepository eventRepository;
 
@@ -29,11 +31,11 @@ public class IndividualController {
   /**
    * Find an individual's profile information by email
    * @param user Currently logged-in user
-   * @return list of individuals with the same email
+   * @return individual with the same email
    */
   @GetMapping("get-individual")
-  public List<Individual> getIndividual(CurrentUser user) {
-    return this.individualRepository.findByEmail(user.getEmail());
+  public Individual getIndividual(CurrentUser user) {
+    return this.individualRepository.findFirstByEmail(user.getEmail());
   }
 
   /** Save user information into Datastore. If the email does not yet exist in 
@@ -47,12 +49,10 @@ public class IndividualController {
       @RequestParam("university") String university) throws IOException {
 
     String userEmail = user.getEmail();
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(userEmail);
+    Individual current = getIndividual(user);
     
     // either edit the existing user or create a new one
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.setFirstName(firstname);
       current.setLastName(lastname);
     }
@@ -75,11 +75,9 @@ public class IndividualController {
       @RequestParam("event-id") String eventId,
       CurrentUser user) throws IOException {
 
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = getIndividual(user);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.addSavedEvents(event);
     }
     this.individualRepository.save(current);
@@ -98,11 +96,9 @@ public class IndividualController {
       @RequestParam("event-id") String eventId,
       CurrentUser user) throws IOException {
 
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = getIndividual(user);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.deleteSavedEvents(event);
     }
     this.individualRepository.save(current);
@@ -122,11 +118,9 @@ public class IndividualController {
       CurrentUser user,
       @RequestParam("organization-id") String organizationId) throws IOException {
     
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = getIndividual(user);
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.addOrganizations(organization);
     } 
     this.individualRepository.save(current);
@@ -146,12 +140,10 @@ public class IndividualController {
       CurrentUser user,
       @RequestParam("organization-id") String organizationId) throws IOException {
     
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = getIndividual(user);
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
 
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       current.deleteOrganizations(organization);
     } 
     this.individualRepository.save(current);
@@ -168,11 +160,9 @@ public class IndividualController {
   @GetMapping("get-calendar-events")
   public Set<Event> getCalendarEvents(CurrentUser user) throws IOException {
     // get saved events and for each of the organizations get their list of saved events
-    Individual current = null;
-    List<Individual> userList = this.individualRepository.findByEmail(user.getEmail());
+    Individual current = getIndividual(user);
     Set<Event> calendarEvents = new HashSet<Event>();
-    if (userList.size() > 0) {
-      current = userList.get(0);
+    if (current != null) {
       calendarEvents.addAll(current.getSavedEvents());
       for (Organization org : current.getOrganizations()) {
         calendarEvents.addAll(org.getEvents());
