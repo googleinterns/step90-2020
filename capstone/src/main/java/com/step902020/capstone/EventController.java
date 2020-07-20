@@ -71,7 +71,7 @@ public class EventController {
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);
       }
-      return new RedirectView("manageevents", true);
+      return new RedirectView("manageevents.html", true);
   }
 
   @PostMapping("/new-review")

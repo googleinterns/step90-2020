@@ -174,7 +174,7 @@ function createSavedOrgElement(data, deleteAllowed, displayButton) {
  const aElementName = document.createElement('a');
  aElementName.setAttribute("class", "public-org-name");
  aElementName.innerText = data.name;
- aElementName.setAttribute("href", "publicprofile#" + data.datastoreId);
+ aElementName.setAttribute("href", "publicprofile.html#" + data.datastoreId);
  divElement.appendChild(aElementName);
 
  const h5ElementEmail = document.createElement('h5');

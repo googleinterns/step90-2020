@@ -60,7 +60,7 @@ public class IndividualController {
         current = new Individual(System.currentTimeMillis(), firstname, lastname, userEmail, university, userType, "");
     }
     this.individualRepository.save(current);
-    return new RedirectView("profile", true);
+    return new RedirectView("profile.html", true);
   }
 
   /**
@@ -81,7 +81,7 @@ public class IndividualController {
       current.addSavedEvents(event);
     }
     this.individualRepository.save(current);
-    return new RedirectView("savedevents", true);
+    return new RedirectView("savedevents.html", true);
   }
   
   /**
@@ -102,7 +102,7 @@ public class IndividualController {
       current.deleteSavedEvents(event);
     }
     this.individualRepository.save(current);
-    return new RedirectView("savedevents", true);
+    return new RedirectView("savedevents.html", true);
   }
 
   /**
@@ -124,7 +124,7 @@ public class IndividualController {
       current.addOrganizations(organization);
     } 
     this.individualRepository.save(current);
-    return new RedirectView("savedorganizations", true);
+    return new RedirectView("savedorganizations.html", true);
   }
 
   /**
@@ -147,7 +147,7 @@ public class IndividualController {
       current.deleteOrganizations(organization);
     } 
     this.individualRepository.save(current);
-    return new RedirectView("savedorganizations", true);
+    return new RedirectView("savedorganizations.html", true);
   }
 
   /**
