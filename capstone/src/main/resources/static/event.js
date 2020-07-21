@@ -56,7 +56,7 @@ function createEventElement(eventListElement, event, displaySaveButton) {
 
   // Displays only for individual users
   if (displaySaveButton) {
-    eventElement.appendChild(createSaveEventButton(event));
+    createSaveEventButton(eventElement, event);
   }
 }
 
@@ -141,7 +141,7 @@ function loadEventInfo() {
       document.getElementById("eventDateTime").value = data.eventDateTime;
       document.getElementById("eventLatitude").value = data.eventLatitude;
       document.getElementById("eventLongitude").value = data.eventLongitude;
-      document.getElementById("eventDescription").value = data.description;
+      document.getElementById("eventDescription").value = data.eventDescription;
       document.getElementById("event-id").value = data.datastoreId;
       if (data.foodAvailable == true) {
         document.getElementById("foodAvailable").checked = true;

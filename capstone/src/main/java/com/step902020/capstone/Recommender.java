@@ -14,63 +14,49 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.function.Function;
 
-@RestController
-public class RecommendationController {
+public class Recommender {
 
-  @Autowired
-  private IndividualRepository individualRepository;
-
-  @Autowired
-  private EventRepository eventRepository;
-
-  @GetMapping("recommend-events")
-  public List<Event> recommendEvents(CurrentUser currentUser) {
-    Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
-    List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
-    users.remove(targetUser);
-    return findRecommendedEvents(targetUser, users);
-  }
-
-  public List<Event> findRecommendedEvents (Individual targetUser, List<Individual> users) {
-    Map<Long, Double> userToScore= new HashMap<Long, Double>();
-    Set<Event> targetUserEvents = new HashSet(targetUser.getSavedEvents());
-    for (Individual user: users) {
+  public static <E, U> List<E> recommend (U targetUser, List<U> users, Function<U, List<E>> getItemList) {
+    Map<U, Double> userToScore= new HashMap<U, Double>();
+    Set<E> targetUserEvents = new HashSet(getItemList.apply(targetUser));
+    for (U user: users) {
       int dist = 0;
-      Set<Event> userEvents = new HashSet(user.getSavedEvents());
-      for (Event e : targetUserEvents) {
+      Set<E> userEvents = new HashSet(getItemList.apply(user));
+      for (E e : targetUserEvents) {
         if (!userEvents.contains(e)) {
           dist++;
         }
       }
-      for (Event e : userEvents) {
+      for (E e : userEvents) {
         if (!targetUserEvents.contains(e)) {
           dist++;
         }
       }
       double scaledDist = 1/(1+Math.sqrt(dist));
-      userToScore.put(user.getDatastoreId(), scaledDist);
+      userToScore.put(user, scaledDist);
     }
     // sort the resulting list of individuals by increasing distance
     // Create a list from elements of HashMap
-    List<Map.Entry<Long, Double>> tempList =
-            new LinkedList<Map.Entry<Long, Double> >(userToScore.entrySet());
+    List<Map.Entry<U, Double>> tempList =
+            new LinkedList<Map.Entry<U, Double> >(userToScore.entrySet());
 
     // Sort the list
-    Collections.sort(tempList, new Comparator<Map.Entry<Long, Double> >() {
+    Collections.sort(tempList, new Comparator<Map.Entry<U, Double> >() {
       @Override
-      public int compare(Map.Entry<Long, Double> o1,
-                         Map.Entry<Long, Double> o2)
+      public int compare(Map.Entry<U, Double> o1,
+                         Map.Entry<U, Double> o2)
       {
         return (o1.getValue()).compareTo(o2.getValue());
       }
     });
 
     // put data from sorted list to hashmap
-    List<Event> sorted = new ArrayList<>();
-    for (Map.Entry<Long, Double> entry : tempList) {
-      List<Event> currUserEvents = this.individualRepository.findById(entry.getKey()).orElse(null).getSavedEvents();
-      for (Event e : currUserEvents) {
+    List<E> sorted = new ArrayList<>();
+    for (Map.Entry<U, Double> entry : tempList) {
+      List<E> currUserEvents = getItemList.apply(entry.getKey());
+      for (E e : currUserEvents) {
         if (!targetUserEvents.contains(e)) {
           sorted.add(e);
         }
