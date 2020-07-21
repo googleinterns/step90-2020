@@ -134,4 +134,35 @@ public class Event{
     reviews.add(review);
   }
 
+  /**
+   * returns event information in a string format
+   * @return String
+   */
+  public String toString() {
+    return eventTitle + " " + datastoreId;
+  }
+
+  /**
+   * implement equality
+   * @param o object being compared to
+   * @return boolean
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Event)) {
+      return false;
+    }
+
+    Event e = (Event) o;
+    return this.datastoreId.equals(e.datastoreId);
+  }
+
+  @Override
+  public int hashCode() {
+    return datastoreId.hashCode();
+  }
+
 }

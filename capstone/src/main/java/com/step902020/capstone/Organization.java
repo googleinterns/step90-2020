@@ -94,7 +94,38 @@ public class Organization {
   }
 
   public void deleteEvent(Event event) {
-    events.removeIf(e -> event.getDatastoreId().equals(e.getDatastoreId()));
+    events.remove(event);
+  }
+
+  /**
+   * returns organization information in a string format
+   * @return String
+   */
+  public String toString() {
+    return name + " " + datastoreId;
+  }
+
+  /**
+   * implement equality
+   * @param o object being compared to
+   * @return boolean
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Organization)) {
+      return false;
+    }
+
+    Organization organization = (Organization) o;
+    return this.datastoreId.equals(organization.datastoreId);
+  }
+
+  @Override
+  public int hashCode() {
+    return datastoreId.hashCode();
   }
   
 }

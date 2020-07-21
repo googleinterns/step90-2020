@@ -416,3 +416,16 @@ function getPublicProfile() {
  });
 }
 
+function findRecommended() {
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if(data.userType == "individual") {
+      fetch('get-recommended-events').then(response => response.json()).then((data) => {
+        const eventDiv = document.getElementById("recommended-events");
+        data.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true, false)));
+      });
+      displayMain(true);
+    } else {
+      displayMain(false);
+    }
+  });
+}

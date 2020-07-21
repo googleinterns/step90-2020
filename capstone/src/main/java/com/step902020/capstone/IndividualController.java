@@ -171,11 +171,10 @@ public class IndividualController {
     return calendarEvents;
   }
 
-  @GetMapping("recommend-events")
+  @GetMapping("get-recommended-events")
   public List<Event> recommendEvents(CurrentUser currentUser) {
     Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
     List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
-    users.remove(targetUser);
     return Recommender.recommend(targetUser, users, u -> u.getSavedEvents());
   }
 }

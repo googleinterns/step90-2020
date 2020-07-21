@@ -19,6 +19,7 @@ import java.util.function.Function;
 public class Recommender {
 
   public static <E, U> List<E> recommend (U targetUser, List<U> users, Function<U, List<E>> getItemList) {
+    users.remove(targetUser);
     Map<U, Double> userToScore= new HashMap<U, Double>();
     Set<E> targetUserEvents = new HashSet(getItemList.apply(targetUser));
     for (U user: users) {
@@ -35,6 +36,7 @@ public class Recommender {
         }
       }
       double scaledDist = 1/(1+Math.sqrt(dist));
+      System.out.println(user.toString() + " " + scaledDist);
       userToScore.put(user, scaledDist);
     }
     // sort the resulting list of individuals by increasing distance
@@ -57,39 +59,11 @@ public class Recommender {
     for (Map.Entry<U, Double> entry : tempList) {
       List<E> currUserEvents = getItemList.apply(entry.getKey());
       for (E e : currUserEvents) {
-        if (!targetUserEvents.contains(e)) {
+        if (!targetUserEvents.contains(e) && !sorted.contains(e)) {
           sorted.add(e);
         }
       }
-
     }
     return sorted;
   }
 }
-  /*
-  List listOfUsers = list of users in the same college (excluding the current user)
-  User targetUser = current user being considered
-  Map userToScore = map that maps users to the distance (or score they get), or an arraylist of Pairs (to make it easier to sort later)
-  for user in listOfUsers {
-    int dist = 0
-    Set targetUserEvents = event of the current user
-    Set userEvents = event of the other user being considered right now
-
-    for event in targetUserEvents {
-      if (not in userEvents) { dist++; }
-    }
-    for event in userEvents {
-      if (not in targetUserEvents) { dist++;}
-    }
-    put score in map
-  }
-
-  sort userToScore ascending
-  List eventsRecommended = list to contain the events recommended
-  for user in userToScore {
-    find the events saved by user that is not saved by target user
-    add to eventsRecommended;
-  }
-  return eventsRecommended;
-
-   */

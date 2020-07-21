@@ -106,7 +106,7 @@ public class Individual {
   }
 
   public void deleteSavedEvents(Event event) {
-    savedEvents.removeIf(e -> event.getDatastoreId().equals(e.getDatastoreId()));
+    savedEvents.remove(event);
   }
 
   /**
@@ -122,6 +122,37 @@ public class Individual {
    * @param organization organization to be deleted
    */
   public void deleteOrganizations(Organization organization) {
-    organizations.removeIf(o -> organization.getDatastoreId().equals(o.getDatastoreId()));
+    organizations.remove(organization);
+  }
+
+  /**
+   * returns user information in a string format
+   * @return String
+   */
+  public String toString() {
+    return firstName + lastName + " " + datastoreId;
+  }
+
+  /**
+   * implement equality
+   * @param o object being compared to
+   * @return boolean
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Individual)) {
+      return false;
+    }
+
+    Individual individual = (Individual) o;
+    return this.datastoreId.equals(individual.datastoreId);
+  }
+
+  @Override
+  public int hashCode() {
+    return datastoreId.hashCode();
   }
 }
