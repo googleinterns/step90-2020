@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta>
         <title>Organization Profile</title>
@@ -7,16 +7,7 @@
         <script src="user.js"></script>
     </head>
     <body onload="getPublicProfile();">
-        <nav class="nav-bar">
-            <ul>
-                <li class="home"><a href="">College Activity Finder</a></li>
-                <li><a href="index.html">Events</a></li>
-                <li class="active"><a href="organizationsearch.html">Organizations</a></li>
-                <li><a href="profile.html">My Account</a></li>
-                <li><a href="map.html">Event Map</a> </li>
-                <li><a href="">About Us</a></li>
-            </ul>
-        </nav>
+        <div th:replace="fragments/navbar::navbar"></div>
         <br/>
         <div class="profile-head">
             <div id="name"></div>

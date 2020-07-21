@@ -15,8 +15,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.google.gson.Gson;
 import java.io.IOException;
 
-
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @RestController
 public class RecommendationController {
 
@@ -25,7 +23,6 @@ public class RecommendationController {
 
   @Autowired
   private EventRepository eventRepository;
-
 
   @GetMapping("recommend-events")
   public List<Event> recommendEvents(CurrentUser currentUser) {
