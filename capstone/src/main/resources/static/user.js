@@ -178,7 +178,7 @@ function getIndividualEventsOrOrganizations(isEvent) {
     if(data.userType == "individual") {
       if (isEvent) {
         const eventDiv = document.getElementById("saved-events");
-        data.savedEvents.forEach((event) => createEventElement(eventDiv, event, false, true, false));
+        data.savedEvents.forEach((event) => createEventElement(eventDiv, event, true, true, data.email));
       } else {
         const orgDiv = document.getElementById("saved-orgs");
         data.organizations.forEach((org) => createSavedOrgElement(orgDiv, org, true, true));
@@ -307,7 +307,7 @@ function getOrganizationEvents() {
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "organization") {
       const eventDiv = document.getElementById("created-events");
-      data.events.forEach((event) => createEventElement(eventDiv, event, false, false, true));
+      data.events.forEach((event) => createEventElement(eventDiv, event, false, false, user.email));
       displayMain(true);
     } else {
       displayMain(false);
@@ -343,8 +343,8 @@ function searchOrg() {
 
 /* function to generate divs for the calendar */
 function createCalendar() {
-  fetch('user-info').then(response => response.json()).then((data) => {
-    if (data.userType == "individual") {
+  fetch('user-info').then(response => response.json()).then((userData) => {
+    if (userData.userType == "individual") {
       const calendar = document.getElementById("calendar");
 
       var today = new Date();
@@ -366,11 +366,11 @@ function createCalendar() {
         calendar.append(eventDiv);
       }
       data.savedEvents.forEach((event) => {
-        createCalendarEvent(event, today, endDate, "coral", true);
+        createCalendarEvent(event, today, endDate, "coral", true, userData.email);
       });
       fetch('get-all-org-events').then(response => response.json()).then((data) => {
         data.forEach((event) => {
-          createCalendarEvent(event, today, endDate, "cyan", false);
+          createCalendarEvent(event, today, endDate, "cyan", false, userData.email);
         });
       });
     } else {
@@ -380,12 +380,12 @@ function createCalendar() {
 }
 
 /* helper function to create calendar events */
-function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent) {
+function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, userEmail) {
   var eventDate = new Date(event.eventDateTime);
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
     var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
     const generalDateDiv = document.getElementById("date" + diff);
-    const newEvent = createEventElement(generalDateDiv, event, false, isSavedEvent, false);
+    const newEvent = createEventElement(generalDateDiv, event, true, isSavedEvent, userEmail);
     if (!isSavedEvent) {
       newEvent.appendChild(createDeleteButton(event.organizationId));
     }
@@ -403,7 +403,7 @@ function getPublicProfile() {
          fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
            createProfile(data, false, true);
            const eventDiv = document.getElementById("hosted-events");
-           data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, false));
+           data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, data.email));
            document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
            document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
          });
