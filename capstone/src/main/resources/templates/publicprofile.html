@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta>
+        <title>Organization Profile</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="user.js"></script>
+    </head>
+    <body onload="getPublicProfile();">
+        <div th:replace="fragments/navbar::navbar"></div>
+        <br/>
+        <div id="contents">
+            <div class="profile-head">
+                <div id="name"></div>
+                <div class="container">
+                    <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
+                </div>
+                <div id="email"></div>
+                <div id="university"></div>
+                <div id="description"></div>
+            </div>
+            <div id="hosted-events"></div>
+        </div>
+    </body>
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta>
     <title>My Profile</title>
@@ -7,49 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="user.js"></script>
 </head>
-<body onload="getUser(true);">
-
-    <nav class="nav-bar">
-        <ul>
-            <li class="home"><a href="">College Activity Finder</a></li>
-            <li><a href="index.html">Events</a></li>
-            <li><a href="organizationsearch.html">Organizations</a></li>
-            <li class="active"><a href="profile.html">My Account</a></li>
-            <li><a href="map.html">Event Map</a> </li>
-            <li><a href="">About Us</a></li>
-        </ul>
-    </nav>
+<body onload="getUser(true, 'general-profile', 'profile');">
+    <div th:replace="fragments/navbar::navbar"></div>
     <br/>
-
-    <div class="loader" id="load"></div>
     <div id="contents">
-        <div class="profile-head">
-            <div id="name"></div>
-            <div class="container">
-                <a href="images/js7.jpg"><img class="image profile" src="images/js7.jpg"/></a>
-            </div>
-            <div id="email"></div>
-            <div id="university"></div>
-            <div id="description"></div>
-            <div id="no-profile">
-                <p>You have not built your profile yet, please submit a profile </p>
-            </div>
-            <nav class="nav-bar-inverted" id="individual-nav">
-                <ul>
-                    <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
-                    <li><a href="usercalendar.html">Calendar of Events</a></li>
-                    <li><a href="savedevents.html">Saved Events</a></li>
-                    <li><a href="savedorganizations.html">Saved Organizations</a></li>
-                </ul>
-            </nav>
-            <nav class="nav-bar-inverted" id="org-nav">
-                <ul>
-                    <li class="active-highlighted"><a href="profile.html">My Profile</a></li>
-                    <li><a href="manageevents.html">Manage my Events</a></li>
-                    <li><a href="event.html">Create an Event</a></li>
-                </ul>
-            </nav>
-        </div>
+        <div th:replace="fragments/profilehead::profilehead"></div>
 
         <div class="profile-head">
             <button class="button submit profile-button" onclick="revealForm()">Edit/Submit Your Profile</button>
@@ -73,7 +35,6 @@
                 <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
             </form>
         </div>
-
         <div class="profile-form general-container" id="organization">
             <form action="save-organization" method="POST" id="organization-form">
                 <div id="org-select">

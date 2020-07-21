@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta>
+    <title>Saved Events</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="user.js"></script>
+</head>
+<body onload="getUser(false, 'general-profile', 'ind-savedevents');getIndividualEventsOrOrganizations(true);">
+    <div th:replace="fragments/navbar::navbar"></div>
+    <br/>
+    <div id="contents">
+        <div th:replace="fragments/profilehead::profilehead"></div>
+        <div id="saved-events" class="right"></div>
+    </div>
+  </body>
+</html>

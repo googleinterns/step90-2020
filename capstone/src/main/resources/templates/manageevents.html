@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta>
+    <title>My Account</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="user.js"></script>
+</head>
+<body onload="getUser(false, 'general-profile', 'org-manageevents');getOrganizationEvents();">
+    <div th:replace="fragments/navbar::navbar"></div>
+    <br/>
+    <div id="contents">
+        <div th:replace="fragments/profilehead::profilehead"></div>
+        <div id="main">
+            <div id="created-events" class="right"></div>
+        </div>
+    </div>
+  </body>
+</html>

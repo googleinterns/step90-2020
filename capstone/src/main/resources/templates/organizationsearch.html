@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta>
+    <title>Organization Search</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="user.js"></script>
+</head>
+<body onload="searchOrg();generalNavActive('general-organizationsearch')">
+    <div th:replace="fragments/navbar::navbar"></div>
+    <br/>
+    <div id="contents">
+        <input type="text" placeholder="Search by organization name" id="search-org">
+        <button class="button submit" onclick="searchOrg();">Search</button>
+        <div id="no-profile">
+            <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile. </p>
+        </div>
+        <div id="main">
+            <div id="list-organizations"></div>
+        </div>
+    </div>
+  </body>
+</html>
