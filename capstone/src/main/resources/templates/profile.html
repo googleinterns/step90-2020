@@ -8,9 +8,9 @@
     <script src="user.js"></script>
 </head>
 <body onload="getUser(true, 'general-profile', 'profile');">
-    <div th:insert="fragments/navbar::navbar"></div>
+    <div th:replace="fragments/navbar::navbar"></div>
     <br/>
-    <div th:insert="fragments/profilehead::profilehead"></div>
+    <div th:replace="fragments/profilehead::profilehead"></div>
     
     <div class="profile-head">
         <button class="button submit profile-button" onclick="revealForm()">Edit/Submit Your Profile</button>

@@ -7,9 +7,9 @@
     <script src="user.js"></script>
 </head>
 <body onload="getUser(false, 'general-profile', 'ind-savedevents');getIndividualEventsOrOrganizations(true);">
-    <div th:insert="fragments/navbar::navbar"></div>
+    <div th:replace="fragments/navbar::navbar"></div>
     <br/>
-    <div th:insert="fragments/profilehead::profilehead"></div>
+    <div th:replace="fragments/profilehead::profilehead"></div>
     <div id="saved-events" class="right"></div>
   </body>
 </html>

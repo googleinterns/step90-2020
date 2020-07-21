@@ -14,7 +14,7 @@
   </head>
 
   <body onload="createMap();generalNavActive('general-map')">
-    <div th:insert="fragments/navbar::navbar"></div>
+    <div th:replace="fragments/navbar::navbar"></div>
 
     <h1> Map </h1>
     <div id="map"> </div>

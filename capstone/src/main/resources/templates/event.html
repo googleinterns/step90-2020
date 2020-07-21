@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo();">
-    <div th:insert="fragments/navbar::navbar"></div>
-    <div th:insert="fragments/profilehead::profilehead"></div>
+    <div th:replace="fragments/navbar::navbar"></div>
+    <div th:replace="fragments/profilehead::profilehead"></div>
     <br />
     <div class="profile-form general-container">
       <form id="event-form" action="save-event" method="POST">
