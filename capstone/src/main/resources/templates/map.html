@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title> Map </title>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8&callback=createMap">
+    </script>
+    <script src="script.js"> </script>
+    <script src="user.js"></script>
+    <script src="event.js"> </script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body onload="createMap();generalNavActive('general-map')">
+    <div th:replace="fragments/navbar::navbar"></div>
+
+    <h1> Map </h1>
+    <div id="map"> </div>
+  </body>
+
+</html>

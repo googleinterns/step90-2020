@@ -143,6 +143,12 @@ function loadEventInfo() {
       document.getElementById("eventLongitude").value = data.eventLongitude;
       document.getElementById("eventDescription").value = data.description;
       document.getElementById("event-id").value = data.datastoreId;
+      if (data.foodAvailable == true) {
+        document.getElementById("foodAvailable").checked = true;
+      }
+      if (data.requiredFee == true) {
+        document.getElementById("requiredFee").checked = true;
+      }
     });
   }
 }

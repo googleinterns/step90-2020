@@ -163,7 +163,7 @@ public class IndividualController {
     Individual current = getIndividual(user);
     Set<Event> calendarEvents = new HashSet<Event>();
     if (current != null) {
-      calendarEvents.addAll(current.getSavedEvents());
+      calendarEvents.retainAll(current.getSavedEvents());
       for (Organization org : current.getOrganizations()) {
         calendarEvents.addAll(org.getEvents());
       }
