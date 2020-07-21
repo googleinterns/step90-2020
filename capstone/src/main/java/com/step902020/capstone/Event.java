@@ -39,9 +39,8 @@ public class Event{
   
   @Reference
   List<Review> reviews;
- 
+
   public Event(String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
-    
     this.organizationName = organizationName;
     this.organizationId = organizationId;
     this.eventTitle = eventTitle;
@@ -117,6 +116,14 @@ public class Event{
   }
   public void setRequiredFee(Boolean requiredFee) {
     this.requiredFee = requiredFee;
+  }
+
+  public void setOrganizationName(String organizationName) {
+    this.organizationName = organizationName;
+  }
+
+  public void setOrganizationId(Long organizationId) {
+    this.organizationId = organizationId;
   }
 
   /**

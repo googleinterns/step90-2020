@@ -4,28 +4,31 @@ async function createMap() {
   const campusMap = new google.maps.Map(
     document.getElementById('map'),
     {center: princetonLatLng, zoom: 16});
+    infoWindow = new google.maps.InfoWindow;
 
    const response = await fetch('get-all-events');
    const jsonEvents = await response.json();
    jsonEvents.forEach(event => createMarker(event, campusMap));
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        var pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        infoWindow.setPosition(pos);
-        infoWindow.setContent('Location found.');
-        infoWindow.open(map);
-        campusMap.setCenter(pos);
-      }, function() {
-        handleLocationError(true, infoWindow, campusMap.getCenter());
-      });
-    }
-    else {
-      handleLocationError(false, infoWindow, campusMap.getCenter());
-    }
+/* Geolocation API */
+
+//    if (navigator.geolocation) {
+//      navigator.geolocation.getCurrentPosition(function(position) {
+//        var pos = {
+//          lat: position.coords.latitude,
+//          lng: position.coords.longitude
+//        };
+//        infoWindow.setPosition(pos);
+//        infoWindow.setContent('Location found.');
+//        infoWindow.open(campusMap);
+//        campusMap.setCenter(pos);
+//      }, function() {
+//        handleLocationError(true, infoWindow, campusMap.getCenter());
+//      });
+//    }
+//    else {
+//      handleLocationError(false, infoWindow, campusMap.getCenter());
+//    }
   }
 
  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
