@@ -129,7 +129,11 @@ img {
   width: 40%;
 }
 
-.profile-form input[type=text], input[type=file], .profile-form select {
+.profile-form input[type=text],
+.profile-form input[type=datetime-local],
+.profile-form input[type=number],
+.profile-form textarea,
+.profile-form select {
   box-sizing: border-box;
   margin-top: 6px;
   margin-bottom: 16px;
@@ -292,7 +296,6 @@ div.row {
   border: 1px solid darkgreen;
   margin-right: 10px;
 }
-
 
 /* Map */
 

@@ -1,5 +1,22 @@
+/* helper function to highlight active tab for general nav */
+function profileNavActive(tab) {
+  if (tab == "profile") {
+    document.getElementById("ind-profile").setAttribute("class", "active-highlighted");
+    document.getElementById("org-profile").setAttribute("class", "active-highlighted");
+  } else {
+    document.getElementById(tab).setAttribute("class", "active-highlighted");
+  }
+}
+
+/* helper function to highlight active tab for profile nav */
+function generalNavActive(tab) {
+  document.getElementById(tab).setAttribute("class", "active");
+}
+
 /* get the user information for the profile page */
-function getUser(fillForm) {
+function getUser(fillForm, generalTab, profileTab) {
+  generalNavActive(generalTab);
+  profileNavActive(profileTab);
   fetch('user-info').then(response => response.json()).then((data) => {
     // if there is no data returned, that means this is a new user
     if (data.userType == "unknown") {
@@ -20,7 +37,6 @@ function getUser(fillForm) {
 function setUpAccountPage(isOrganization, fillForm, data, hide, display) {
   createProfile(data, fillForm, isOrganization);
   displayNavToggle(hide, display);
-  sessionStorage.setItem("user-type", data.userType);
 }
 
 /* Add the image form to the profile page */

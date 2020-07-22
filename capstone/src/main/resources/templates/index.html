@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8">
     <title>Events</title>
@@ -11,17 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
   </head>
 
-  <body>
-    <nav class="nav-bar">
-      <ul>
-        <li class="home"><a href="index.html">College Activity Finder</a></li>
-        <li class="active"><a href="index.html">Events</a></li>
-        <li><a href="organizationsearch.html">Organizations</a></li>
-        <li class=""><a href="profile.html">My Account</a></li>
-        <li><a href="map.html">Event Map</a> </li>
-        <li><a href="=">About Us</a></li>
-      </ul>
-    </nav>
+  <body onload="generalNavActive('general-index');">
+    <div th:replace="fragments/navbar::navbar"></div>
     <div id="no-profile">
       <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile </p>
     </div>

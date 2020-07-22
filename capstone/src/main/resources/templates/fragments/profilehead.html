@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="profilehead" class="profile-head">
+    <div id="name"></div>
+    <div class="container" id="profile-image">
+        <a href="get-image"><img class="image profile" src="get-image"/></a>
+    </div>
+    <div id="email"></div>
+    <div id="university"></div>
+    <div id="description"></div>
+    <div id="no-profile">
+        <p>You have not built your profile yet, please submit a profile </p>
+    </div>
+    <nav class="nav-bar-inverted" id="individual-nav">
+        <ul>
+            <li id="ind-profile"><a href="profile.html">My Profile</a></li>
+            <li id="ind-usercalendar"><a href="usercalendar.html">Calendar of Events</a></li>
+            <li id="ind-savedevents"><a href="savedevents.html">Saved Events</a></li>
+            <li id="ind-savedorganizations"><a href="savedorganizations.html">Saved Organizations</a></li>
+        </ul>
+    </nav>
+    <nav class="nav-bar-inverted" id="org-nav">
+        <ul>
+            <li id="org-profile"><a href="profile.html">My Profile</a></li>
+            <li id="org-manageevents"><a href="manageevents.html">Manage my Events</a></li>
+            <li id="org-event"><a href="event.html">Create an Event</a></li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>
