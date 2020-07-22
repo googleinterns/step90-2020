@@ -132,6 +132,7 @@ img {
 .profile-form input[type=text],
 .profile-form input[type=datetime-local],
 .profile-form input[type=number],
+.profile-form input[type=file],
 .profile-form textarea,
 .profile-form select {
   box-sizing: border-box;

@@ -45,12 +45,12 @@ function addImageField(formName) {
     const form = document.getElementById(formName);
     form.innerHTML = data;
   });
+
 }
 
 /* upon submission, hide the image form */
 function closeImageForm() {
   document.getElementById("user-image-form").style.display = "none";
-  window.location.reload();
 }
 
 /* function to toggle between displaying user profile and displaying an error message */
