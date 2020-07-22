@@ -11,5 +11,7 @@ public interface IndividualRepository extends DatastoreRepository<Individual, Lo
 
   public long deleteByEmail(String email);
 
+  public long deleteAllByEmail(String email);
+
   public List<Individual> findByUniversity(String university);
 }

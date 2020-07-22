@@ -17,6 +17,8 @@ public interface OrganizationRepository extends DatastoreRepository<Organization
 
   public List<Organization> findByUniversity(String university);
 
+  public long deleteAllByEmail(String email);
+
   @Query("select * from organization where name >= @name and name < @endname and university = @university")
   public List<Organization> findOrganizationsByNameMatching(@Param("name") String name, @Param("endname") String endname, @Param("university") String university);
 }
