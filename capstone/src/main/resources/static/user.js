@@ -343,14 +343,12 @@ function createCalendar() {
         calendar.append(dateDiv);
         calendar.append(eventDiv);
       }
-      fetch('get-calendar-events').then(response => response.json()).then((data) => {
+      data.savedEvents.forEach((event) => {
+        createCalendarEvent(event, today, endDate, "coral");
+      });
+      fetch('get-all-org-events').then(response => response.json()).then((data) => {
         data.forEach((event) => {
-          var eventDate = new Date(event.eventDateTime);
-          if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
-            var diff = eventDate.getDate() - today.getDate();
-            const generalDateDiv = document.getElementById("date" + diff);
-            createEventElement(generalDateDiv, event, false, true, false);
-          }
+          createCalendarEvent(event, today, endDate, "cyan");
         });
       });
     } else {
@@ -359,6 +357,16 @@ function createCalendar() {
   });
 }
 
+/* helper function to create calendar events */
+function createCalendarEvent(event, today, endDate, borderColor) {
+  var eventDate = new Date(event.eventDateTime);
+  if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
+    var diff = eventDate.getDate() - today.getDate();
+    const generalDateDiv = document.getElementById("date" + diff);
+    const newEvent = createEventElement(generalDateDiv, event, false, true, false);
+    newEvent.style.borderColor = borderColor;
+  }
+}
 /* function to create a public profile of an organization */
 function getPublicProfile() {
   fetch('user-info').then(response => response.json()).then((data) => {

@@ -64,6 +64,7 @@ function createEventElement(eventListElement, event, displaySaveButton, displayU
     } else if (displayUnsaveButton) {
       createUnsaveEventButton(eventElement, event);
     }
+    return eventElement;
 }
 
 /**

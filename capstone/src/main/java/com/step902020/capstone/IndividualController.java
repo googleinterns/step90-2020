@@ -157,15 +157,18 @@ public class IndividualController {
    * @return list of events
    * @throws IOException
    */
-  @GetMapping("get-calendar-events")
+  @GetMapping("get-all-org-events")
   public Set<Event> getCalendarEvents(CurrentUser user) throws IOException {
     // get saved events and for each of the organizations get their list of saved events
     Individual current = getIndividual(user);
     Set<Event> calendarEvents = new HashSet<Event>();
     if (current != null) {
-      calendarEvents.retainAll(current.getSavedEvents());
       for (Organization org : current.getOrganizations()) {
-        calendarEvents.addAll(org.getEvents());
+        for (Event event : org.getEvents()) {
+          if (!current.getSavedEvents().contains(event)) {
+            calendarEvents.add(event);
+          }
+        }
       }
     }
     return calendarEvents;
