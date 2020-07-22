@@ -4,7 +4,11 @@
     <meta>
     <title>Organization Search</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="script.js"></script>
     <script src="user.js"></script>
+    <script src="event.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
 </head>
 <body onload="searchOrg();generalNavActive('general-organizationsearch')">
     <div th:replace="fragments/navbar::navbar"></div>
@@ -17,7 +21,7 @@
         <p>You have not built your profile yet, please navigate to My Account page and submit a profile</p>
     </div>
     <div id="main">
-        <div id="list-organizations"></div>
+        <div class="events" id="list-organizations"></div>
     </div>
     
       

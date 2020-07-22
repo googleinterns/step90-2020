@@ -197,7 +197,7 @@ div.row {
  display: block;
 }
 
-#events {
+#events, .events {
   text-align: center;
 }
 .event {

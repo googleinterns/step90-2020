@@ -60,14 +60,6 @@
     </div>
 
     <div id="events"></div>
-    <div id="modal">
-      <div class="modal-content">
-        <h1 id="eventName"></h1>
-        <p id="eventTime"></p>
-        <p id="eventLocation"></p>
-        <p id="eventDescription"></p>
-        <div id="review-container"></div>
-      </div>
-    </div>
+    <div th:replace="fragments/eventmodal::eventmodal"></div>
   </body>
 </html>
