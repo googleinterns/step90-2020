@@ -36,7 +36,6 @@ public class Recommender {
         }
       }
       double scaledDist = 1/(1+Math.sqrt(dist));
-      System.out.println(user.toString() + " " + scaledDist);
       userToScore.put(user, scaledDist);
     }
     // sort the resulting list of individuals by increasing distance
