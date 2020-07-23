@@ -16,6 +16,7 @@ function generalNavActive(tab) {
 /* get the user information for the profile page */
 function getUser(fillForm, generalTab, profileTab) {
   generalNavActive(generalTab);
+  showSpinner();
   profileNavActive(profileTab);
   fetch('user-info').then(response => response.json()).then((data) => {
     // if there is no data returned, that means this is a new user
@@ -30,6 +31,7 @@ function getUser(fillForm, generalTab, profileTab) {
       }
       displayMain(true);
     }
+    hideSpinner();
   });
 }
 
@@ -150,6 +152,7 @@ function hideFields(selectField, universityField) {
 
 /* get the saved events or organizations for individual users */
 function getIndividualEventsOrOrganizations(isEvent) {
+  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if(data.userType == "individual") {
       if (isEvent) {
@@ -163,6 +166,7 @@ function getIndividualEventsOrOrganizations(isEvent) {
     } else {
       displayMain(false);
     }
+    hideSpinner();
   });
 }
 
@@ -316,6 +320,7 @@ function closeForm() {
 
 /* function to get all events hosted by the current organization */
 function getOrganizationEvents() {
+  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "organization") {
       const eventDiv = document.getElementById("created-events");
@@ -324,11 +329,13 @@ function getOrganizationEvents() {
     } else {
       displayMain(false);
     }
+    hideSpinner();
   });
 }
 
 /* Function to support searching for organizations by name */
 function searchOrg() {
+  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "unknown") {
       displayMain(false);
@@ -350,11 +357,13 @@ function searchOrg() {
         }
       });
     }
+    hideSpinner();
   });
 }
 
 /* function to generate divs for the calendar */
 function createCalendar() {
+  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "individual") {
       const calendar = document.getElementById("calendar");
@@ -390,6 +399,7 @@ function createCalendar() {
     } else {
       displayMain(false);
     }
+    hideSpinner();
   });
 }
 
@@ -408,23 +418,23 @@ function createCalendarEventElement(event, eventTime) {
 
 /* function to create a public profile of an organization */
 function getPublicProfile() {
+ showSpinner();
  var organizationId = window.location.hash.substring(1);
  fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
    createProfile(data, false, true);
    const eventDiv = document.getElementById("hosted-events");
    data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true, false)));
+   hideSpinner();
  });
 }
 
+function showSpinner() {
+  document.getElementById('contents').style.display="none";
+  document.getElementById('load').style.display="block";
+}
 
-/* function to show loading wheel until page finishes loading */
-document.onreadystatechange = function () {
-  var state = document.readyState
-  if (state != "complete") {
-    document.getElementById('contents').style.display="none";
-  } else {
-    document.getElementById('load').style.display="none";
-    document.getElementById('contents').style.display="block";
-  }
+function hideSpinner() {
+  document.getElementById('load').style.display="none";
+  document.getElementById('contents').style.display="block";
 }
 

@@ -2,12 +2,14 @@
  * Retrieves events from server
  */
 function getEvents() {
+  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType != "unknown") {
       getAllEventsForSearch(data);
     } else {
       displayMain(false);
     }
+    hideSpinner();
   });
 }
 
@@ -136,6 +138,7 @@ async function newReview(eventId, text) {
 function loadEventInfo() {
   const event = window.location.hash.substring(1);
   if (event != "") {
+    showSpinner();
     fetch('get-event?event-id=' + event).then(response => response.json()).then((data) => {
       document.getElementById("eventTitle").value = data.eventTitle;
       document.getElementById("eventDateTime").value = data.eventDateTime;
@@ -149,6 +152,7 @@ function loadEventInfo() {
       if (data.requiredFee == true) {
         document.getElementById("requiredFee").checked = true;
       }
+      hideSpinner();
     });
   }
 }
