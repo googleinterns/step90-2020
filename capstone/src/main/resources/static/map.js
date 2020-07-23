@@ -25,7 +25,6 @@ async function createMap() {
      google.maps.event.addListener(campusMap, 'click', function(event) {
       placeMarkerAndPan(event.latLng, campusMap);
      });
-     google.maps.event.addListener(campusMap, '')
   }
 
 /* Create a new marker for each event
