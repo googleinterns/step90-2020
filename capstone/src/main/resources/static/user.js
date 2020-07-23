@@ -21,7 +21,9 @@ function getUser(fillForm, generalTab, profileTab) {
     // if there is no data returned, that means this is a new user
     if (data.userType == "unknown") {
       displayMain(false);
-      displayForm("individual", true);
+      if (fillForm) {
+        displayForm("individual", true);
+      }
     } else {
       if (data.userType == "organization") {
         setUpAccountPage(true, fillForm, data, "individual-nav", "org-nav");
@@ -173,23 +175,23 @@ function createSavedOrgElement(orgListElement, data, deleteAllowed, displayButto
 
   // Click to redirect to public organization page
   orgElement.addEventListener('click', () => {
-    window.location="publicprofile.html#" + data.datastoreId;
+    window.location="publicprofile.html?organization-id=" + data.datastoreId;
   });
 
   createElement(orgElement, 'h3', data.name);
   createElement(orgElement, 'p', data.description);
 
   if (displayButton) {
-     const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
+     const form = deleteAllowed ? createDeleteButton(data.datastoreId) : createSaveButton(data);
      orgElement.appendChild(form);
   }
 }
 
 /* create delete buttons for the organization divs */
-function createDeleteButton(data) {
+function createDeleteButton(datastoreId) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-organization?&organization-id=" + data.datastoreId);
+  form.setAttribute("action", "delete-saved-organization?&organization-id=" + datastoreId);
   const button = document.createElement('button');
   button.innerText = "Unsave this organization";
   button.setAttribute("type", "submit");
@@ -240,14 +242,11 @@ function createSaveEventButton(divElement, event) {
 /* creates an edit button for events */
 function createEditAndDeleteEventButton(divElement, event) {
   // create edit form
-  const editForm = document.createElement("form");
-  editForm.setAttribute("action", "event.html#" + event.datastoreId);
   const editButton = document.createElement('button');
   editButton.innerText = "Edit this event";
-  editButton.setAttribute("type", "submit");
+  editButton.setAttribute("onclick", "window.location.href=" + "'event.html?event-id=" + event.datastoreId + "'");
 
-  editForm.appendChild(editButton);
-  divElement.appendChild(editForm);
+  divElement.appendChild(editButton);
 
   divElement.appendChild(document.createElement('br'));
 
@@ -329,14 +328,15 @@ function createCalendar() {
       var today = new Date();
       var endDate = new Date();
       endDate.setDate(today.getDate() + 8);
+      const titleDiv = document.createElement('div');
+      titleDiv.setAttribute("class", "events");
+      createElement(titleDiv, 'p', 'A calendar of all the events from your saved organizations and saved events');
       for (var i = 0; i < 7; i++) {
         var nextDay = new Date();
         nextDay.setDate(today.getDate() + i);
         const dateDiv = document.createElement('div');
         dateDiv.setAttribute("class", "date general-container");
-        const dateDisplay = document.createElement('p');
-        dateDisplay.innerText = nextDay.toDateString();
-        dateDiv.appendChild(dateDisplay);
+        createElement(dateDiv, 'p', nextDay.toDateString());
         const eventDiv = document.createElement('div');
         eventDiv.setAttribute("class", "date row");
         eventDiv.setAttribute("id", "date" + i);
@@ -344,11 +344,11 @@ function createCalendar() {
         calendar.append(eventDiv);
       }
       data.savedEvents.forEach((event) => {
-        createCalendarEvent(event, today, endDate, "coral");
+        createCalendarEvent(event, today, endDate, "coral", true);
       });
       fetch('get-all-org-events').then(response => response.json()).then((data) => {
         data.forEach((event) => {
-          createCalendarEvent(event, today, endDate, "cyan");
+          createCalendarEvent(event, today, endDate, "cyan", false);
         });
       });
     } else {
@@ -358,12 +358,15 @@ function createCalendar() {
 }
 
 /* helper function to create calendar events */
-function createCalendarEvent(event, today, endDate, borderColor) {
+function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent) {
   var eventDate = new Date(event.eventDateTime);
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
-    var diff = eventDate.getDate() - today.getDate();
+    var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
     const generalDateDiv = document.getElementById("date" + diff);
-    const newEvent = createEventElement(generalDateDiv, event, false, true, false);
+    const newEvent = createEventElement(generalDateDiv, event, false, isSavedEvent, false);
+    if (!isSavedEvent) {
+      newEvent.appendChild(createDeleteButton(event.organizationId));
+    }
     newEvent.style.borderColor = borderColor;
   }
 }
@@ -371,14 +374,17 @@ function createCalendarEvent(event, today, endDate, borderColor) {
 function getPublicProfile() {
   fetch('user-info').then(response => response.json()).then((data) => {
      if (data.userType != "unknown") {
-       var organizationId = window.location.hash.substring(1);
+       var searchParams = new URLSearchParams(location.search);
+       var organizationId = searchParams.get("organization-id");
        var userType = data.userType == "individual";
-       fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
-         createProfile(data, false, true);
-         const eventDiv = document.getElementById("hosted-events");
-         data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, false));
-       });
-       displayMain(true);
+       if (organizationId != null) {
+         fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
+           createProfile(data, false, true);
+           const eventDiv = document.getElementById("hosted-events");
+           data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, false));
+         });
+         displayMain(true);
+       }
      } else {
        displayMain(false);
      }

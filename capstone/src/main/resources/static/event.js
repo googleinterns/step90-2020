@@ -141,14 +141,15 @@ async function newReview(eventId, text) {
 
 /* Function to prefill event information if editing event */
 function loadEventInfo() {
-  const event = window.location.hash.substring(1);
-  if (event != "") {
+  var searchParams = new URLSearchParams(location.search);
+  var event = searchParams.get("event-id");
+  if (event != null) {
     fetch('get-event?event-id=' + event).then(response => response.json()).then((data) => {
       document.getElementById("eventTitle").value = data.eventTitle;
       document.getElementById("eventDateTime").value = data.eventDateTime;
       document.getElementById("eventLatitude").value = data.eventLatitude;
       document.getElementById("eventLongitude").value = data.eventLongitude;
-      document.getElementById("eventDescription").value = data.description;
+      document.getElementById("eventDescription").value = data.eventDescription;
       document.getElementById("event-id").value = data.datastoreId;
       if (data.foodAvailable == true) {
         document.getElementById("foodAvailable").checked = true;
