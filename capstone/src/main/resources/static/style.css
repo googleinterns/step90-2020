@@ -308,3 +308,13 @@ div.row {
   margin-right: auto;
   border-radius: 20px;
 }
+
+#eventMap {
+    text-align: center;
+    height: 500px;
+    width: 500px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+}
