@@ -62,7 +62,7 @@ function createProfile(data, fillForm, isOrganization) {
 
     const universityContainer = document.getElementById("university");
     const pElementUniversity = document.createElement('p');
-    pElementUniversity.innerText = data.university;
+    pElementUniversity.innerText = data.university.name;
     universityContainer.appendChild(pElementUniversity);
 
     // addresses the different fields for each user type
@@ -87,7 +87,7 @@ function createIndividualProfile(data, fillForm) {
     // prefill form
     document.getElementById("ind-firstname").value = data.firstName;
     document.getElementById("ind-lastname").value = data.lastName;
-    document.getElementById("university-form-display").innerText = data.university;
+    document.getElementById("university-form-display").innerText = data.university.name;
   }
 }
 
@@ -106,7 +106,7 @@ function createOrgProfile(data, fillForm) {
   if (fillForm) {
     // prefill form
     document.getElementById("org-form-name").value = data.name;
-    document.getElementById("org-university-form-display").innerText = data.university;
+    document.getElementById("org-university-form-display").innerText = data.university.name;
     document.getElementById("org-description").value = data.description;
   }
 }
@@ -335,7 +335,7 @@ function searchOrg() {
     } else {
       var displaySaveButton = data.userType == "individual";
       var name = document.getElementById("search-org").value;
-      fetch('search-organization?name=' + name + "&university=" + data.university).then(response => response.json()).then((organizations) => {
+      fetch('search-organization?name=' + name + "&university=" + data.university.name).then(response => response.json()).then((organizations) => {
         const orgListElement = document.getElementById('list-organizations');
         orgListElement.innerHTML = '';
 

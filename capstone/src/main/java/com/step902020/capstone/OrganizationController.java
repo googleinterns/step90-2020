@@ -24,6 +24,9 @@ public class OrganizationController {
 
   @Autowired
   private EventRepository eventRepository;
+
+  @Autowired
+  private UniversityRepository universityRepository;
   
   /**
    * Find an organization's profile information by email
@@ -61,7 +64,8 @@ public class OrganizationController {
       current.setName(name);
       current.setDescription(description);
     } else {
-      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), university, userType, description, "");
+      University universityReference = this.universityRepository.findFirstByName(university);
+      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), universityReference, userType, description, "");
     }
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
@@ -78,11 +82,11 @@ public class OrganizationController {
   public List<Organization> searchOrganization(
       @RequestParam("name") String name, 
       @RequestParam("university") String university) throws IOException {
-    
+    University universityReference = this.universityRepository.findFirstByName(university);
     if (name.equals("")) {
-        return this.organizationRepository.findByUniversity(university);
+        return this.organizationRepository.findByUniversity(universityReference);
     } else {
-        return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", university);
+        return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", universityReference);
     } 
   }
 
