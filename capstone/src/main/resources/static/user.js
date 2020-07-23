@@ -431,6 +431,8 @@ function getPublicProfile() {
    createProfile(data, false, true);
    const eventDiv = document.getElementById("hosted-events");
    data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true, false)));
+   document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
+   document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
  });
 }
 

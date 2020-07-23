@@ -179,7 +179,7 @@ public class IndividualController {
    */
   @GetMapping("upload-image")
   public String uploadImage(CurrentUser user) throws IOException{
-    return gcsstore.generateSignedPostPolicyV4("step90-2020", "spring-bucket-jennysheng", user.getEmail());
+    return gcsstore.generateSignedPostPolicyV4("step90-2020", "step90-2020.appspot.com", user.getEmail());
   }
 
   /**
@@ -190,6 +190,6 @@ public class IndividualController {
    */
   @GetMapping(value = "get-image", produces = MediaType.IMAGE_JPEG_VALUE)
   public @ResponseBody byte[] getImage(CurrentUser user) throws IOException {
-    return gcsstore.serveImage("step90-2020", "spring-bucket-jennysheng", user.getEmail());
+    return gcsstore.serveImage("step90-2020", "step90-2020.appspot.com", user.getEmail());
   }
 }
