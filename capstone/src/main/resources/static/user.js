@@ -419,9 +419,15 @@ function getPublicProfile() {
 function findRecommended() {
   fetch('user-info').then(response => response.json()).then((data) => {
     if(data.userType == "individual") {
-      fetch('get-recommended-events').then(response => response.json()).then((data) => {
+      fetch('get-recommended-events-individual').then(response => response.json()).then((data) => {
         const eventDiv = document.getElementById("recommended-events");
         data.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true, false)));
+      });
+      displayMain(true);
+    } else if (data.userType == "organization") {
+      fetch('get-recommended-events-organization').then(response => response.json()).then((data) => {
+        const eventDiv = document.getElementById("recommended-events");
+        data.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
       });
       displayMain(true);
     } else {

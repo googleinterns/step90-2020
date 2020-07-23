@@ -55,11 +55,13 @@ public class Recommender {
 
     // put data from sorted list to hashmap
     List<E> sorted = new ArrayList<>();
+    int count = 0;
     for (Map.Entry<U, Double> entry : tempList) {
       List<E> currUserEvents = getItemList.apply(entry.getKey());
       for (E e : currUserEvents) {
-        if (!targetUserEvents.contains(e) && !sorted.contains(e)) {
+        if (!targetUserEvents.contains(e) && !sorted.contains(e) && count < 10) {
           sorted.add(e);
+          count++;
         }
       }
     }

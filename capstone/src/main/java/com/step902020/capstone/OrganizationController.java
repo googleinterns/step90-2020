@@ -113,4 +113,16 @@ public class OrganizationController {
     }
     return new RedirectView("manageevents.html", true);
   }
+
+  /**
+   * get the recommended events for an organization
+   * @param currentUser user that is currently logged in
+   * @return list of Events
+   */
+  @GetMapping("get-recommended-events-organization")
+  public List<Event> recommendEvents(CurrentUser currentUser) {
+    Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
+    List<Event> allEvents = this.eventRepository.findAllByUniversity(targetUser.getUniversity());
+    return allEvents.subList(0, Math.min(10, allEvents.size()));
+  }
 }

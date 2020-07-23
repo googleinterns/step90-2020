@@ -171,10 +171,29 @@ public class IndividualController {
     return calendarEvents;
   }
 
-  @GetMapping("get-recommended-events")
+  /**
+   * get the recommended events for an individual
+   * @param currentUser user that is currently logged in
+   * @return list of Events
+   */
+  @GetMapping("get-recommended-events-individual")
   public List<Event> recommendEvents(CurrentUser currentUser) {
     Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
     List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
-    return Recommender.recommend(targetUser, users, u -> u.getSavedEvents());
+    List<Event> recommended = Recommender.recommend(targetUser, users, u -> u.getSavedEvents());
+    if (recommended.size() < 10) {
+      List<Event> allEvents = this.eventRepository.findAllByUniversity(targetUser.getUniversity());
+      int i = 0;
+      int length = 0;
+      while (i < allEvents.size() && length < 10-recommended.size()) {
+        Event e = allEvents.get(i);
+        if (!(recommended.contains(e))) {
+          recommended.add(e);
+          length++;
+        }
+        i++;
+      }
+    }
+    return recommended;
   }
 }
