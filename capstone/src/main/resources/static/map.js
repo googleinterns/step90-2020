@@ -16,16 +16,42 @@ async function createMap() {
   }
 
 /* Function to create Mini Map in event.html page */
-  function createEventPlacementMap() {
+  function createEventPlacementMap(eventId) {
     var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
     const campusMap = new google.maps.Map(
       document.getElementById('eventMap'),
       {center: princetonLatLng, zoom: 16});
 
-     google.maps.event.addListener(campusMap, 'click', function(event) {
-      placeMarkerAndPan(event.latLng, campusMap);
+    google.maps.event.addListener(campusMap, 'click', function(newMarker) {
+      placeMarkerAndPan(newMarker.latLng, campusMap);
+      var markerLatLng = newMarker.latLng.toString();
+      console.log(markerLatLng);
+
+      const params = new URLSearchParams();
+      params.append('eventLatitude', eventLatitude);
+      params.append('eventLongitude', eventLongitude);
+      params.append('event-id', eventId);
+      fetch('save-event-coordinates', {method:'POST', body: params}).then(response => response.text());
      });
-     google.maps.event.addListener(campusMap, '')
+""
+  }
+  async function createEventPlacementMapAsync() {
+  var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
+  const campusMap = new google.maps.Map(
+    document.getElementById('eventMap'),
+    {center: princetonLatLng, zoom: 16});
+
+  google.maps.event.addListener(campusMap, 'click', function(newMarker) {
+    placeMarkerAndPan(newMarker.latLng, campusMap);
+    var markerLatLng = newMarker.latLng.toString();
+    console.log(markerLatLng);
+
+    const params = new URLSearchParams();
+    params.append('eventLatitude', eventLatitude);
+    params.append('eventLongitude', eventLongitude);
+    params.append('event-id', eventId);
+    await fetch('save-event-coordinates', {method: 'POST', body: params});
+   });
   }
 
 /* Create a new marker for each event
@@ -51,7 +77,3 @@ function placeMarkerAndPan(latLng, campusMap) {
     });
     campusMap.panTo(latLng);
 }
-
-
-
-

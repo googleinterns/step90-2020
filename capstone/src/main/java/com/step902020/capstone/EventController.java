@@ -74,6 +74,20 @@ public class EventController {
       return new RedirectView("manageevents.html", true);
   }
 
+  @PostMapping("save-event-coordinates")
+  public String saveCoordinates (
+          @RequestParam("eventLatitude") Double eventLatitude,
+          @RequestParam("eventLongitude") Double eventLongitude,
+          @RequestParam("event-id") Long eventId
+  ) {
+    Event event = this.eventRepository.findById(eventId).orElseThrow();
+    event.setEventLatitude(eventLatitude);
+    event.setEventLongitude(eventLongitude);
+    this.eventRepository.save(event);
+    return "Success!";
+  }
+
+
   @PostMapping("/new-review")
   public List<Review> addReview(
           @RequestParam("text") String text,

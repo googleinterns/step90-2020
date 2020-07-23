@@ -149,6 +149,7 @@ function loadEventInfo() {
       if (data.requiredFee == true) {
         document.getElementById("requiredFee").checked = true;
       }
+      createEventPlacementMap(data.datastoreId);
     });
   }
 }
