@@ -31,7 +31,7 @@ import org.springframework.util.MultiValueMap;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserDatastoreTest {
 
-  /* Properties for Test account from test/resources/application-local.properties */
+/*  *//* Properties for Test account from test/resources/application-local.properties *//*
   @Value("${spring.security.user.name}")
   private String currentUserEmail;
 
@@ -195,5 +195,5 @@ public class UserDatastoreTest {
     Individual[] postResult = authRestTemplate.getForObject("/get-individual", Individual[].class);
     assertEquals(
         "Delete organization error", 0, postResult[0].getOrganizations().size());
-  }
+  }*/
 }
