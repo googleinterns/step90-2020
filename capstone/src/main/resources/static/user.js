@@ -452,11 +452,13 @@ function getPublicProfile() {
  });
 }
 
+/* displays spinner on the page and hide main content */
 function showSpinner() {
   document.getElementById('contents').style.display="none";
   document.getElementById('load').style.display="block";
 }
 
+/* hide spinner and displays main content */
 function hideSpinner() {
   document.getElementById('load').style.display="none";
   document.getElementById('contents').style.display="block";
