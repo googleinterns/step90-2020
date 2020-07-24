@@ -8,7 +8,6 @@ async function createMap() {
    const response = await fetch('get-all-events');
    const jsonEvents = await response.json();
    jsonEvents.forEach(event => createMarker(event, campusMap));
-
   }
 
 /* Function to create Mini Map in event.html page */
@@ -18,19 +17,19 @@ async function createMap() {
       document.getElementById('eventMap'),
       {center: princetonLatLng, zoom: 16});
 
-   var marker;
-   google.maps.event.addListener(campusMap, 'click', function(newMarker) {
-    if (marker) {
-       marker.setMap(null);
-    }
-     marker = placeMarkerAndPan(newMarker.latLng, campusMap);
-     var markerLatLng = newMarker.latLng.toString();
-     console.log(markerLatLng);
-     document.getElementById('eventLatitude').value = newMarker.latLng.lat();
-     document.getElementById('eventLongitude').value = newMarker.latLng.lng();
-     google.maps.event.clearListeners(newMarker, 'click');
+    var marker;
+    google.maps.event.addListener(campusMap, 'click', function(newMarker) {
+        if (marker) {
+           marker.setMap(null);
+        }
+         marker = placeMarkerAndPan(newMarker.latLng, campusMap);
+         var markerLatLng = newMarker.latLng.toString();
+         console.log(markerLatLng);
+         document.getElementById('eventLatitude').value = newMarker.latLng.lat();
+         document.getElementById('eventLongitude').value = newMarker.latLng.lng();
+         google.maps.event.clearListeners(newMarker, 'click');
     });
-    }
+ }
 
 /* Create a new marker for each event
  * @param event - event object
@@ -44,9 +43,11 @@ function createMarker(event,campusMap) {
     position: eventPosition
   });
 }
+
 /* Creates Marker and Pans to location
  * @param latLng - latitude and longitude of marker
  * @param campusMap - Google Map of campus
+ * return marker - returns created marker
 */
 function placeMarkerAndPan(latLng, campusMap) {
     const marker = new google.maps.Marker({
@@ -56,7 +57,3 @@ function placeMarkerAndPan(latLng, campusMap) {
     campusMap.panTo(latLng);
     return marker;
 }
-
-
-
-
