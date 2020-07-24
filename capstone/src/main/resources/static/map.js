@@ -18,18 +18,19 @@ async function createMap() {
       document.getElementById('eventMap'),
       {center: princetonLatLng, zoom: 16});
 
-    var marker;
-    google.maps.event.addListener(campusMap, 'click', function(newMarker) {
-     if (marker) {
-        marker.setMap(null);
-     }
-      marker = placeMarkerAndPan(newMarker.latLng, campusMap);
-      var markerLatLng = newMarker.latLng.toString();
-      console.log(markerLatLng);
-      document.getElementById('eventLatitude').value = newMarker.latLng.lat();
-      document.getElementById('eventLongitude').value = newMarker.latLng.lng();
-      google.maps.event.clearListeners(newMarker, 'click');
-  }
+   var marker;
+   google.maps.event.addListener(campusMap, 'click', function(newMarker) {
+    if (marker) {
+       marker.setMap(null);
+    }
+     marker = placeMarkerAndPan(newMarker.latLng, campusMap);
+     var markerLatLng = newMarker.latLng.toString();
+     console.log(markerLatLng);
+     document.getElementById('eventLatitude').value = newMarker.latLng.lat();
+     document.getElementById('eventLongitude').value = newMarker.latLng.lng();
+     google.maps.event.clearListeners(newMarker, 'click');
+    });
+    }
 
 /* Create a new marker for each event
  * @param event - event object
@@ -53,6 +54,7 @@ function placeMarkerAndPan(latLng, campusMap) {
         map: campusMap
     });
     campusMap.panTo(latLng);
+    return marker;
 }
 
 
