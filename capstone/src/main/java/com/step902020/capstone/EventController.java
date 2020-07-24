@@ -76,13 +76,13 @@ public class EventController {
 
   @PostMapping("save-event-coordinates")
   public String saveCoordinates (
-          @RequestParam("eventLatitude") Double eventLatitude,
-          @RequestParam("eventLongitude") Double eventLongitude,
+          @RequestParam("eventLatitude") String eventLatitude,
+          @RequestParam("eventLongitude") String eventLongitude,
           @RequestParam("event-id") Long eventId
   ) {
     Event event = this.eventRepository.findById(eventId).orElseThrow();
-    event.setEventLatitude(eventLatitude);
-    event.setEventLongitude(eventLongitude);
+    event.setEventLatitude(Long.parseLong(eventLatitude));
+    event.setEventLongitude(Long.parseLong(eventLongitude));
     this.eventRepository.save(event);
     return "Success!";
   }
