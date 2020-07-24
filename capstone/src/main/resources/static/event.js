@@ -56,7 +56,7 @@ function createEventElement(eventListElement, event, displaySaveButton) {
 
   // Displays only for individual users
   if (displaySaveButton) {
-    eventElement.appendChild(createSaveEventButton(eventElement,event));
+    eventElement.appendChild(createSaveEventButton(event));
   }
 }
 
