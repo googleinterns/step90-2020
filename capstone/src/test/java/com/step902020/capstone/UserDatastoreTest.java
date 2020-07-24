@@ -48,7 +48,6 @@ public class UserDatastoreTest {
   Organization expectedOrganization;
   Event expectedEvent;
   Organization organizationSavedByUser;
-  Long expectedEventId;
 
   @Before
   public void setUp() {
@@ -81,13 +80,8 @@ public class UserDatastoreTest {
 
     expectedEvent = this.eventRepository.save(new Event("Princeton", expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
         40.769579, -73.973036, true, false));
-
-<<<<<<< HEAD
     expectedOrganization.addEvent(expectedEvent);
     this.organizationRepository.save(expectedOrganization);
-=======
-    expectedEventId = expectedEvent.getDatastoreId();
->>>>>>> origin/master
 
     this.authRestTemplate = this.restTemplate
         .withBasicAuth(currentUserEmail, currentUserPassword);
@@ -95,18 +89,11 @@ public class UserDatastoreTest {
 
   @After
   public void tearDown() {
-<<<<<<< HEAD
-    this.individualRepository.deleteAllByEmail(currentUserEmail);
-    this.organizationRepository.deleteAllByEmail(currentUserEmail);
-    this.organizationRepository.deleteAllByEmail("org@uni.edu");
-    this.eventRepository.deleteAllByEventDateTime(expectedEvent.getEventDateTime());
-=======
     this.individualRepository.deleteByEmail(expectedIndividual.getEmail());
     this.individualRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
     this.organizationRepository.deleteByEmail(currentUserEmail);
-    this.eventRepository.deleteById(expectedEventId);
->>>>>>> origin/master
+    this.eventRepository.deleteAllByEventDateTime(expectedEvent.getEventDateTime());
   }
 
   @Test
