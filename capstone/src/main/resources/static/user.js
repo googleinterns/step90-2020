@@ -41,6 +41,24 @@ function setUpAccountPage(isOrganization, fillForm, data, hide, display) {
   displayNavToggle(hide, display);
 }
 
+/* Add the image form to the profile page */
+function addImageField(formName) {
+  fetch('upload-image').then(response => response.text()).then((data) => {
+    const form = document.getElementById(formName);
+    form.innerHTML = data;
+  });
+
+}
+
+/* upon submission, hide the image form */
+function closeImageForm() {
+  document.getElementById("user-image-form").style.display = "none";
+  // refresh the page 8 seconds after submission
+  setTimeout(function () {
+    document.getElementById("get-image").setAttribute("src", "get-image?" + new Date().getTime());
+    }, 8000);
+}
+
 /* function to toggle between displaying user profile and displaying an error message */
 function displayMain(display) {
   if (display) {
@@ -50,6 +68,7 @@ function displayMain(display) {
   }
 }
 
+/* toggle between the two nav bars */
 function displayNavToggle(hide, display) {
   document.getElementById(display).style.display="block";
   document.getElementById(hide).style.display="none";
@@ -122,14 +141,17 @@ function toggleForm(formUserType) {
 // helper function for displaying forms
 // a new user will be able to toggle, but a returning user will not
 function displayForm(userType, displayBoth) {
+  document.getElementById("user-image-form").style.display = "block";
   if (userType == "individual") {
     updateUserTypeInForm("user", "organization", "user-type-toggle", "individual");
     if (!displayBoth) {
+      document.getElementById("university-form-display").style.display = "block";
       hideFields("user-select", "ind-uni");
       document.getElementById("university-form-display").style.display = "block";
     }
   } else if (userType == "organization") {
 		updateUserTypeInForm("organization", "user", "org-user-type", "organization");
+		document.getElementById("org-university-form-display").style.display = "block";
 		if (!displayBoth) {
 			hideFields("org-select", "org-uni");
 			document.getElementById("org-university-form-display").style.display = "block";
@@ -382,6 +404,8 @@ function getPublicProfile() {
            createProfile(data, false, true);
            const eventDiv = document.getElementById("hosted-events");
            data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, false));
+           document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
+           document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
          });
          displayMain(true);
        }
@@ -389,6 +413,5 @@ function getPublicProfile() {
        displayMain(false);
      }
   });
-
 }
 
