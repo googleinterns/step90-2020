@@ -27,8 +27,6 @@ public class Individual {
   @Field(name="user-type")
   String userType;
 
-  String image;
-
   @Reference
   List<Event> savedEvents;
 
@@ -38,14 +36,13 @@ public class Individual {
   public Individual() {
   }
 
-  public Individual(Long timestamp, String firstName, String lastName, String email, University university, String userType, String image) {
+  public Individual(Long timestamp, String firstName, String lastName, String email, University university, String userType) {
     this.timestamp = timestamp;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
     this.university = university;
     this.userType = userType;
-    this.image = image;
     savedEvents = new ArrayList<Event>();
     organizations = new ArrayList<Organization>();
   }
@@ -78,10 +75,6 @@ public class Individual {
     return userType;
   }
 
-  public String getImage() {
-    return image;
-  }
-
   public List<Event> getSavedEvents() {
     return savedEvents;
   }
@@ -96,10 +89,6 @@ public class Individual {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
-  }
-
-  public void setImage(String image) {
-    this.image = image;
   }
 
   public void addSavedEvents(Event event) {

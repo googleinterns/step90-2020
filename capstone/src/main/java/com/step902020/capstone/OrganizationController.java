@@ -5,11 +5,8 @@ import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -27,6 +24,9 @@ public class OrganizationController {
 
   @Autowired
   private UniversityRepository universityRepository;
+
+  @Autowired
+  private GcsStore gcsstore;
   
   /**
    * Find an organization's profile information by email
@@ -65,7 +65,7 @@ public class OrganizationController {
       current.setDescription(description);
     } else {
       University universityReference = this.universityRepository.findFirstByName(university);
-      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), universityReference, userType, description, "");
+      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), universityReference, userType, description);
     }
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
@@ -116,5 +116,16 @@ public class OrganizationController {
       this.eventRepository.deleteById(Long.parseLong(eventId));
     }
     return new RedirectView("manageevents.html", true);
+  }
+
+  /**
+   * returns image with the same name as the user email from cloud storage
+   * @param email of the current user
+   * @return image in a byte array
+   * @throws IOException
+   */
+  @GetMapping(value = "get-public-image", produces = MediaType.IMAGE_JPEG_VALUE)
+  public @ResponseBody byte[] getImage(@RequestParam("email") String email) throws IOException {
+    return gcsstore.serveImage("step90-2020", "step90-2020.appspot.com", email);
   }
 }

@@ -9,10 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 
@@ -30,6 +28,9 @@ public class IndividualController {
 
   @Autowired
   private UniversityRepository universityRepository;
+
+  @Autowired
+  private GcsStore gcsstore;
 
   /**
    * Find an individual's profile information by email
@@ -61,7 +62,7 @@ public class IndividualController {
     }
     else {
       University universityReference = this.universityRepository.findFirstByName(university);
-      current = new Individual(System.currentTimeMillis(), firstname, lastname, userEmail, universityReference, userType, "");
+      current = new Individual(System.currentTimeMillis(), firstname, lastname, userEmail, universityReference, userType);
     }
     this.individualRepository.save(current);
     return new RedirectView("profile.html", true);
@@ -173,5 +174,26 @@ public class IndividualController {
       }
     }
     return calendarEvents;
+  }
+
+  /**
+   * return the html form of the profile image form with a valid upload url
+   * @param user current user
+   * @return html in a String
+   */
+  @GetMapping("upload-image")
+  public String uploadImage(CurrentUser user) throws IOException{
+    return gcsstore.generateSignedPostPolicyV4("step90-2020", "step90-2020.appspot.com", user.getEmail());
+  }
+
+  /**
+   * returns image with the same name as the user email from cloud storage
+   * @param user current user
+   * @return image in a byte array
+   * @throws IOException
+   */
+  @GetMapping(value = "get-image", produces = MediaType.IMAGE_JPEG_VALUE)
+  public @ResponseBody byte[] getImage(CurrentUser user) throws IOException {
+    return gcsstore.serveImage("step90-2020", "step90-2020.appspot.com", user.getEmail());
   }
 }
