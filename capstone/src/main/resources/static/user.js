@@ -51,7 +51,10 @@ function addImageField(formName) {
 /* upon submission, hide the image form */
 function closeImageForm() {
   document.getElementById("user-image-form").style.display = "none";
-  setTimeout(function () { window.location.reload(); }, 10000);
+  // refresh the page 8 seconds after submission
+  setTimeout(function () {
+    document.getElementById("get-image").setAttribute("src", "get-image?" + new Date().getTime());
+    }, 8000);
 }
 
 /* function to toggle between displaying user profile and displaying an error message */

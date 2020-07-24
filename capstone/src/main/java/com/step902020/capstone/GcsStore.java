@@ -37,7 +37,7 @@ public class GcsStore {
                     "<form action='"
                             + policy.getUrl()
                             + "' method='POST' enctype='multipart/form-data'>\n");
-    htmlForm.append("<label>Profile Image (After clicking submit the change will take effect after 10 seconds):</label>");
+    htmlForm.append("<label>Profile Image (After clicking submit the change will take effect after 8 seconds):</label>");
     for (Map.Entry<String, String> entry : policy.getFields().entrySet()) {
       htmlForm.append(
               "  <input name='"
