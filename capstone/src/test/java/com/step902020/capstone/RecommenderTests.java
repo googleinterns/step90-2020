@@ -25,6 +25,35 @@ public class RecommenderTests {
   }
 
   @Test
+  public void testRecommendWithEmptyUserListCase() throws URISyntaxException {
+    List<String> list = new ArrayList<String>();
+    List<String> result = Recommender.recommend("A", list, p  -> getListOfItems(p), 1);
+    List<String> expected = new ArrayList<>();
+    assertEquals("Wrong list returned", expected, result);
+  }
+
+  @Test
+  public void testRecommendTargetUserWithNoSavedEventsCase() throws URISyntaxException {
+    List<String> list = new ArrayList<String>();
+    list.add("B");
+    List<String> result = Recommender.recommend("D", list, p  -> getListOfItems(p), 2);
+    List<String> expected = new ArrayList<>();
+    expected.add("event 1");
+    expected.add("event 2");
+    assertEquals("Wrong list returned", expected, result);
+  }
+
+  @Test
+  public void testRecommendTargetUserWithNoSavedEventsCaseWithEventLimit() throws URISyntaxException {
+    List<String> list = new ArrayList<String>();
+    list.add("B");
+    List<String> result = Recommender.recommend("D", list, p  -> getListOfItems(p), 1);
+    List<String> expected = new ArrayList<>();
+    expected.add("event 1");
+    assertEquals("Wrong list returned", expected, result);
+  }
+
+  @Test
   public void testRecommendWithTwoPeopleCase() throws URISyntaxException {
     List<String> list = new ArrayList<String>();
     list.add("B");
@@ -54,6 +83,21 @@ public class RecommenderTests {
     List<String> result = Recommender.recommend("A", list, p  -> getListOfItems(p), 1);
     List<String> expected = new ArrayList<>();
     expected.add("event 2");
+    assertEquals("Wrong list returned", expected, result);
+  }
+
+  @Test
+  public void testRecommendWithFourPeopleCase() throws URISyntaxException {
+    List<String> list = new ArrayList<String>();
+    list.add("A");
+    list.add("B");
+    list.add("C");
+    List<String> result = Recommender.recommend("D", list, p  -> getListOfItems(p), 10);
+    List<String> expected = new ArrayList<>();
+    expected.add("event 1");
+    expected.add("event 3");
+    expected.add("event 2");
+    expected.add("event 4");
     assertEquals("Wrong list returned", expected, result);
   }
 }
