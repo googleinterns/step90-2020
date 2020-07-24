@@ -5,10 +5,6 @@ async function createMap() {
     document.getElementById('map'),
     {center: princetonLatLng, zoom: 16});
 
-   google.maps.event.addListener(campusMap, 'click', function(event) {
-    placeMarkerAndPan(event.latLng, campusMap);
-   });
-
    const response = await fetch('get-all-events');
    const jsonEvents = await response.json();
    jsonEvents.forEach(event => createMarker(event, campusMap));
@@ -22,9 +18,17 @@ async function createMap() {
       document.getElementById('eventMap'),
       {center: princetonLatLng, zoom: 16});
 
-     google.maps.event.addListener(campusMap, 'click', function(event) {
-      placeMarkerAndPan(event.latLng, campusMap);
-     });
+    var marker;
+    google.maps.event.addListener(campusMap, 'click', function(newMarker) {
+     if (marker) {
+        marker.setMap(null);
+     }
+      marker = placeMarkerAndPan(newMarker.latLng, campusMap);
+      var markerLatLng = newMarker.latLng.toString();
+      console.log(markerLatLng);
+      document.getElementById('eventLatitude').value = newMarker.latLng.lat();
+      document.getElementById('eventLongitude').value = newMarker.latLng.lng();
+      google.maps.event.clearListeners(newMarker, 'click');
   }
 
 /* Create a new marker for each event
