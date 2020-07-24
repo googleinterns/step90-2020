@@ -13,6 +13,11 @@ function generalNavActive(tab) {
   document.getElementById(tab).setAttribute("class", "active");
 }
 
+/* helper function to highlight active tab for recommendation nav */
+function recNavActive(tab) {
+  document.getElementById(tab).setAttribute("class", "active");
+}
+
 /* get the user information for the profile page */
 function getUser(fillForm, generalTab, profileTab) {
   generalNavActive(generalTab);
@@ -440,22 +445,27 @@ function getPublicProfile() {
  });
 }
 
-function findRecommended() {
+function findRecommended(recommendationType) {
+  var count = document.getElementById('recommended-input').value;
   fetch('user-info').then(response => response.json()).then((data) => {
-    if(data.userType == "individual") {
-      fetch('get-recommended-events-individual').then(response => response.json()).then((data) => {
-        const eventDiv = document.getElementById("recommended-events");
-        data.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true, false)));
-      });
-      displayMain(true);
-    } else if (data.userType == "organization") {
-      fetch('get-recommended-events-organization').then(response => response.json()).then((data) => {
-        const eventDiv = document.getElementById("recommended-events");
-        data.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
-      });
-      displayMain(true);
-    } else {
+    if (data.userType == 'unknown') {
       displayMain(false);
+    } else {
+      recommend(count, data.userType, recommendationType);
+      displayMain(true);
     }
+  });
+}
+
+function recommend(count, userType, recommendationType) {
+  fetch('get-recommended-'+ recommendationType + '-' + userType + '?count=' + count).then(response => response.json()).then((data) => {
+    const recDiv = document.getElementById("recommended-section");
+    recDiv.innerHTML = "";
+    if (recommendationType == "events") {
+      data.forEach((event) => recDiv.appendChild(createSavedEventElement(event, userType == 'individual', false)));
+    } else {
+      data.forEach((org) => recDiv.appendChild(createSavedOrgElement(org, false, userType == 'individual')));
+    }
+
   });
 }

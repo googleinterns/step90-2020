@@ -28,7 +28,7 @@ public class RecommenderTests {
   public void testRecommendWithTwoPeopleCase() throws URISyntaxException {
     List<String> list = new ArrayList<String>();
     list.add("B");
-    List<String> result = Recommender.recommend("A", list, p  -> getListOfItems(p));
+    List<String> result = Recommender.recommend("A", list, p  -> getListOfItems(p), 1);
     List<String> expected = new ArrayList<>();
     expected.add("event 2");
     assertEquals("Wrong list returned", expected, result);
@@ -39,7 +39,7 @@ public class RecommenderTests {
     List<String> list = new ArrayList<String>();
     list.add("B");
     list.add("C");
-    List<String> result = Recommender.recommend("A", list, p  -> getListOfItems(p));
+    List<String> result = Recommender.recommend("A", list, p  -> getListOfItems(p), 2);
     List<String> expected = new ArrayList<>();
     expected.add("event 2");
     expected.add("event 4");
@@ -51,7 +51,7 @@ public class RecommenderTests {
     List<String> list = new ArrayList<String>();
     list.add("A");
     list.add("B");
-    List<String> result = Recommender.recommend("A", list, p  -> getListOfItems(p));
+    List<String> result = Recommender.recommend("A", list, p  -> getListOfItems(p), 1);
     List<String> expected = new ArrayList<>();
     expected.add("event 2");
     assertEquals("Wrong list returned", expected, result);

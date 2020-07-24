@@ -175,19 +175,59 @@ public class IndividualController {
   /**
    * get the recommended events for an individual
    * @param currentUser user that is currently logged in
+   * @param count the number of events to be returned
    * @return list of Events
    */
   @GetMapping("get-recommended-events-individual")
-  public List<Event> recommendEvents(CurrentUser currentUser) {
+  public List<Event> recommendEvents(CurrentUser currentUser,
+                                @RequestParam("count") String count) {
     Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
     List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
-    List<Event> recommended = Recommender.recommend(targetUser, users, u -> u.getSavedEvents());
-    if (recommended.size() < 10) {
-      List<Event> allEvents = this.eventRepository.findAllByUniversity(targetUser.getUniversity());
+
+    int num = Integer.parseInt(count);
+    // find recommended events from other users
+    List<Event> recommended = Recommender.recommend(targetUser, users, u -> u.getSavedEvents(), num);
+
+    // if the list of recommended events is shorter than the list we want, add in more events from general event pool
+    if (recommended.size() < num) {
+      List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
       int i = 0;
       int length = 0;
-      while (i < allEvents.size() && length < 10 - recommended.size()) {
+      while (i < allEvents.size() && length < num - recommended.size()) {
         Event e = allEvents.get(i);
+        if (!(recommended.contains(e))) {
+          recommended.add(e);
+          length++;
+        }
+        i++;
+      }
+    }
+    return recommended;
+  }
+
+  /**
+   * get the recommended organizations for an individual
+   * @param currentUser user that is currently logged in
+   * @param count the number of organizations to be returned
+   * @return list of organizations
+   */
+  @GetMapping("get-recommended-organizations-individual")
+  public List<Organization> reommendedOrganizations(CurrentUser currentUser,
+                                @RequestParam("count") String count) {
+    Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
+    List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
+
+    int num = Integer.parseInt(count);
+    // find recommended events from other users
+    List<Organization> recommended = Recommender.recommend(targetUser, users, u -> u.getOrganizations(), num);
+
+    // if the list of recommended events is shorter than the list we want, add in more events from general event pool
+    if (recommended.size() < num) {
+      List<Organization> allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());
+      int i = 0;
+      int length = 0;
+      while (i < allOrgs.size() && length < num - recommended.size()) {
+        Organization e = allOrgs.get(i);
         if (!(recommended.contains(e))) {
           recommended.add(e);
           length++;

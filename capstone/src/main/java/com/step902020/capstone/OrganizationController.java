@@ -5,6 +5,7 @@ import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -117,14 +118,33 @@ public class OrganizationController {
   /**
    * get the recommended events for an organization
    * @param currentUser user that is currently logged in
+   * @param count the number of events to be returned
    * @return list of Events
    */
   @GetMapping("get-recommended-events-organization")
-  public List<Event> recommendEvents(CurrentUser currentUser) {
+  public List<Event> recommendEvents(CurrentUser currentUser,
+                                     @RequestParam("count") String count) {
     Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
-    List<Event> allEvents = this.eventRepository.findAllByUniversity(targetUser.getUniversity());
-    return allEvents.subList(0, Math.min(10, allEvents.size()));
+    int num = Integer.parseInt(count);
+    List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, num));
+    return allEvents;
   }
+
+  /**
+   * get the recommended organizations for an organization
+   * @param currentUser user that is currently logged in
+   * @param count the number of organizations to be returned
+   * @return list of organizations
+   */
+  @GetMapping("get-recommended-organizations-organization")
+  public List<Organization> recommendedOrganizations(CurrentUser currentUser,
+                                     @RequestParam("count") String count) {
+    Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
+    int num = Integer.parseInt(count);
+    List<Organization> allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, num));
+    return allOrgs;
+  }
+
   /**
    * returns image with the same name as the user email from cloud storage
    * @param email of the current user

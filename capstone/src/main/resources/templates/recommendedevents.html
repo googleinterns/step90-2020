@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta>
+    <title>Organization Search</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="user.js"></script>
+</head>
+<body onload="findRecommended('events');generalNavActive('general-recommended');recNavActive('rec-events');">
+    <div th:replace="fragments/navbar::navbar"></div>
+    <br/>
+    <div th:replace="fragments/recommendedpage::recommendedpage"></div>
+    <div id="main" class="profile-head">
+        <label for="recommended-input">Number of results to show:</label>
+        <select onchange="findRecommended('events');" id="recommended-input">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+        </select>
+    </div>
+    <div id="recommended-section"></div>
+</body>
+</html>
