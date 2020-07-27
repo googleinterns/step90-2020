@@ -184,16 +184,16 @@ public class IndividualController {
     Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
     List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
 
-    int num = Integer.parseInt(count);
+    int num = (count.equals("All")) ? Integer.MAX_VALUE : Integer.parseInt(count);
     // find recommended events from other users
     List<Event> recommended = Recommender.recommend(targetUser, users, u -> u.getSavedEvents(), num);
-
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
     if (recommended.size() < num) {
       List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
       int i = 0;
       int length = 0;
-      while (i < allEvents.size() && length < num - recommended.size()) {
+      int targetSize = recommended.size();
+      while (i < allEvents.size() && length < num - targetSize) {
         Event e = allEvents.get(i);
         if (!(recommended.contains(e))) {
           recommended.add(e);
@@ -217,10 +217,9 @@ public class IndividualController {
     Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
     List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
 
-    int num = Integer.parseInt(count);
+    int num = (count.equals("All")) ? Integer.MAX_VALUE : Integer.parseInt(count);
     // find recommended events from other users
     List<Organization> recommended = Recommender.recommend(targetUser, users, u -> u.getOrganizations(), num);
-
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
     if (recommended.size() < num) {
       List<Organization> allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());

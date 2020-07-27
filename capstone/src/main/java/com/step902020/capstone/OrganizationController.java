@@ -125,8 +125,12 @@ public class OrganizationController {
   public List<Event> recommendEvents(CurrentUser currentUser,
                                      @RequestParam("count") String count) {
     Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
-    int num = Integer.parseInt(count);
-    List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, num));
+    List<Event> allEvents = null;
+    if (count.equals("All")) {
+      allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
+    } else {
+      allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, Integer.parseInt(count)));
+    }
     return allEvents;
   }
 
@@ -141,7 +145,12 @@ public class OrganizationController {
                                      @RequestParam("count") String count) {
     Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
     int num = Integer.parseInt(count);
-    List<Organization> allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, num));
+    List<Organization> allOrgs = null;
+    if (count.equals("All")) {
+      allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());
+    } else {
+      allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, num));
+    }
     return allOrgs;
   }
 
