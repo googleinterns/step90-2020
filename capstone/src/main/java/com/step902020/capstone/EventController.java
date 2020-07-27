@@ -5,7 +5,12 @@ import java.util.*;
 import java.time.LocalDateTime;
 
 import com.step902020.capstone.security.CurrentUser;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import java.time.LocalDateTime;
@@ -32,9 +37,27 @@ public class EventController {
   @Autowired
   private UniversityRepository universityRepository;
 
+  @Autowired
+  private DatastoreTemplate datastoreTemplate;
+
   @GetMapping("get-all-events")
-  public Iterable<Event> getAllEvents() {
-    return this.eventRepository.findAll();
+  public List<Event> getAllEvent(
+    @RequestParam("foodAvailable") Boolean foodAvailable,
+    @RequestParam("requiredFee") Boolean requiredFee) throws IOException {
+    // False values changed to null for matching
+    foodAvailable = foodAvailable == false ? null: foodAvailable;
+    requiredFee = requiredFee == false ? null: requiredFee;
+
+    Iterable<Event> events = this.eventRepository.findAll(
+      Example.of(new Event(null, null, 0, null,
+                null, null, 0,
+                0, foodAvailable, requiredFee),
+      ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude")
+      )
+
+    );
+
+    return StreamSupport.stream(events.spliterator(), false).collect(Collectors.toList());
   }
 
   @GetMapping("get-event")
@@ -69,7 +92,9 @@ public class EventController {
         event.setRequiredFee(requiredFee.orElse(false));
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization.getUniversity(), organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), foodAvailable.orElse(false), requiredFee.orElse(false));
+        Event newEvent = new Event(organization.getUniversity(), organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime,
+                eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude),
+                foodAvailable.orElse(false), requiredFee.orElse(false));
         this.eventRepository.save(newEvent);
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);
