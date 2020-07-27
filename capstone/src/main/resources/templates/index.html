@@ -5,10 +5,10 @@
     <title>Events</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
     <script src="script.js"></script>
     <script src="user.js"></script>
     <script src="event.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
   </head>
 
   <body onload="generalNavActive('general-index');">
@@ -63,16 +63,8 @@
         <div id="no-profile" class="profile-head">
           <p>You have not built your profile yet, please navigate to the "My Account" tab and submit a profile </p>
         </div>
-        <div id="events"></div>
-      </div>
-    </div>
-    <div id="modal">
-      <div class="modal-content">
-        <h1 id="eventName"></h1>
-        <p id="eventTime"></p>
-        <p id="eventLocation"></p>
-        <p id="eventDescription"></p>
-        <div id="review-container"></div>
+        <div id="events" class="events"></div>
+        <div th:replace="fragments/eventmodal::eventmodal"></div>
       </div>
     </div>
   </body>

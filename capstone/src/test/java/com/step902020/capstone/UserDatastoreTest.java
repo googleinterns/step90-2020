@@ -40,6 +40,7 @@ public class UserDatastoreTest {
   @Autowired private IndividualRepository individualRepository;
   @Autowired private OrganizationRepository organizationRepository;
   @Autowired private EventRepository eventRepository;
+  @Autowired private UniversityRepository universityRepository;
   @Autowired private TestRestTemplate restTemplate;
   private TestRestTemplate authRestTemplate;
 
@@ -47,14 +48,15 @@ public class UserDatastoreTest {
   Organization expectedOrganization;
   Event expectedEvent;
   Organization organizationSavedByUser;
-  Long expectedEventId;
+  University expectedUniversity;
 
   @Before
   public void setUp() {
     // append a random number to email to make a new user
-
+    expectedUniversity = new University("Test", 40.769579, -73.973036);
+    this.universityRepository.save(expectedUniversity);
     Organization organization = new Organization(System.currentTimeMillis(), "OrganizationThatExists",
-        "org@uni.edu", "UNI", "organization",
+        "org@uni.edu", expectedUniversity, "organization",
         "Organization already saved by a user");
     this.organizationSavedByUser = this.organizationRepository.save(organization);
     Individual individual = new Individual(
@@ -62,7 +64,7 @@ public class UserDatastoreTest {
         "UserWithOrganization",
         "ThatExists",
         currentUserEmail,
-        "Princeton",
+        expectedUniversity,
         "individual");
     individual.addOrganizations(this.organizationSavedByUser);
 
@@ -74,14 +76,12 @@ public class UserDatastoreTest {
                 System.currentTimeMillis(),
                 "new organization",
                 currentUserEmail,
-                "Princeton",
+                expectedUniversity,
                 "organization",
                 "hello world!"));
 
-    expectedEvent = this.eventRepository.save(new Event(expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
+    expectedEvent = this.eventRepository.save(new Event(expectedUniversity, expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
         40.769579, -73.973036, true, false));
-
-    expectedEventId = expectedEvent.getDatastoreId();
 
     this.authRestTemplate = this.restTemplate
         .withBasicAuth(currentUserEmail, currentUserPassword);
@@ -93,22 +93,23 @@ public class UserDatastoreTest {
     this.individualRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
     this.organizationRepository.deleteByEmail(currentUserEmail);
-    this.eventRepository.deleteById(expectedEventId);
+    this.universityRepository.deleteAllByName("Test");
+    this.eventRepository.deleteAllByEventDateTime("2020-06-01T12:30:00EST");
   }
 
   @Test
   public void testGetIndividual() throws URISyntaxException {
     // getting the actual result
-    Individual[] result = authRestTemplate.getForObject("/get-individual", Individual[].class);
-    assertEquals("Wrong user returned", currentUserEmail, result[0].getEmail());
+    Individual result = authRestTemplate.getForObject("/get-individual", Individual.class);
+    assertEquals("Wrong user returned", currentUserEmail, result.getEmail());
   }
 
   @Test
   public void testGetOrganization() throws URISyntaxException {
     String expectedEmail = expectedOrganization.getEmail();
     final String baseUrl = "/get-organization";
-    Organization[] result = authRestTemplate.getForObject(baseUrl, Organization[].class);
-    assertEquals("Wrong user returned", expectedEmail, result[0].getEmail());
+    Organization result = authRestTemplate.getForObject(baseUrl, Organization.class);
+    assertEquals("Wrong user returned", expectedEmail, result.getEmail());
   }
 
   @Test
@@ -127,10 +128,10 @@ public class UserDatastoreTest {
     // getting the actual result
     final String getIndividualUrl = "/get-individual";
 
-    Individual[] result = authRestTemplate.getForObject(getIndividualUrl, Individual[].class);
-    assertEquals("Wrong number of saved events", 1, result[0].getSavedEvents().size());
-    assertEquals("Wrong saved event -- ID", expectedEvent.getDatastoreId(), result[0].getSavedEvents().get(0).getDatastoreId());
-    assertEquals("Wrong saved event -- title", expectedEvent.getEventTitle(), result[0].getSavedEvents().get(0).getEventTitle());
+    Individual result = authRestTemplate.getForObject(getIndividualUrl, Individual.class);
+    assertEquals("Wrong number of saved events", 1, result.getSavedEvents().size());
+    assertEquals("Wrong saved event -- ID", expectedEvent.getDatastoreId(), result.getSavedEvents().get(0).getDatastoreId());
+    assertEquals("Wrong saved event -- title", expectedEvent.getEventTitle(), result.getSavedEvents().get(0).getEventTitle());
   }
 
   @Test
@@ -147,8 +148,8 @@ public class UserDatastoreTest {
     // getting the actual result
     final String baseUrl = "/get-individual?email=" + expectedEmail;
     URI uri = new URI(baseUrl);
-    Individual[] result = authRestTemplate.getForObject(uri, Individual[].class);
-    assertEquals("Delete event error", 0, result[0].getSavedEvents().size());
+    Individual result = authRestTemplate.getForObject(uri, Individual.class);
+    assertEquals("Delete event error", 0, result.getSavedEvents().size());
   }
 
   @Test
@@ -167,9 +168,9 @@ public class UserDatastoreTest {
     URI uri = new URI(baseUrl);
     Set<Long> expectedSet = new HashSet<>();
     expectedSet.add(234L);
-    Individual[] result = authRestTemplate.getForObject(uri, Individual[].class);
-    assertEquals("Unexpected organization count", 2, result[0].getOrganizations().size());
-    Optional<Organization> newOrg = result[0].getOrganizations().stream()
+    Individual result = authRestTemplate.getForObject(uri, Individual.class);
+    assertEquals("Unexpected organization count", 2, result.getOrganizations().size());
+    Optional<Organization> newOrg = result.getOrganizations().stream()
         .filter(o -> o.getDatastoreId().equals(expectedOrganization.getDatastoreId()))
         .findAny();
     assertFalse("Unexpected organization ID", newOrg.isEmpty());
@@ -180,10 +181,10 @@ public class UserDatastoreTest {
   public void testDeleteSavedOrganization() throws URISyntaxException {
 
     // Check saved organizations before delete ("precondition")
-    Individual[] preResult = authRestTemplate.getForObject("/get-individual", Individual[].class);
+    Individual preResult = authRestTemplate.getForObject("/get-individual", Individual.class);
     assertEquals(
         "Unexpected number of organizations before the test",
-        1, preResult[0].getOrganizations().size());
+        1, preResult.getOrganizations().size());
 
     // Exercise functionality
     HttpHeaders headers = new HttpHeaders();
@@ -194,8 +195,8 @@ public class UserDatastoreTest {
     ResponseEntity<String> response = authRestTemplate.postForEntity("/delete-saved-organization", request, String.class);
 
     // Check saved organizations after delete ("postcondition")
-    Individual[] postResult = authRestTemplate.getForObject("/get-individual", Individual[].class);
+    Individual postResult = authRestTemplate.getForObject("/get-individual", Individual.class);
     assertEquals(
-        "Delete organization error", 0, postResult[0].getOrganizations().size());
+        "Delete organization error", 0, postResult.getOrganizations().size());
   }
 }

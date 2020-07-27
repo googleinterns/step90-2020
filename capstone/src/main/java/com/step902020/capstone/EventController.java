@@ -35,8 +35,10 @@ public class EventController {
   private OrganizationRepository organizationRepository;
 
   @Autowired
-  private DatastoreTemplate datastoreTemplate;
+  private UniversityRepository universityRepository;
 
+  @Autowired
+  private DatastoreTemplate datastoreTemplate;
 
   @GetMapping("get-all-events")
   public List<Event> getAllEvent(
@@ -47,7 +49,7 @@ public class EventController {
     requiredFee = requiredFee == false ? null: requiredFee;
 
     Iterable<Event> events = this.eventRepository.findAll(
-      Example.of(new Event(null, 0, null,
+      Example.of(new Event(null, null, 0, null,
                 null, null, 0,
                 0, foodAvailable, requiredFee),
       ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude")
@@ -90,7 +92,7 @@ public class EventController {
         event.setRequiredFee(requiredFee.orElse(false));
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime,
+        Event newEvent = new Event(organization.getUniversity(), organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime,
                 eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude),
                 foodAvailable.orElse(false), requiredFee.orElse(false));
         this.eventRepository.save(newEvent);

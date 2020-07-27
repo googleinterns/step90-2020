@@ -34,7 +34,17 @@
                     <input type="text" name="lastname" id="ind-lastname" placeholder="Your last name.."></input>
                     <label>University:</label>
                     <p id="university-form-display" style="display:none"></p>
-                    <input type="text" name="university" id="ind-uni" placeholder="Your university.."></input>
+                    <p id="university-form-display" style="display:none"></p>
+                    <select name="university" id="ind-uni">
+                        <option value="" disabled selected hidden>Choose your university</option>
+                        <option value="Harvard University">Harvard University</option>
+                        <option value="Princeton University">Princeton University</option>
+                        <option value="Rutgers University">Rutgers University</option>
+                        <option value="Wellesley College">Wellesley College</option>
+                        <option value="University of Connecticut">University of Connecticut</option>
+                        <option value="University of Tennessee">University of Tennessee</option>
+                        <option value="Xavier University">Xavier University</option>
+                    </select>
                     <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
                 </form>
             </div>
@@ -51,7 +61,16 @@
                     <input type="text" name="name" id="org-form-name" placeholder="Your organization name.."></input>
                     <label>Affiliated University:</label>
                     <p id="org-university-form-display"></p>
-                    <input type="text" name="university" id="org-uni" placeholder="Your university.."></input>
+                    <select name="university" id="org-uni">
+                        <option value="" disabled selected hidden>Choose your university</option>
+                        <option value="Harvard University">Harvard University</option>
+                        <option value="Princeton University">Princeton University</option>
+                        <option value="Rutgers University">Rutgers University</option>
+                        <option value="Wellesley College">Wellesley College</option>
+                        <option value="University of Connecticut">University of Connecticut</option>
+                        <option value="University of Tennessee">University of Tennessee</option>
+                        <option value="Xavier University">Xavier University</option>
+                    </select>
                     <label>Description:</label>
                     <input type="text" name="description" id="org-description" placeholder="Description of your organization.."></input>
                     <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
