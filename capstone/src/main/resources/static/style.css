@@ -338,7 +338,6 @@ div.row {
   margin-top: -75px; /* Negative half of height. */
   margin-left: -75px; /* Negative half of width. */
   z-index:2;
-  background-color: #073763ff;
 }
 
 .container {

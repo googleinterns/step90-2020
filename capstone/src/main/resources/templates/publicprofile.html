@@ -23,9 +23,15 @@
                     <div class="container" id="profile-image">
                         <a id="public-image-a" href=""><img id="public-image-img" class="image profile" src=""/></a>
                     </div>
-                    <div id="hosted-events" class="events"></div>
-                    <div th:replace="fragments/eventmodal::eventmodal"></div>
+                    <div id="email"></div>
+                    <div id="university"></div>
+                    <div id="description"></div>
+                    <div id="no-profile">
+                        <p>You have not built your profile yet, please navigate to My Account page and submit a profile </p>
+                    </div>
                 </div>
+                <div id="hosted-events" class="events"></div>
+                <div th:replace="fragments/eventmodal::eventmodal"></div>
             </div>
         </div>
     </body>
