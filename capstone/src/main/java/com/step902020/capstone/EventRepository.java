@@ -9,7 +9,7 @@ import java.util.List;
  * Spring Data Repository for Event Entities
  */
 public interface EventRepository extends DatastoreRepository<Event, Long> {
-  public long deleteByEventDateTime(String eventDateTime);
-  public List<Event> findByUniversity(String university, Pageable pageable);
-  public List<Event> findByUniversity(String university);
+  public Long deleteByEventDateTime(String eventDateTime);
+  public List<Event> findByUniversity(University university, Pageable pageable);
+  public List<Event> findByUniversity(University university);
 }

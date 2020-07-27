@@ -13,11 +13,12 @@ public class Event{
   @Id
   Long datastoreId;
 
+  @Reference
+  University university;
+
   String organizationName;
 
   Long organizationId;
-
-  String university;
 
   @Field(name="eventTitle")
   String eventTitle;
@@ -43,7 +44,7 @@ public class Event{
   @Reference
   List<Review> reviews;
 
-  public Event(String university, String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
+  public Event(University university, String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
     this.university = university;
     this.organizationName = organizationName;
     this.organizationId = organizationId;
@@ -61,7 +62,7 @@ public class Event{
     return datastoreId;
   }
 
-  public String getUniversity() {
+  public University getUniversity() {
     return university;
   }
 
@@ -105,7 +106,7 @@ public class Event{
   public void setDatastoreId(Long datastoreId) {
     this.datastoreId = datastoreId;
   }
-  public void setUniversity(String university) {
+  public void setUniversity(University university) {
     this.university = university;
   }
   public void setEventTitle(String eventTitle) {

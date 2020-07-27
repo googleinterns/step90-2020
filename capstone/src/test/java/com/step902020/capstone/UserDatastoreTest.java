@@ -40,6 +40,7 @@ public class UserDatastoreTest {
   @Autowired private IndividualRepository individualRepository;
   @Autowired private OrganizationRepository organizationRepository;
   @Autowired private EventRepository eventRepository;
+  @Autowired private UniversityRepository universityRepository;
   @Autowired private TestRestTemplate restTemplate;
   private TestRestTemplate authRestTemplate;
 
@@ -47,13 +48,15 @@ public class UserDatastoreTest {
   Organization expectedOrganization;
   Event expectedEvent;
   Organization organizationSavedByUser;
+  University expectedUniversity;
 
   @Before
   public void setUp() {
     // append a random number to email to make a new user
-
+    expectedUniversity = new University("Test", 40.769579, -73.973036);
+    this.universityRepository.save(expectedUniversity);
     Organization organization = new Organization(System.currentTimeMillis(), "OrganizationThatExists",
-        "org@uni.edu", "UNI", "organization",
+        "org@uni.edu", expectedUniversity, "organization",
         "Organization already saved by a user");
     this.organizationSavedByUser = this.organizationRepository.save(organization);
     Individual individual = new Individual(
@@ -61,7 +64,7 @@ public class UserDatastoreTest {
         "UserWithOrganization",
         "ThatExists",
         currentUserEmail,
-        "Princeton",
+        expectedUniversity,
         "individual");
     individual.addOrganizations(this.organizationSavedByUser);
 
@@ -73,11 +76,12 @@ public class UserDatastoreTest {
                 System.currentTimeMillis(),
                 "new organization",
                 currentUserEmail,
-                "Princeton",
+                expectedUniversity,
                 "organization",
                 "hello world!"));
 
-    expectedEvent = this.eventRepository.save(new Event("Princeton", expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
+
+    expectedEvent = this.eventRepository.save(new Event(expectedUniversity, expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
         40.769579, -73.973036, true, false));
     expectedOrganization.addEvent(expectedEvent);
     this.organizationRepository.save(expectedOrganization);
@@ -92,6 +96,7 @@ public class UserDatastoreTest {
     this.individualRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
     this.organizationRepository.deleteByEmail(currentUserEmail);
+    this.organizationRepository.deleteByEmail("org@uni.edu");
     this.eventRepository.deleteByEventDateTime(expectedEvent.getEventDateTime());
   }
 

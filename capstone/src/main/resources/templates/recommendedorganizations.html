@@ -4,7 +4,11 @@
     <meta>
     <title>Organization Search</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+    <script src="script.js"></script>
     <script src="user.js"></script>
+    <script src="event.js"></script>
 </head>
 <body onload="findRecommended('organizations');generalNavActive('general-recommended');recNavActive('rec-orgs');">
     <div th:replace="fragments/navbar::navbar"></div>
@@ -19,6 +23,6 @@
             <option value="All">All</option>
         </select>
     </div>
-    <div id="recommended-section"></div>
+    <div id="recommended-section" class="events"></div>
 </body>
 </html>

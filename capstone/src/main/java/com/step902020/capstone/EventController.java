@@ -35,8 +35,10 @@ public class EventController {
   private OrganizationRepository organizationRepository;
 
   @Autowired
-  private DatastoreTemplate datastoreTemplate;
+  private UniversityRepository universityRepository;
 
+  @Autowired
+  private DatastoreTemplate datastoreTemplate;
 
   @GetMapping("get-all-events")
   public List<Event> getAllEvent(
