@@ -30,7 +30,6 @@ import org.springframework.util.MultiValueMap;
     classes = CapstoneApplication.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserDatastoreTest {
-
   /* Properties for Test account from test/resources/application-local.properties */
   @Value("${spring.security.user.name}")
   private String currentUserEmail;
