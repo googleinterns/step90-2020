@@ -37,6 +37,10 @@ function getUser(fillForm, generalTab, profileTab) {
       }
       displayMain(true);
     }
+    hideSpinner();
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
 
@@ -81,22 +85,22 @@ function displayNavToggle(hide, display) {
 
 /* creates and populates the user profile */
 function createProfile(data, fillForm, isOrganization) {
-    const emailContainer = document.getElementById("email");
-    const pElementEmail = document.createElement('p');
-    pElementEmail.innerText = data.email;
-    emailContainer.appendChild(pElementEmail);
+  const emailContainer = document.getElementById("email");
+  const pElementEmail = document.createElement('p');
+  pElementEmail.innerText = data.email;
+  emailContainer.appendChild(pElementEmail);
 
-    const universityContainer = document.getElementById("university");
-    const pElementUniversity = document.createElement('p');
-    pElementUniversity.innerText = data.university.name;
-    universityContainer.appendChild(pElementUniversity);
+  const universityContainer = document.getElementById("university");
+  const pElementUniversity = document.createElement('p');
+  pElementUniversity.innerText = data.university.name;
+  universityContainer.appendChild(pElementUniversity);
 
-    // addresses the different fields for each user type
-    if (isOrganization) {
-      createOrgProfile(data, fillForm);
-    } else {
-      createIndividualProfile(data, fillForm);
-    }
+  // addresses the different fields for each user type
+  if (isOrganization) {
+    createOrgProfile(data, fillForm);
+  } else {
+    createIndividualProfile(data, fillForm);
+  }
 }
 
 /* populate individual specific fields of the profile */
@@ -192,6 +196,10 @@ function getIndividualEventsOrOrganizations(isEvent) {
     } else {
       displayMain(false);
     }
+    hideSpinner();
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
 
@@ -316,6 +324,10 @@ function getOrganizationEvents() {
     } else {
       displayMain(false);
     }
+    hideSpinner();
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
 
@@ -324,6 +336,7 @@ function searchOrg() {
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "unknown") {
       displayMain(false);
+      hideSpinner();
     } else {
       var displaySaveButton = data.userType == "individual";
       var name = document.getElementById("search-org").value;
@@ -340,6 +353,10 @@ function searchOrg() {
             createSavedOrgElement(orgListElement, org, false, displaySaveButton);
           });
         }
+        hideSpinner();
+      }).catch((error) => {
+        // log error
+        hideSpinner();
       });
     }
   });
@@ -376,9 +393,14 @@ function createCalendar() {
         data.forEach((event) => {
           createCalendarEvent(event, today, endDate, "cyan", false);
         });
+        hideSpinner();
+      }).catch((error) => {
+        // log error
+        hideSpinner();
       });
     } else {
       displayMain(false);
+      hideSpinner();
     }
   });
 }
@@ -410,11 +432,18 @@ function getPublicProfile() {
            data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, false));
            document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
            document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
+           hideSpinner();
+         }).catch((error) => {
+           // log error
+           hideSpinner();
          });
          displayMain(true);
+       } else {
+          hideSpinner();
        }
      } else {
        displayMain(false);
+       hideSpinner();
      }
   });
 }
@@ -424,10 +453,14 @@ function findRecommended(recommendationType) {
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == 'unknown') {
       displayMain(false);
+      hideSpinner();
     } else {
       recommend(count, data.userType, recommendationType);
       displayMain(true);
     }
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
 
@@ -440,5 +473,20 @@ function recommend(count, userType, recommendationType) {
     } else {
       data.forEach((org) => createSavedOrgElement(recDiv, org, false, false));
     }
+    hideSpinner();
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
+
+/* displays spinner on the page and hide main content */
+function showSpinner() {
+  document.getElementById('load').style.display="block";
+}
+
+/* hide spinner and displays main content */
+function hideSpinner() {
+  document.getElementById('load').style.display="none";
+}
+
