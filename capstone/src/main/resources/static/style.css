@@ -107,11 +107,12 @@ img {
 }
 
 .profile {
-  border-radius: 200px;
-  height: auto;
+  border-radius: 50%;
+  height: 300px;
   margin-left: auto;
   margin-right: auto;
-  width: 100%;
+  width: 300px;
+  object-fit: cover;
 }
 
 .profile-button {
@@ -131,6 +132,7 @@ img {
 .profile-form input[type=text],
 .profile-form input[type=datetime-local],
 .profile-form input[type=number],
+.profile-form input[type=file],
 .profile-form textarea,
 .profile-form select {
   box-sizing: border-box;
@@ -150,7 +152,7 @@ img {
   width: 60%;
 }
 
-#organization, #no-profile, #user, #org-nav, #individual-nav {
+#organization, #no-profile, #user, #org-nav, #individual-nav, #user-image-form {
   display: none;
 }
 

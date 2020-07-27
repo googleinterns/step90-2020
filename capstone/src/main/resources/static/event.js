@@ -14,7 +14,8 @@ function getEvents() {
 /* helper function to get all events for search page */
 function getAllEventsForSearch(data) {
   var displaySaveButton = data.userType == "individual";
-  fetch('get-all-events').then(response => response.json()).then((events) => {
+
+  fetch('get-all-events?foodAvailable=' + selectedFilter('food') + '&requiredFee=' + selectedFilter('free')).then(response => response.json()).then((events) => {
 
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
 
@@ -23,7 +24,17 @@ function getAllEventsForSearch(data) {
     })
   });
 }
-
+/**
+ * Check if a filter has been selected
+ * @param elementId Id of filter element
+ * @return true if filter was selected, false if not
+ */
+function selectedFilter(elementId){
+  if (document.getElementById(elementId).classList.contains('selected')) {
+    return true;
+  }
+  return false;
+}
 /**
  * Create a formatted list of events
  * @param eventListElement DOM element to append
@@ -56,7 +67,7 @@ function createEventElement(eventListElement, event, displaySaveButton) {
 
   // Displays only for individual users
   if (displaySaveButton) {
-    eventElement.appendChild(createSaveEventButton(event));
+    createSaveEventButton(eventElement, event);
   }
 }
 

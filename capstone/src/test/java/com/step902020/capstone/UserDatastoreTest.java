@@ -30,7 +30,6 @@ import org.springframework.util.MultiValueMap;
     classes = CapstoneApplication.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserDatastoreTest {
-
   /* Properties for Test account from test/resources/application-local.properties */
   @Value("${spring.security.user.name}")
   private String currentUserEmail;
@@ -48,6 +47,7 @@ public class UserDatastoreTest {
   Organization expectedOrganization;
   Event expectedEvent;
   Organization organizationSavedByUser;
+  Long expectedEventId;
 
   @Before
   public void setUp() {
@@ -55,7 +55,7 @@ public class UserDatastoreTest {
 
     Organization organization = new Organization(System.currentTimeMillis(), "OrganizationThatExists",
         "org@uni.edu", "UNI", "organization",
-        "Organization already saved by a user", null);
+        "Organization already saved by a user");
     this.organizationSavedByUser = this.organizationRepository.save(organization);
     Individual individual = new Individual(
         System.currentTimeMillis(),
@@ -63,8 +63,7 @@ public class UserDatastoreTest {
         "ThatExists",
         currentUserEmail,
         "Princeton",
-        "individual",
-        "");
+        "individual");
     individual.addOrganizations(this.organizationSavedByUser);
 
     expectedIndividual =
@@ -77,11 +76,12 @@ public class UserDatastoreTest {
                 currentUserEmail,
                 "Princeton",
                 "organization",
-                "hello world!",
-                ""));
+                "hello world!"));
 
     expectedEvent = this.eventRepository.save(new Event(expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
         40.769579, -73.973036, true, false));
+
+    expectedEventId = expectedEvent.getDatastoreId();
 
     this.authRestTemplate = this.restTemplate
         .withBasicAuth(currentUserEmail, currentUserPassword);
@@ -92,6 +92,8 @@ public class UserDatastoreTest {
     this.individualRepository.deleteByEmail(expectedIndividual.getEmail());
     this.individualRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
+    this.organizationRepository.deleteByEmail(currentUserEmail);
+    this.eventRepository.deleteById(expectedEventId);
   }
 
   @Test
