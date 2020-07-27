@@ -27,6 +27,9 @@ public class IndividualController {
   private OrganizationRepository organizationRepository;
 
   @Autowired
+  private UniversityRepository universityRepository;
+
+  @Autowired
   private GcsStore gcsstore;
 
   /**
@@ -58,7 +61,8 @@ public class IndividualController {
       current.setLastName(lastname);
     }
     else {
-        current = new Individual(System.currentTimeMillis(), firstname, lastname, userEmail, university, userType);
+      University universityReference = this.universityRepository.findFirstByName(university);
+      current = new Individual(System.currentTimeMillis(), firstname, lastname, userEmail, universityReference, userType);
     }
     this.individualRepository.save(current);
     return new RedirectView("profile.html", true);
