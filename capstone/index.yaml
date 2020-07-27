@@ -3,3 +3,8 @@ indexes:
   properties:
   - name: university
   - name: name
+
+- kind: event
+  properties:
+    - name: availableFood
+    - name: requiredFee
