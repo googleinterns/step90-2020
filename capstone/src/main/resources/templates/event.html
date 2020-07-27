@@ -7,9 +7,13 @@
     <script src="event.js"> </script>
     <script src="user.js"> </script>
     <script src="script.js"> </script>
+    <script src="map.js"> </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8&callback=createMap">
+    </script>
     <link rel="stylesheet" href="style.css">
   </head>
-  <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo();">
+  <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo(); createEventPlacementMap()">
     <div th:replace="fragments/navbar::navbar"></div>
     <div th:replace="fragments/profilehead::profilehead"></div>
     <br />
@@ -28,16 +32,21 @@
         <br><br>
 
         <label> Event Location: </label> <br>
-        <input type="number" step="0.000001" id="eventLatitude" name="eventLatitude" placeholder="Event Latitude"> <br>
-        <input type="number" step="0.000001" id="eventLongitude" name="eventLongitude" placeholder="Event Longitude">
+        <input id="eventLatitude" name="eventLatitude" placeholder="Event Latitude"> <br>
+        <input id="eventLongitude" name="eventLongitude" placeholder="Event Longitude">
         <br><br>
 
         <label for="eventDescription"> Event Description: </label> <br>
         <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
         <br><br>
 
-        <label> Event Filters: </label>
+        <label> Event Map: </label>
         <br>
+        <div id="eventMap"></div>
+        <br> <br>
+
+        <label> Event Filters: </label>
+        <br><br>
 
         <label for="foodAvailable"> Food Available </label>
         <input type="checkbox" id="foodAvailable" name="foodAvailable">
