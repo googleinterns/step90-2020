@@ -17,7 +17,8 @@ public class Organization {
 
   String email;
 
-  String university;
+  @Reference
+  University university;
 
   @Field(name="user-type")
   String userType;
@@ -28,8 +29,8 @@ public class Organization {
   
   public Organization() {
   }
-  
-  public Organization(Long timestamp, String name, String email, String university, String userType, String description) {
+
+  public Organization(Long timestamp, String name, String email, University university, String userType, String description) {
     this.timestamp = timestamp;
     this.name = name;
     this.email = email;
@@ -55,7 +56,7 @@ public class Organization {
     return email;
   }
 
-  public String getUniversity() {
+  public University getUniversity() {
     return university;
   }
 

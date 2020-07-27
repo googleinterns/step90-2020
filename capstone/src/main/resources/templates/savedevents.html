@@ -4,12 +4,17 @@
     <meta>
     <title>Saved Events</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+    <script src="script.js"></script>
     <script src="user.js"></script>
+    <script src="event.js"></script>
 </head>
 <body onload="getUser(false, 'general-profile', 'ind-savedevents');getIndividualEventsOrOrganizations(true);">
     <div th:replace="fragments/navbar::navbar"></div>
     <br/>
     <div th:replace="fragments/profilehead::profilehead"></div>
-    <div id="saved-events" class="right"></div>
+    <div class="events" id="saved-events"></div>
+    <div th:replace="fragments/eventmodal::eventmodal"></div>
   </body>
 </html>

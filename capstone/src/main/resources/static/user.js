@@ -21,7 +21,9 @@ function getUser(fillForm, generalTab, profileTab) {
     // if there is no data returned, that means this is a new user
     if (data.userType == "unknown") {
       displayMain(false);
-      displayForm("individual", true);
+      if (fillForm) {
+        displayForm("individual", true);
+      }
     } else {
       if (data.userType == "organization") {
         setUpAccountPage(true, fillForm, data, "individual-nav", "org-nav");
@@ -81,7 +83,7 @@ function createProfile(data, fillForm, isOrganization) {
 
     const universityContainer = document.getElementById("university");
     const pElementUniversity = document.createElement('p');
-    pElementUniversity.innerText = data.university;
+    pElementUniversity.innerText = data.university.name;
     universityContainer.appendChild(pElementUniversity);
 
     // addresses the different fields for each user type
@@ -106,7 +108,7 @@ function createIndividualProfile(data, fillForm) {
     // prefill form
     document.getElementById("ind-firstname").value = data.firstName;
     document.getElementById("ind-lastname").value = data.lastName;
-    document.getElementById("university-form-display").innerText = data.university;
+    document.getElementById("university-form-display").innerText = data.university.name;
   }
 }
 
@@ -125,7 +127,7 @@ function createOrgProfile(data, fillForm) {
   if (fillForm) {
     // prefill form
     document.getElementById("org-form-name").value = data.name;
-    document.getElementById("org-university-form-display").innerText = data.university;
+    document.getElementById("org-university-form-display").innerText = data.university.name;
     document.getElementById("org-description").value = data.description;
   }
 }
@@ -176,10 +178,10 @@ function getIndividualEventsOrOrganizations(isEvent) {
     if(data.userType == "individual") {
       if (isEvent) {
         const eventDiv = document.getElementById("saved-events");
-        data.savedEvents.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, false)));
+        data.savedEvents.forEach((event) => createEventElement(eventDiv, event, false, true, false));
       } else {
         const orgDiv = document.getElementById("saved-orgs");
-        data.organizations.forEach((org) => orgDiv.appendChild(createSavedOrgElement(org, true, true)));
+        data.organizations.forEach((org) => createSavedOrgElement(orgDiv, org, true, true));
       }
       displayMain(true);
     } else {
@@ -189,36 +191,29 @@ function getIndividualEventsOrOrganizations(isEvent) {
 }
 
 /* Function to create the individual organization display divs*/
-function createSavedOrgElement(data, deleteAllowed, displayButton) {
- const divElement = document.createElement('div');
- divElement.setAttribute("class", "item-container general-container");
+function createSavedOrgElement(orgListElement, data, deleteAllowed, displayButton) {
+  const orgElement = createElement(orgListElement, 'li', '');
+  orgElement.className = 'event';
 
- const aElementName = document.createElement('a');
- aElementName.setAttribute("class", "public-org-name");
- aElementName.innerText = data.name;
- aElementName.setAttribute("href", "publicprofile.html#" + data.datastoreId);
- divElement.appendChild(aElementName);
+  // Click to redirect to public organization page
+  orgElement.addEventListener('click', () => {
+    window.location="publicprofile.html?organization-id=" + data.datastoreId;
+  });
 
- const h5ElementEmail = document.createElement('h5');
- h5ElementEmail.innerText = data.email;
- divElement.appendChild(h5ElementEmail);
+  createElement(orgElement, 'h3', data.name);
+  createElement(orgElement, 'p', data.description);
 
- const h5ElementBio = document.createElement('h5');
- h5ElementBio.innerText = data.description;
- divElement.appendChild(h5ElementBio);
-
- if (displayButton) {
-   const form = deleteAllowed ? createDeleteButton(data) : createSaveButton(data);
-   divElement.appendChild(form);
- }
- return divElement;
+  if (displayButton) {
+     const form = deleteAllowed ? createDeleteButton(data.datastoreId) : createSaveButton(data);
+     orgElement.appendChild(form);
+  }
 }
 
 /* create delete buttons for the organization divs */
-function createDeleteButton(data) {
+function createDeleteButton(datastoreId) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
-  form.setAttribute("action", "delete-saved-organization?&organization-id=" + data.datastoreId);
+  form.setAttribute("action", "delete-saved-organization?&organization-id=" + datastoreId);
   const button = document.createElement('button');
   button.innerText = "Unsave this organization";
   button.setAttribute("type", "submit");
@@ -238,32 +233,6 @@ function createSaveButton(data) {
 
   form.appendChild(button);
   return form;
-}
-
-/* create the individual event containers for displaying events*/
-function createSavedEventElement(event, saveAllowed, editDeleteAllowed) {
-  const divElement = document.createElement('div');
-  divElement.setAttribute("class", "item-container general-container");
-
-  const h3ElementName = document.createElement('h3');
-  h3ElementName.innerText = event.eventTitle;
-  divElement.appendChild(h3ElementName);
-
-  const pElementTime = document.createElement('p');
-  pElementTime.innerText = event.eventDateTime;
-  divElement.appendChild(pElementTime);
-
-  // create save, unsave, delete, or edit event form
-  if (editDeleteAllowed) {
-    // if edit is allowed, then it means that delete is allowed as well
-    createEditAndDeleteEventButton(divElement, event);
-  } else if (saveAllowed) {
-    createSaveEventButton(divElement, event);
-  } else if (!saveAllowed) {
-    createUnsaveEventButton(divElement, event);
-  }
-
-  return divElement;
 }
 
 /* creates an unsave button for event */
@@ -295,14 +264,11 @@ function createSaveEventButton(divElement, event) {
 /* creates an edit button for events */
 function createEditAndDeleteEventButton(divElement, event) {
   // create edit form
-  const editForm = document.createElement("form");
-  editForm.setAttribute("action", "event.html#" + event.datastoreId);
   const editButton = document.createElement('button');
   editButton.innerText = "Edit this event";
-  editButton.setAttribute("type", "submit");
+  editButton.setAttribute("onclick", "window.location.href=" + "'event.html?event-id=" + event.datastoreId + "'");
 
-  editForm.appendChild(editButton);
-  divElement.appendChild(editForm);
+  divElement.appendChild(editButton);
 
   divElement.appendChild(document.createElement('br'));
 
@@ -341,7 +307,7 @@ function getOrganizationEvents() {
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "organization") {
       const eventDiv = document.getElementById("created-events");
-      data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, false, true)));
+      data.events.forEach((event) => createEventElement(eventDiv, event, false, false, true));
       displayMain(true);
     } else {
       displayMain(false);
@@ -357,7 +323,7 @@ function searchOrg() {
     } else {
       var displaySaveButton = data.userType == "individual";
       var name = document.getElementById("search-org").value;
-      fetch('search-organization?name=' + name + "&university=" + data.university).then(response => response.json()).then((organizations) => {
+      fetch('search-organization?name=' + name + "&university=" + data.university.name).then(response => response.json()).then((organizations) => {
         const orgListElement = document.getElementById('list-organizations');
         orgListElement.innerHTML = '';
 
@@ -367,7 +333,7 @@ function searchOrg() {
           orgListElement.appendChild(pElementNone);
         } else {
           organizations.forEach((org) => {
-            orgListElement.appendChild(createSavedOrgElement(org, false, displaySaveButton));
+            createSavedOrgElement(orgListElement, org, false, displaySaveButton);
           });
         }
       });
@@ -384,29 +350,27 @@ function createCalendar() {
       var today = new Date();
       var endDate = new Date();
       endDate.setDate(today.getDate() + 8);
+      const titleDiv = document.createElement('div');
+      titleDiv.setAttribute("class", "events");
+      createElement(titleDiv, 'p', 'A calendar of all the events from your saved organizations and saved events');
       for (var i = 0; i < 7; i++) {
         var nextDay = new Date();
         nextDay.setDate(today.getDate() + i);
         const dateDiv = document.createElement('div');
         dateDiv.setAttribute("class", "date general-container");
-        const dateDisplay = document.createElement('p');
-        dateDisplay.innerText = nextDay.toDateString();
-        dateDiv.appendChild(dateDisplay);
+        createElement(dateDiv, 'p', nextDay.toDateString());
         const eventDiv = document.createElement('div');
         eventDiv.setAttribute("class", "date row");
         eventDiv.setAttribute("id", "date" + i);
         calendar.append(dateDiv);
         calendar.append(eventDiv);
       }
-      fetch('get-calendar-events').then(response => response.json()).then((data) => {
+      data.savedEvents.forEach((event) => {
+        createCalendarEvent(event, today, endDate, "coral", true);
+      });
+      fetch('get-all-org-events').then(response => response.json()).then((data) => {
         data.forEach((event) => {
-          var eventDate = new Date(event.eventDateTime);
-          if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
-            var diff = eventDate.getDate() - today.getDate();
-            const eventDisplay = createCalendarEventElement(event, eventDate);
-            const generalDateDiv = document.getElementById("date" + diff);
-            generalDateDiv.appendChild(eventDisplay);
-          }
+          createCalendarEvent(event, today, endDate, "cyan", false);
         });
       });
     } else {
@@ -415,28 +379,39 @@ function createCalendar() {
   });
 }
 
-/* helper function to create calendar event elements */
-function createCalendarEventElement(event, eventTime) {
-  const eventDisplay = document.createElement("div");
-  eventDisplay.setAttribute("class", "event general-container col");
-  const pElementTitle = document.createElement('p');
-  pElementTitle.innerText = event.eventTitle;
-  eventDisplay.appendChild(pElementTitle);
-  const pElementTime = document.createElement('p');
-  pElementTime.innerText = eventTime.toDateString();
-  eventDisplay.appendChild(pElementTime);
-  return eventDisplay;
+/* helper function to create calendar events */
+function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent) {
+  var eventDate = new Date(event.eventDateTime);
+  if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
+    var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+    const generalDateDiv = document.getElementById("date" + diff);
+    const newEvent = createEventElement(generalDateDiv, event, false, isSavedEvent, false);
+    if (!isSavedEvent) {
+      newEvent.appendChild(createDeleteButton(event.organizationId));
+    }
+    newEvent.style.borderColor = borderColor;
+  }
 }
-
 /* function to create a public profile of an organization */
 function getPublicProfile() {
- var organizationId = window.location.hash.substring(1);
- fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
-   createProfile(data, false, true);
-   const eventDiv = document.getElementById("hosted-events");
-   data.events.forEach((event) => eventDiv.appendChild(createSavedEventElement(event, true, false)));
-   document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
-   document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
- });
+  fetch('user-info').then(response => response.json()).then((data) => {
+     if (data.userType != "unknown") {
+       var searchParams = new URLSearchParams(location.search);
+       var organizationId = searchParams.get("organization-id");
+       var userType = data.userType == "individual";
+       if (organizationId != null) {
+         fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
+           createProfile(data, false, true);
+           const eventDiv = document.getElementById("hosted-events");
+           data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, false));
+           document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
+           document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
+         });
+         displayMain(true);
+       }
+     } else {
+       displayMain(false);
+     }
+  });
 }
 

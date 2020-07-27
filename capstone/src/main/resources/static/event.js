@@ -20,7 +20,7 @@ function getAllEventsForSearch(data) {
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
 
     events.forEach((event) => {
-      createEventElement(eventListElement, event, displaySaveButton);
+      createEventElement(eventListElement, event, displaySaveButton, false, false);
     })
   });
 }
@@ -41,7 +41,7 @@ function selectedFilter(elementId){
  * @param event Event from Get call
  * @param displaySaveButton button to save event
  */
-function createEventElement(eventListElement, event, displaySaveButton) {
+function createEventElement(eventListElement, event, displaySaveButton, displayUnsaveButton, displayEditDeleteButtons) {
   const eventElement = createElement(eventListElement, 'li', '');
   eventElement.className = 'event';
 
@@ -51,14 +51,14 @@ function createEventElement(eventListElement, event, displaySaveButton) {
   });
 
   // Name
-  const eventNameElement = createElement(eventElement, 'p', event.eventTitle);
+  createElement(eventElement, 'p', event.eventTitle);
 
   // Time
   var date = new Date(event.eventDateTime);
-  const eventTimeElement = createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
+  createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
 
   // Location Using latitude as a filler until we finalize the location portion
-  const eventLocationElement = createElement(eventElement, 'p', event.eventLatitude);
+  createElement(eventElement, 'p', event.eventLatitude);
 
   // Organization
   //const eventOrgElement = document.createElement('p');
@@ -66,9 +66,16 @@ function createEventElement(eventListElement, event, displaySaveButton) {
   //eventElement.appendChild(eventOrgElement);
 
   // Displays only for individual users
-  if (displaySaveButton) {
-    createSaveEventButton(eventElement, event);
-  }
+  // create save, unsave, delete, or edit event form
+    if (displayEditDeleteButtons) {
+      // if edit is allowed, then it means that delete is allowed as well
+      createEditAndDeleteEventButton(eventElement, event);
+    } else if (displaySaveButton) {
+      createSaveEventButton(eventElement, event);
+    } else if (displayUnsaveButton) {
+      createUnsaveEventButton(eventElement, event);
+    }
+    return eventElement;
 }
 
 /**
@@ -145,14 +152,15 @@ async function newReview(eventId, text) {
 
 /* Function to prefill event information if editing event */
 function loadEventInfo() {
-  const event = window.location.hash.substring(1);
-  if (event != "") {
+  var searchParams = new URLSearchParams(location.search);
+  var event = searchParams.get("event-id");
+  if (event != null) {
     fetch('get-event?event-id=' + event).then(response => response.json()).then((data) => {
       document.getElementById("eventTitle").value = data.eventTitle;
       document.getElementById("eventDateTime").value = data.eventDateTime;
       document.getElementById("eventLatitude").value = data.eventLatitude;
       document.getElementById("eventLongitude").value = data.eventLongitude;
-      document.getElementById("eventDescription").value = data.description;
+      document.getElementById("eventDescription").value = data.eventDescription;
       document.getElementById("event-id").value = data.datastoreId;
       if (data.foodAvailable == true) {
         document.getElementById("foodAvailable").checked = true;

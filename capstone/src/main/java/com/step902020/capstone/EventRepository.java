@@ -5,4 +5,5 @@ import org.springframework.cloud.gcp.data.datastore.repository.DatastoreReposito
  * Spring Data Repository for Event Entities
  */
 public interface EventRepository extends DatastoreRepository<Event, Long> {
+  public Long deleteAllByEventDateTime(String eventDateTime);
 }
