@@ -7,11 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="user.js"></script>
 </head>
-<body onload="getUser(true, 'general-profile', 'profile');">
+<body onload="getUser(true, 'general-profile', 'profile');addImageField('user-image-form')">
     <div th:replace="fragments/navbar::navbar"></div>
     <br/>
     <div th:replace="fragments/profilehead::profilehead"></div>
-    
     <div class="profile-head">
         <button class="button submit profile-button" onclick="revealForm()">Edit/Submit Your Profile</button>
     </div>
@@ -54,5 +53,6 @@
             <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
         </form>
     </div>
+    <div class="profile-form general-container" id="user-image-form"></div>
   </body>
 </html>
