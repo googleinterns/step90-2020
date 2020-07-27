@@ -2,12 +2,17 @@
  * Retrieves events from server
  */
 function getEvents() {
+  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType != "unknown") {
       getAllEventsForSearch(data);
     } else {
       displayMain(false);
     }
+    hideSpinner();
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
 
@@ -168,7 +173,13 @@ function loadEventInfo() {
       if (data.requiredFee == true) {
         document.getElementById("requiredFee").checked = true;
       }
+      hideSpinner();
+    }).catch((error) => {
+      // log error
+      hideSpinner();
     });
+  } else {
+    hideSpinner();
   }
 }
   
