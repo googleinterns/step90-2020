@@ -318,17 +318,36 @@ div.row {
   border-top: 16px solid #3498db;
   width: 120px;
   height: 120px;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
   animation: spin 2s linear infinite;
   display: block;
 }
-
-#load {
-  display: none;
-}
-
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.load-div {
+  position: absolute;
+  width:100%;
+  height:100%;
+  top: 0;
+  left: 0;
+  z-index:2;
+  background-color: #073763ff;
+}
+
+.container {
+  position: relative;
+}
+
+#contents {
+  z-index:1;
+}
+
+.index-load {
+  display: none;
+}
+

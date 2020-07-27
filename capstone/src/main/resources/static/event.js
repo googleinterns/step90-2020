@@ -138,7 +138,6 @@ async function newReview(eventId, text) {
 function loadEventInfo() {
   const event = window.location.hash.substring(1);
   if (event != "") {
-    showSpinner();
     fetch('get-event?event-id=' + event).then(response => response.json()).then((data) => {
       document.getElementById("eventTitle").value = data.eventTitle;
       document.getElementById("eventDateTime").value = data.eventDateTime;

@@ -16,7 +16,6 @@ function generalNavActive(tab) {
 /* get the user information for the profile page */
 function getUser(fillForm, generalTab, profileTab) {
   generalNavActive(generalTab);
-  showSpinner();
   profileNavActive(profileTab);
   fetch('user-info').then(response => response.json()).then((data) => {
     // if there is no data returned, that means this is a new user
@@ -174,7 +173,6 @@ function hideFields(selectField, universityField) {
 
 /* get the saved events or organizations for individual users */
 function getIndividualEventsOrOrganizations(isEvent) {
-  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if(data.userType == "individual") {
       if (isEvent) {
@@ -342,7 +340,6 @@ function closeForm() {
 
 /* function to get all events hosted by the current organization */
 function getOrganizationEvents() {
-  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "organization") {
       const eventDiv = document.getElementById("created-events");
@@ -357,7 +354,6 @@ function getOrganizationEvents() {
 
 /* Function to support searching for organizations by name */
 function searchOrg() {
-  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "unknown") {
       displayMain(false);
@@ -385,7 +381,6 @@ function searchOrg() {
 
 /* function to generate divs for the calendar */
 function createCalendar() {
-  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "individual") {
       const calendar = document.getElementById("calendar");
@@ -440,7 +435,6 @@ function createCalendarEventElement(event, eventTime) {
 
 /* function to create a public profile of an organization */
 function getPublicProfile() {
- showSpinner();
  var organizationId = window.location.hash.substring(1);
  fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
    createProfile(data, false, true);
@@ -454,13 +448,11 @@ function getPublicProfile() {
 
 /* displays spinner on the page and hide main content */
 function showSpinner() {
-  document.getElementById('contents').style.display="none";
   document.getElementById('load').style.display="block";
 }
 
 /* hide spinner and displays main content */
 function hideSpinner() {
   document.getElementById('load').style.display="none";
-  document.getElementById('contents').style.display="block";
 }
 

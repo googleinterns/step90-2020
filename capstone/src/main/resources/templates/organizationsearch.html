@@ -9,14 +9,21 @@
 <body onload="searchOrg();generalNavActive('general-organizationsearch')">
     <div th:replace="fragments/navbar::navbar"></div>
     <br/>
-    <div id="contents">
-        <input type="text" placeholder="Search by organization name" id="search-org">
-        <button class="button submit" onclick="searchOrg();">Search</button>
-        <div id="no-profile">
-            <p>You have not built your profile yet, please navigate to the "My Profile" tab and submit a profile. </p>
+    <div class="container">
+        <div class="load-div" id="load">
+            <div class="loader"></div>
         </div>
-        <div id="main">
-            <div id="list-organizations"></div>
+        <div id="contents">
+            <div class="profile-head">
+                <input type="text" placeholder="Search by organization name" id="search-org">
+                <button class="button submit" onclick="searchOrg();">Search</button>
+            </div>
+            <div id="main">
+                <div id="no-profile" class="profile-head">
+                    <p>You have not built your profile yet, please navigate to the "My Account" tab and submit a profile. </p>
+                </div>
+                <div id="list-organizations"></div>
+            </div>
         </div>
     </div>
   </body>

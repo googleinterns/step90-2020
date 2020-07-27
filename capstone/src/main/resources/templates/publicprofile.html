@@ -9,13 +9,18 @@
     <body onload="getPublicProfile();">
         <div th:replace="fragments/navbar::navbar"></div>
         <br/>
-        <div id="contents">
-            <div class="profile-head">
-                <div id="name"></div>
-                <div class="container" id="profile-image">
-                    <a id="public-image-a" href=""><img id="public-image-img" class="image profile" src=""/></a>
+        <div class="container">
+            <div class="load-div" id="load">
+                <div class="loader"></div>
+            </div>
+            <div id="contents">
+                <div class="profile-head">
+                    <div id="name"></div>
+                    <div class="container" id="profile-image">
+                        <a id="public-image-a" href=""><img id="public-image-img" class="image profile" src=""/></a>
+                    </div>
+                    <div id="hosted-events"></div>
                 </div>
-                <div id="hosted-events"></div>
             </div>
         </div>
     </body>
