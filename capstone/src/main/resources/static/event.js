@@ -10,6 +10,9 @@ function getEvents() {
       displayMain(false);
     }
     hideSpinner();
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
 
@@ -171,7 +174,12 @@ function loadEventInfo() {
         document.getElementById("requiredFee").checked = true;
       }
       hideSpinner();
+    }).catch((error) => {
+      // log error
+      hideSpinner();
     });
+  } else {
+    hideSpinner();
   }
 }
   
