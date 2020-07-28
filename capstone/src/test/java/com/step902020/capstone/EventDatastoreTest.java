@@ -49,6 +49,7 @@ public class EventDatastoreTest {
   Organization expectedOrganization;
   Event expectedEvent;
   Review expectedReview;
+  Review reviewAddedToEvent;
   University expectedUniversity;
 
   @Before
@@ -71,8 +72,8 @@ public class EventDatastoreTest {
             true, false);
 
     String individualName = individual.firstName + " " + individual.lastName;
-    Review review = new Review(individualName, individual.email, "10/10 Test Review Added to Event");
-    expectedEvent.addReview(review);
+    reviewAddedToEvent = new Review(individualName, individual.email, "10/10 Test Review Added to Event");
+    expectedEvent.addReview(reviewAddedToEvent);
     this.eventRepository.save(expectedEvent);
 
     expectedReview = new Review(individualName, individual.email, "10/10 Test Expected Review");
@@ -87,7 +88,7 @@ public class EventDatastoreTest {
     this.individualRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
     this.organizationRepository.deleteByEmail(currentUserEmail);
-    //this.reviewRepository.deleteById(expectedReview.datastoreId);
+    this.reviewRepository.deleteByIndividualEmail(expectedIndividual.getEmail());
     this.universityRepository.deleteAllByName("Test");
     this.eventRepository.deleteAllByEventDateTime("2020-06-01T12:30:00EST");
   }
@@ -126,6 +127,7 @@ public class EventDatastoreTest {
     URI uri = new URI(baseUrl);
     Event result = authRestTemplate.getForObject(uri, Event.class);
     assertEquals("Wrong number of reviews",  2, result.reviews.size());
-    assertEquals("Wrong review -- text", expectedReview.text, result.reviews.get(0).text);
+    assertTrue("Wrong review -- text", expectedReview.text.equals(result.reviews.get(0).text) ||
+            expectedReview.text.equals(result.reviews.get(1).text));
   }
 }
