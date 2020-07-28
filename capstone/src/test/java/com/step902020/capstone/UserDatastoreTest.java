@@ -80,8 +80,11 @@ public class UserDatastoreTest {
                 "organization",
                 "hello world!"));
 
+
     expectedEvent = this.eventRepository.save(new Event(expectedUniversity, expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
         40.769579, -73.973036, true, false));
+    expectedOrganization.addEvent(expectedEvent);
+    this.organizationRepository.save(expectedOrganization);
 
     this.authRestTemplate = this.restTemplate
         .withBasicAuth(currentUserEmail, currentUserPassword);
@@ -93,8 +96,8 @@ public class UserDatastoreTest {
     this.individualRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
     this.organizationRepository.deleteByEmail(currentUserEmail);
-    this.universityRepository.deleteAllByName("Test");
-    this.eventRepository.deleteAllByEventDateTime("2020-06-01T12:30:00EST");
+    this.organizationRepository.deleteByEmail("org@uni.edu");
+    this.eventRepository.deleteByEventDateTime(expectedEvent.getEventDateTime());
   }
 
   @Test
@@ -113,7 +116,7 @@ public class UserDatastoreTest {
   }
 
   @Test
-  public void testAddEvent() throws URISyntaxException {
+  public void testUserAddSavedEvent() throws URISyntaxException {
     String url = "/add-saved-event";
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -135,7 +138,7 @@ public class UserDatastoreTest {
   }
 
   @Test
-  public void testDeleteEvent() throws URISyntaxException {
+  public void testUserDeleteSavedEvent() throws URISyntaxException {
     String url = "/delete-saved-event";
     String expectedEmail = expectedIndividual.getEmail();
     HttpHeaders headers = new HttpHeaders();
@@ -198,5 +201,52 @@ public class UserDatastoreTest {
     Individual postResult = authRestTemplate.getForObject("/get-individual", Individual.class);
     assertEquals(
         "Delete organization error", 0, postResult.getOrganizations().size());
+  }
+
+  @Test
+  public void testOrganizationCreateEvent() throws URISyntaxException {
+    String url = "/save-event";
+    String expectedEmail = expectedIndividual.getEmail();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    map.add("eventTitle", "new event");
+    map.add("eventDateTime", "2020-06-01T12:30:00EST");
+    map.add("eventDescription", "hello");
+    map.add("eventLatitude", "0");
+    map.add("eventLongitude", "0");
+    map.add("foodAvailable", true);
+    map.add("requiredFee", true);
+    map.add("event-id", "");
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> response = authRestTemplate.postForEntity(url, request, String.class);
+    // getting the actual result
+    final String baseUrl = "/get-organization?email=" + expectedEmail;
+    URI uri = new URI(baseUrl);
+    Set<Long> expectedSet = new HashSet<>();
+    expectedSet.add(234L);
+    Organization result = authRestTemplate.getForObject(uri, Organization.class);
+
+    assertFalse("Unexpected organization ID",result == null);
+    assertEquals("Unexpected event count", 2, result.getEvents().size());
+    assertEquals("Unexpected organization Name", expectedOrganization.getName(), result.getName());
+  }
+
+  @Test
+  public void testOrganizationDeleteEvent() throws URISyntaxException {
+
+    String url = "/delete-organization-event";
+    String expectedEmail = expectedIndividual.getEmail();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    map.add("event-id", expectedEvent.getDatastoreId());
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> response = authRestTemplate.postForEntity(url, request, String.class);
+
+    // Check organization after delete ("postcondition")
+    Organization postResult = authRestTemplate.getForObject("/get-organization", Organization.class);
+    assertEquals(
+            "Delete event error", 0, postResult.getEvents().size());
   }
 }

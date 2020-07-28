@@ -32,6 +32,7 @@ public class IndividualController {
   @Autowired
   private GcsStore gcsstore;
 
+  private Recommender recommender = new Recommender();
   /**
    * Find an individual's profile information by email
    * @param user Currently logged-in user
@@ -178,6 +179,90 @@ public class IndividualController {
       }
     }
     return calendarEvents;
+  }
+
+  /**
+   * get the recommended events for an individual. The algorithm
+   * used is user-based collaborative filtering, through which
+   * the target user is compared in terms of "distance" to every
+   * other user that is in the same university. Then the list of users
+   * is sorted by ascending distance, and their list of saved events
+   * are added to the list to be returned. The distance is determined
+   * by the number of dissimilar events that the two users have.
+   * If the number of events is shorter than the count,
+   * add other events in the same university to fill the list.
+   * @param currentUser user that is currently logged in
+   * @param count the number of events to be returned
+   * @return list of Events
+   */
+  @GetMapping("get-recommended-events-individual")
+  public List<Event> recommendEvents(CurrentUser currentUser,
+                                @RequestParam("count") String count) {
+    Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
+    List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
+
+    int num = (count.equals("All")) ? Integer.MAX_VALUE : Integer.parseInt(count);
+    // find recommended events from other users
+    List<Event> recommended = recommender.recommend(targetUser, users, u -> u.getSavedEvents(), num);
+    // if the list of recommended events is shorter than the list we want, add in more events from general event pool
+    if (recommended.size() < num) {
+      List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
+      int i = 0;
+      int numAlreadyAdded = 0;
+      int targetSize = recommended.size();
+      int numExtraEvents = num - targetSize;
+      while (i < allEvents.size() && numAlreadyAdded < numExtraEvents) {
+        Event e = allEvents.get(i);
+        if (!(recommended.contains(e))) {
+          recommended.add(e);
+          numAlreadyAdded++;
+        }
+        i++;
+      }
+    }
+    return recommended;
+  }
+
+  /**
+   * get the recommended organization for an individual. The algorithm
+   * used is user-based collaborative filtering, through which
+   * the target user is compared in terms of "distance" to every
+   * other user that is in the same university. Then the list of users
+   * is sorted by ascending distance, and their list of saved organizations
+   * are added to the list to be returned. The distance is determined
+   * by the number of dissimilar organizations that the two users have.
+   * If the number of organizations is shorter than the count,
+   * add other organizations in the same university to fill the list.
+   * @param currentUser user that is currently logged in
+   * @param count the number of organizations to be returned
+   * @return list of organizations
+   */
+  @GetMapping("get-recommended-organizations-individual")
+  public List<Organization> reommendedOrganizations(CurrentUser currentUser,
+                                @RequestParam("count") String count) {
+    Individual targetUser = this.individualRepository.findFirstByEmail(currentUser.getEmail());
+    List<Individual> users = this.individualRepository.findByUniversity(targetUser.getUniversity());
+
+    int num = (count.equals("All")) ? Integer.MAX_VALUE : Integer.parseInt(count);
+    // find recommended events from other users
+    List<Organization> recommended = recommender.recommend(targetUser, users, u -> u.getOrganizations(), num);
+    // if the list of recommended events is shorter than the list we want, add in more events from general event pool
+    if (recommended.size() < num) {
+      List<Organization> allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());
+      int i = 0;
+      int numAlreadyAdded = 0;
+      int targetSize = recommended.size();
+      int numExtraEvents = num - targetSize;
+      while (i < allOrgs.size() && numAlreadyAdded < numExtraEvents) {
+        Organization e = allOrgs.get(i);
+        if (!(recommended.contains(e))) {
+          recommended.add(e);
+          numAlreadyAdded++;
+        }
+        i++;
+      }
+    }
+    return recommended;
   }
 
   /**
