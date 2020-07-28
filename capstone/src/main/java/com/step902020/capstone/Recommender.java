@@ -3,6 +3,7 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -53,6 +54,7 @@ public class Recommender {
     Collections.sort(sortedUsers, (o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
 
     // put data from sorted user list to ordered event list
+    LocalDateTime now = LocalDateTime.now();
     List<E> sorted = new ArrayList<>();
     int count = 0;
     for (Map.Entry<U, Integer> entry : sortedUsers) {
