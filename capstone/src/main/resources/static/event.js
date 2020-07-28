@@ -1,12 +1,12 @@
 /**
- * Retrieves events from server
+ * Retrieves events from server if current user has a profile
  */
 function getEvents() {
   showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType != "unknown") {
-      getAllEventsForSearch(data);
-    } else {
+      loadEvents(data);
+    } else { // no profile
       displayMain(false);
     }
     hideSpinner();
@@ -16,16 +16,16 @@ function getEvents() {
   });
 }
 
-/* helper function to get all events for search page */
-function getAllEventsForSearch(data) {
-  var displaySaveButton = data.userType == "individual";
-
-  fetch('get-all-events?foodAvailable=' + selectedFilter('food') + '&requiredFee=' + selectedFilter('free')).then(response => response.json()).then((events) => {
-
+/**
+ * Loads events if user has a profile
+ * @param Current user data
+ */
+function loadEvents(data) {
+  var isIndividual = data.userType == "individual";
+   fetch('get-all-events?foodAvailable=' + selectedFilter('food') + '&requiredFee=' + selectedFilter('free')).then(response => response.json()).then((events) => {
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
-
     events.forEach((event) => {
-      createEventElement(eventListElement, event, displaySaveButton, false, false);
+      createEventElement(eventListElement, event, isIndividual, false, data.email);
     })
   });
 }
@@ -43,16 +43,17 @@ function selectedFilter(elementId){
 /**
  * Create a formatted list of events
  * @param eventListElement DOM element to append
- * @param event Event from Get call
- * @param displaySaveButton button to save event
+ * @param event event from Get call
+ * @param isIndividual if user is an individual user
+ * @param userEmail current user's email
  */
-function createEventElement(eventListElement, event, displaySaveButton, displayUnsaveButton, displayEditDeleteButtons) {
+function createEventElement(eventListElement, event, isIndividual, userSavedEvent, userEmail) {
   const eventElement = createElement(eventListElement, 'li', '');
   eventElement.className = 'event';
 
   // Click for event detail modal
   eventElement.addEventListener('click', () => {
-    showEventPage(event);
+    showEventPage(event, isIndividual, userEmail);
   });
 
   // Name
@@ -66,58 +67,63 @@ function createEventElement(eventListElement, event, displaySaveButton, displayU
   createElement(eventElement, 'p', event.eventLatitude);
 
   // Organization
-  //const eventOrgElement = document.createElement('p');
-  //eventOrgElement.innerText = event.organization.name;
-  //eventElement.appendChild(eventOrgElement);
+  createElement(eventElement, 'p', event.organizationName);
 
-  // Displays only for individual users
-  // create save, unsave, delete, or edit event form
-    if (displayEditDeleteButtons) {
-      // if edit is allowed, then it means that delete is allowed as well
-      createEditAndDeleteEventButton(eventElement, event);
-    } else if (displaySaveButton) {
-      createSaveEventButton(eventElement, event);
-    } else if (displayUnsaveButton) {
+  // Only for individual users can save/unsave events
+  if (isIndividual) {
+    if (userSavedEvent) { // Individual has saved event
       createUnsaveEventButton(eventElement, event);
+    } else {
+      createSaveEventButton(eventElement, event);
     }
-    return eventElement;
+  } else {
+    createEditAndDeleteButton(eventElement, event);
+  }
 }
 
 /**
  * Create event's review submission elements and formats review listing
- * @param event Event from Get call
+ * Only individuals will see review submission option
+ * @param event An event object
+ * @param isIndividual If user is an individual user
+ * @param userEmail Current user's email
  */
-function createReviewElement(event) {
+function createReviewElement(event, isIndividual, userEmail) {
   const reviewElement = document.getElementById('review-container');
-
   const reviewTitleElement = createElement(reviewElement, 'h1', 'Reviews');
 
-  const reviewInputElement = createElement(reviewElement, 'input', '');
-  reviewInputElement.className = 'review-submission';
-  reviewInputElement.setAttribute('placeholder', 'Leave a review');
-  reviewInputElement.setAttribute('type', 'text');
+  if (isIndividual) {
+    const reviewInputElement = createElement(reviewElement, 'input', '');
+    reviewInputElement.className = 'review-submission';
+    reviewInputElement.setAttribute('placeholder', 'Leave a review');
+    reviewInputElement.setAttribute('type', 'text');
 
-  reviewButtonElement = createElement(reviewElement, 'button', 'Submit');
-  reviewButtonElement.className = 'review-submission';
+    reviewButtonElement = createElement(reviewElement, 'button', 'Submit');
+    reviewButtonElement.className = 'review-submission';
 
-  reviewButtonElement.addEventListener('click', () => {
-    if (reviewInputElement.value != '') {
-      newReview(event.datastoreId, reviewInputElement.value).then((reviews) => {
-        reviewsContainer.innerHTML = '';
-        createReviewContainerElement(reviewsContainer, reviews);
-       });
-    }
-  });
+    reviewButtonElement.addEventListener('click', () => {
+      if (reviewInputElement.value != '') {
+        newReview(event.datastoreId, reviewInputElement.value).then((reviews) => {
+          reviewsContainer.innerHTML = '';
+          createReviewContainerElement(reviewsContainer, reviews, userEmail);
+        });
+      }
+    });
+  }
   const reviewsContainer = createElement(reviewElement, 'div', '');
   reviewsContainer.id = 'review-list-container';
-  createReviewContainerElement(reviewsContainer, event.reviews);
+  createReviewContainerElement(reviewsContainer, event.reviews, userEmail);
 }
 
 /**
  * Formats each review to add to review container
+ * Users can like each review once
+ * Individuals can edit/delete their reviews
+ * @param reviewsContainer Container to hold an event's review list
  * @param reviews List of reviews within Event object
+ * @param userEmail Current user's email
  */
-async function createReviewContainerElement(reviewsContainer, reviews) {
+function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
   reviews.forEach((review) => {
     const reviewContainer = createElement(reviewsContainer, 'div', '');
     reviewContainer.className = 'review';
@@ -125,7 +131,7 @@ async function createReviewContainerElement(reviewsContainer, reviews) {
     const reviewDetailsElement = createElement(reviewContainer, 'div', '');
     reviewDetailsElement.className = 'review-details';
 
-    const reviewNameElement = createElement(reviewDetailsElement, 'p', review.name);
+    createElement(reviewDetailsElement, 'p', review.individualName);
 
     const reviewTimeElement = createElement(reviewDetailsElement, 'time', '');
     reviewTimeElement.className = 'timeago';
@@ -133,26 +139,99 @@ async function createReviewContainerElement(reviewsContainer, reviews) {
 
     const reviewTextElement = createElement(reviewContainer, 'p', review.text);
     reviewTextElement.className = 'review-text';
+
+    const reviewLikeElement = createElement(reviewContainer, 'button',  review.likes + 'Likes');
+    reviewLikeElement.addEventListener('click', () => {
+      likeReview(review.datastoreId).then((reviewLikes) => {
+        reviewLikeElement.innerText = reviewLikes + 'Likes';
+      });
+    });
+
+    if (review.individualEmail == userEmail) {
+      reviewAuthorFeatures(reviewContainer, reviewTextElement, review.datastoreId);
+    }
   })
+}
+
+/**
+ * Add delete and edit functionality for review's author
+ * @param reviewContainer Review's container
+ * @param reviewTextElement Container for review's text
+ * @param reviewId Review's datastore id
+ */
+function reviewAuthorFeatures(reviewContainer, reviewTextElement, reviewId) {
+  const deleteButton = createElement(reviewContainer, 'button', 'Delete');
+  deleteButton.addEventListener('click', () => {
+    deleteReview(reviewId);
+    reviewContainer.remove();
+  });
+
+  const editButton = createElement(reviewContainer, 'button', 'Edit');
+  editButton.addEventListener('click', () => {
+    if (editButton.innerText == 'Edit') {
+      reviewTextElement.contentEditable = true;
+      reviewTextElement.focus();
+      editButton.innerText = 'Done';
+    } else {
+      setReviewText(reviewId, reviewTextElement.innerText);
+      reviewTextElement.contentEditable = false;
+      editButton.innerText = 'Edit';
+    }
+  });
 }
 
 /**
  * Create new review to add to event's list
  * @param eventId Event's datastoreId
  * @param text Text content of Review
+ * @return Update list of reviews
  */
 async function newReview(eventId, text) {
   const params = new URLSearchParams();
   params.append('text', text);
   params.append('eventId', eventId);
-  //params.append('name', individual[0].firstName + ' ' + individual[0].lastName);
-  //Quick fix until create a new way to attach user to review
-  params.append('name', 'quick-fix');
   const response = await fetch('new-review', {method:'POST', body: params});
   const reviews = response.json();
   getEvents();
   return reviews;
+}
 
+/**
+ * Remove a review from event's list
+ * @param reviewId Review to remove's datastoreId
+ */
+function deleteReview(reviewId) {
+  const params = new URLSearchParams();
+  params.append('reviewId', reviewId);
+  fetch('delete-review', {method:'POST', body: params});
+  getEvents();
+}
+
+/**
+ * Add to review's like count
+ * @param reviewId Review's datastoreId
+ * @return Updated like count
+ */
+async function likeReview(reviewId) {
+  const params = new URLSearchParams();
+  params.append('reviewId', reviewId);
+  const response = await fetch('review-likes', {method:'POST', body: params});
+  const value = response.json();
+  getEvents();
+  return value;
+}
+
+/**
+ * Set review's text to author's entered text
+ * @param reviewId Review's datastore id
+ * @param newText Text to replace prev review's text
+ */
+function setReviewText(reviewId, newText) {
+  const params = new URLSearchParams();
+  params.append('newText', newText);
+  params.append('reviewId', reviewId);
+  fetch('set-text', {method:'POST', body: params});
+  getEvents();
 }
 
 /* Function to prefill event information if editing event */
@@ -190,10 +269,11 @@ function loadEventInfo() {
 function fillDetails(event) {
   var date = new Date(event.eventDateTime);
 
-  setElementInnerText("eventName", event.eventTitle);
+  setElementInnerText("eventTitle", event.eventTitle);
   setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
   setElementInnerText("eventLocation", event.eventLatitude);
-  setElementInnerText("eventDescription", event.description);
+  setElementInnerText("eventOrganization", event.organizationName);
+  setElementInnerText("eventDescription", event.eventDescription);
 }
 
 /**
@@ -225,18 +305,22 @@ function createElement(appendElement, elementType, innerText){
 /**
  * Create a page to view event details
  * @param eventId event's datastore id
+ * @param isIndividual if current user is an individual user
+ * @param userEmail current user's email
  */
-function showEventPage(event) {
+function showEventPage(event, isIndividual, userEmail) {
   fillDetails(event);
   const modal = document.getElementById('modal');
-  modal.style.display = "block";
-  const myNode = document.getElementById("review-container");
-  myNode.innerHTML = '';
-  createReviewElement(event);
+  modal.style.display = 'block';
+
+  const reviewContainer = document.getElementById("review-container");
+  reviewContainer.innerHTML = '';
+  createReviewElement(event, isIndividual, userEmail);
 
   if (event.reviews.length) { // Format time to *** time ago
     timeago.render(document.querySelectorAll('.timeago'));
   }
+
 }
 
 // When the user clicks anywhere outside of the modal, close it

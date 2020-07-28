@@ -32,6 +32,9 @@ public class EventController {
   private EventRepository eventRepository;
 
   @Autowired
+  private IndividualRepository individualRepository;
+
+  @Autowired
   private OrganizationRepository organizationRepository;
 
   @Autowired
@@ -102,14 +105,24 @@ public class EventController {
       return new RedirectView("manageevents.html", true);
   }
 
+  /**
+   * Add new review to event
+   * @param user current user
+   * @param eventId Event's datastore id
+   * @param text Review's text
+   * @return Updated review list
+   */
   @PostMapping("/new-review")
   public List<Review> addReview(
+          CurrentUser user,
           @RequestParam("text") String text,
-          @RequestParam("eventId") Long eventId,
-          @RequestParam("name") String name) throws IOException {
+          @RequestParam("eventId") Long eventId) throws IOException {
 
     Event event = this.eventRepository.findById(eventId).get();
-    Review review = new Review(text, name);
+    Individual individual = this.individualRepository.findFirstByEmail(user.getEmail());
+    String individualName = individual.firstName + " " + individual.lastName;
+    String individualEmail = individual.email;
+    Review review = new Review(individualName, individualEmail, text);
     event.addReview(review);
     this.eventRepository.save(event);
     return event.reviews;
