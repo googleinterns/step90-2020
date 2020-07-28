@@ -236,7 +236,7 @@ function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
 
     const reviewLikeElement = createElement(reviewContainer, 'button',  review.likes + ' Likes');
     reviewLikeElement.addEventListener('click', () => {
-      likeReview(review.datastoreId).then((reviewLikes) => {
+      toggleReviewLike(review.datastoreId).then((reviewLikes) => {
         reviewLikeElement.innerText = reviewLikes + ' Likes';
       });
     });

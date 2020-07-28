@@ -13,8 +13,13 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.google.gson.Gson;
 import java.io.IOException;
 
-
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/**
+ * Review functionalities
+ *   - Like Review
+ * Author review functionalities:
+ *   - Edit reviews
+ *   - Delete reviews
+ */
 @RestController
 public class ReviewController {
 
@@ -25,7 +30,8 @@ public class ReviewController {
   private IndividualRepository individualRepository;
 
   /**
-   * Toggle user's like. Add like if they have not already liked it. Remove like if they have already liked it
+   * Toggle user's like
+   * Add like if they have not already liked it. Remove like if they have already liked it
    * @param user current user
    * @param reviewId review's datastore id
    * @return amount of review's likes
@@ -49,7 +55,7 @@ public class ReviewController {
 
   /**
    * Delete review (Only review's author can delete review)
-   * @param reviewId Deleted review's datastore id
+   * @param reviewId review's datastore id
    */
   @PostMapping("delete-review")
   public void deleteReview(
@@ -64,8 +70,8 @@ public class ReviewController {
 
   /**
    * Set review's text (Only review's author can edit review)
-   * @param newText Text to replace prev. text content
-   * @param reviewId Deleted review's datastore id
+   * @param newText text to replace prev. text content
+   * @param reviewId review's datastore id
    */
   @PostMapping("set-text")
   public void setText(
