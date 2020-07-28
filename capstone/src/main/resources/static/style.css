@@ -14,6 +14,10 @@ button, input, select {
   padding: 10px 20px;
 }
 
+button:hover, select:hover {
+border-color: purple;
+}
+
 select option {
   background: white;
   color: #073763ff;

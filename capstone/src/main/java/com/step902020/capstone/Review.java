@@ -27,7 +27,6 @@ public class Review {
 
   String individualEmail;
 
-  @Field(name="text")
   String text;
 
   List<String> reviewLikers;

@@ -1,3 +1,49 @@
+/* Function to prefill event information if editing event */
+function loadEventInfo() {
+  const event = window.location.hash.substring(1);
+  if (event != "") {
+    fetch('get-event?event-id=' + event).then(response => response.json()).then((data) => {
+      document.getElementById("eventTitle").value = data.eventTitle;
+      document.getElementById("eventDateTime").value = data.eventDateTime;
+      document.getElementById("eventLatitude").value = data.eventLatitude;
+      document.getElementById("eventLongitude").value = data.eventLongitude;
+      document.getElementById("eventDescription").value = data.description;
+      document.getElementById("event-id").value = data.datastoreId;
+      if (data.foodAvailable == true) {
+        document.getElementById("foodAvailable").checked = true;
+      }
+      if (data.requiredFee == true) {
+        document.getElementById("requiredFee").checked = true;
+      }
+    });
+  }
+}
+
+/* Function to create Google Map */
+async function createMap() {
+  var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
+  const campusMap = new google.maps.Map(
+    document.getElementById('map'),
+    {center: princetonLatLng, zoom: 16});
+
+   const response = await fetch('get-all-events');
+   const jsonEvents = await response.json();
+   jsonEvents.forEach(event => createMarker(event, campusMap));
+}
+
+/* Create a new marker for each event
+ * @param event - event object
+ * @param campusMap - Google Map object
+ */
+function createMarker(event,campusMap) {
+  var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
+  const newMarker = new google.maps.Marker({
+    map: campusMap,
+    title: event.eventTitle,
+    position: eventPosition
+  })
+}
+
 /**
  * Retrieves events from server if current user has a profile
  */
@@ -22,13 +68,15 @@ function getEvents() {
  */
 function loadEvents(data) {
   var isIndividual = data.userType == "individual";
-   fetch('get-all-events?foodAvailable=' + selectedFilter('food') + '&requiredFee=' + selectedFilter('free')).then(response => response.json()).then((events) => {
+
+   fetch('get-filtered-events?foodAvailable=' + selectedFilter('food') + '&requiredFee=' + selectedFilter('free')).then(response => response.json()).then((events) => {
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
     events.forEach((event) => {
       createEventElement(eventListElement, event, isIndividual, false, data.email);
     })
   });
 }
+
 /**
  * Check if a filter has been selected
  * @param elementId Id of filter element
@@ -43,8 +91,9 @@ function selectedFilter(elementId){
 /**
  * Create a formatted list of events
  * @param eventListElement DOM element to append
- * @param event event from Get call
+ * @param event event object
  * @param isIndividual if user is an individual user
+ * @param userSavedEvent if user saved the event
  * @param userEmail current user's email
  */
 function createEventElement(eventListElement, event, isIndividual, userSavedEvent, userEmail) {
@@ -82,11 +131,55 @@ function createEventElement(eventListElement, event, isIndividual, userSavedEven
 }
 
 /**
+ * Create a page to view event details
+ * @param event event object
+ * @param isIndividual if current user is an individual user
+ * @param userEmail current user's email
+ */
+function showEventPage(event, isIndividual, userEmail) {
+  fillEventDetails(event);
+  const modal = document.getElementById('modal');
+  modal.style.display = 'block';
+
+  const reviewContainer = document.getElementById("review-container");
+  reviewContainer.innerHTML = '';
+  createReviewElement(event, isIndividual, userEmail);
+
+  if (event.reviews.length) { // Format time to *** time ago
+    timeago.render(document.querySelectorAll('.timeago'));
+  }
+}
+
+/**
+ * Populate event details in the modal
+ * @param event event object
+ */
+function fillEventDetails(event) {
+  var date = new Date(event.eventDateTime);
+
+  setElementInnerText("eventName", event.eventTitle);
+  setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
+  setElementInnerText("eventLocation", event.eventLatitude);
+  setElementInnerText("eventOrganization", event.organizationName);
+  setElementInnerText("eventDescription", event.eventDescription);
+}
+
+/**
+ * Closes modal if user clicks outside of it a page to view event details
+ */
+window.onclick = function(event) {
+  const modal = document.getElementById('modal');
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+/**
  * Create event's review submission elements and formats review listing
  * Only individuals will see review submission option
- * @param event An event object
- * @param isIndividual If user is an individual user
- * @param userEmail Current user's email
+ * @param event event object
+ * @param isIndividual if user is an individual user
+ * @param userEmail current user's email
  */
 function createReviewElement(event, isIndividual, userEmail) {
   const reviewElement = document.getElementById('review-container');
@@ -119,9 +212,10 @@ function createReviewElement(event, isIndividual, userEmail) {
  * Formats each review to add to review container
  * Users can like each review once
  * Individuals can edit/delete their reviews
- * @param reviewsContainer Container to hold an event's review list
- * @param reviews List of reviews within Event object
- * @param userEmail Current user's email
+ * @param reviewsContainer container for event's review list
+ * @param reviews event's reviews
+ * @param userEmail current user's email
+
  */
 function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
   reviews.forEach((review) => {
@@ -140,32 +234,40 @@ function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
     const reviewTextElement = createElement(reviewContainer, 'p', review.text);
     reviewTextElement.className = 'review-text';
 
-    const reviewLikeElement = createElement(reviewContainer, 'button',  review.likes + 'Likes');
+    const reviewLikeElement = createElement(reviewContainer, 'button',  review.likes + ' Likes');
     reviewLikeElement.addEventListener('click', () => {
       likeReview(review.datastoreId).then((reviewLikes) => {
-        reviewLikeElement.innerText = reviewLikes + 'Likes';
+        reviewLikeElement.innerText = reviewLikes + ' Likes';
       });
     });
 
     if (review.individualEmail == userEmail) {
-      reviewAuthorFeatures(reviewContainer, reviewTextElement, review.datastoreId);
+      createReviewEditButton(reviewContainer, reviewTextElement, review.datastoreId);
+      createReviewDeleteButton(reviewContainer, review.datastoreId);
     }
   })
 }
 
 /**
- * Add delete and edit functionality for review's author
- * @param reviewContainer Review's container
- * @param reviewTextElement Container for review's text
- * @param reviewId Review's datastore id
+ * Add delete functionality for review's author
+ * @param reviewContainer review's container
+ * @param reviewId review's datastore id
  */
-function reviewAuthorFeatures(reviewContainer, reviewTextElement, reviewId) {
+function createReviewDeleteButton(reviewContainer, reviewId) {
   const deleteButton = createElement(reviewContainer, 'button', 'Delete');
   deleteButton.addEventListener('click', () => {
     deleteReview(reviewId);
     reviewContainer.remove();
   });
+}
 
+/**
+ * Add edit functionality for review's author
+ * @param reviewContainer review's container
+ * @param reviewTextElement container for review's text
+ * @param reviewId review's datastore id
+ */
+function createReviewEditButton(reviewContainer, reviewTextElement, reviewId) {
   const editButton = createElement(reviewContainer, 'button', 'Edit');
   editButton.addEventListener('click', () => {
     if (editButton.innerText == 'Edit') {
@@ -182,9 +284,9 @@ function reviewAuthorFeatures(reviewContainer, reviewTextElement, reviewId) {
 
 /**
  * Create new review to add to event's list
- * @param eventId Event's datastoreId
- * @param text Text content of Review
- * @return Update list of reviews
+ * @param eventId event's datastoreId
+ * @param text review's text content
+ * @return update list of reviews
  */
 async function newReview(eventId, text) {
   const params = new URLSearchParams();
@@ -198,7 +300,7 @@ async function newReview(eventId, text) {
 
 /**
  * Remove a review from event's list
- * @param reviewId Review to remove's datastoreId
+ * @param reviewId review's datastoreId
  */
 function deleteReview(reviewId) {
   const params = new URLSearchParams();
@@ -208,14 +310,15 @@ function deleteReview(reviewId) {
 }
 
 /**
- * Add to review's like count
- * @param reviewId Review's datastoreId
- * @return Updated like count
+ * Toggle like to review's like count
+ * Individuals can only like once
+ * @param reviewId review's datastoreId
+ * @return updated like count
  */
-async function likeReview(reviewId) {
+async function toggleReviewLike(reviewId) {
   const params = new URLSearchParams();
   params.append('reviewId', reviewId);
-  const response = await fetch('review-likes', {method:'POST', body: params});
+  const response = await fetch('toggle-likes', {method:'POST', body: params});
   const value = response.json();
   getEvents();
   return value;
@@ -223,8 +326,8 @@ async function likeReview(reviewId) {
 
 /**
  * Set review's text to author's entered text
- * @param reviewId Review's datastore id
- * @param newText Text to replace prev review's text
+ * @param reviewId review's datastore id
+ * @param newText text to replace prev review's text
  */
 function setReviewText(reviewId, newText) {
   const params = new URLSearchParams();
@@ -261,20 +364,6 @@ function loadEventInfo() {
     hideSpinner();
   }
 }
-  
-/**
- * Create a page to view event details
- * @param eventId event's datastore id
- */
-function fillDetails(event) {
-  var date = new Date(event.eventDateTime);
-
-  setElementInnerText("eventTitle", event.eventTitle);
-  setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
-  setElementInnerText("eventLocation", event.eventLatitude);
-  setElementInnerText("eventOrganization", event.organizationName);
-  setElementInnerText("eventDescription", event.eventDescription);
-}
 
 /**
  * Fill an existing document element's inner text
@@ -300,33 +389,4 @@ function createElement(appendElement, elementType, innerText){
   element.innerText = innerText;
   appendElement.appendChild(element);
   return element;
-}
-
-/**
- * Create a page to view event details
- * @param eventId event's datastore id
- * @param isIndividual if current user is an individual user
- * @param userEmail current user's email
- */
-function showEventPage(event, isIndividual, userEmail) {
-  fillDetails(event);
-  const modal = document.getElementById('modal');
-  modal.style.display = 'block';
-
-  const reviewContainer = document.getElementById("review-container");
-  reviewContainer.innerHTML = '';
-  createReviewElement(event, isIndividual, userEmail);
-
-  if (event.reviews.length) { // Format time to *** time ago
-    timeago.render(document.querySelectorAll('.timeago'));
-  }
-
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  const modal = document.getElementById('modal');
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
 }

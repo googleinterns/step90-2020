@@ -44,19 +44,24 @@ public class EventController {
   private DatastoreTemplate datastoreTemplate;
 
   @GetMapping("get-all-events")
-  public List<Event> getAllEvent(
-    @RequestParam("foodAvailable") Boolean foodAvailable,
-    @RequestParam("requiredFee") Boolean requiredFee) throws IOException {
+  public Iterable<Event> getAllEvent() throws IOException {
+    return this.eventRepository.findAll();
+  }
+
+  @GetMapping("get-filtered-events")
+  public List<Event> getFilteredEvents(
+          @RequestParam("foodAvailable") Boolean foodAvailable,
+          @RequestParam("requiredFee") Boolean requiredFee) throws IOException {
     // False values changed to null for matching
     foodAvailable = foodAvailable == false ? null: foodAvailable;
     requiredFee = requiredFee == false ? null: requiredFee;
 
     Iterable<Event> events = this.eventRepository.findAll(
-      Example.of(new Event(null, null, 0, null,
-                null, null, 0,
-                0, foodAvailable, requiredFee),
-      ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude")
-      )
+            Example.of(new Event(null, null, 0, null,
+                            null, null, 0,
+                            0, foodAvailable, requiredFee),
+                    ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude")
+            )
 
     );
 

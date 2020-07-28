@@ -30,11 +30,10 @@ public class ReviewController {
    * @param reviewId review's datastore id
    * @return amount of review's likes
    */
-  @PostMapping("review-likes")
-  public int reviewLikes(
+  @PostMapping("toggle-likes")
+  public int toggleReviewLikes(
           CurrentUser user,
-         @RequestParam("reviewId") Long reviewId) throws IOException{
-
+         @RequestParam("reviewId") Long reviewId) throws IOException {
     Review review = this.reviewRepository.findById(reviewId).get();
     String email = user.getEmail();
     if (review.isReviewLiker(email)) {
@@ -54,10 +53,13 @@ public class ReviewController {
    */
   @PostMapping("delete-review")
   public void deleteReview(
+          CurrentUser user,
           @RequestParam("reviewId") Long reviewId) throws IOException{
 
     Review review = this.reviewRepository.findById(reviewId).get();
-    this.reviewRepository.delete(review);
+    if (review.individualEmail.equals(user.getEmail())) {
+      this.reviewRepository.delete(review);
+    }
   }
 
   /**
@@ -67,11 +69,14 @@ public class ReviewController {
    */
   @PostMapping("set-text")
   public void setText(
+          CurrentUser user,
           @RequestParam("newText") String newText,
           @RequestParam("reviewId") Long reviewId) throws IOException{
 
     Review review = this.reviewRepository.findById(reviewId).get();
-    review.setText(newText);
-    this.reviewRepository.save(review);
+    if (review.individualEmail.equals(user.getEmail())) {
+      review.setText(newText);
+      this.reviewRepository.save(review);
+    }
   }
 }
