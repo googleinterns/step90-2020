@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta>
+    <title>Organization Search</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+    <script src="script.js"></script>
+    <script src="user.js"></script>
+    <script src="event.js"></script>
+</head>
+<body onload="findRecommended('events');generalNavActive('general-recommended');recNavActive('rec-events');">
+    <div th:replace="fragments/navbar::navbar"></div>
+    <br/>
+    <div th:replace="fragments/recommendedpage::recommendedpage"></div>
+    <div id="main" class="profile-head">
+        <label for="recommended-input">Number of results to show:</label>
+        <select onchange="findRecommended('events');" id="recommended-input">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="All">All</option>
+        </select>
+    </div>
+    <div class="container">
+        <div class="load-div" id="load">
+            <div class="loader"></div>
+        </div>
+        <div id="contents">
+            <div id="no-profile" class="events">
+                <p>You have not built your profile yet, please navigate to My Account page and submit a profile </p>
+            </div>
+            <div id="recommended-section" class="events"></div>
+            <div th:replace="fragments/eventmodal::eventmodal"></div>
+        </div>
+    </div>
+</body>
+</html>
