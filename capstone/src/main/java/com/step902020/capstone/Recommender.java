@@ -30,7 +30,7 @@ public class Recommender {
    * @param <U> expects Event or Organization
    * @return list of objects that are recommended for the target user
    */
-  public static <E, U> List<E> recommend (U targetUser, List<U> users, Function<U, List<E>> getItemList, int numNeeded) {
+  public <E, U> List<E> recommend (U targetUser, List<U> users, Function<U, List<E>> getItemList, int numNeeded) {
     Map<U, Integer> userToScore= new HashMap<U, Integer>();
     Set<E> targetUserEvents = new HashSet(getItemList.apply(targetUser));
     // for each user, calculate the total number of differences between the current user and the target user
@@ -66,7 +66,7 @@ public class Recommender {
     }
     return sorted;
   }
-  public static <E> int calculateDistance(Set<E> targetUserEvents, Set<E> userEvents) {
+  public <E> int calculateDistance(Set<E> targetUserEvents, Set<E> userEvents) {
     int dist = 0;
     for (E e : targetUserEvents) {
       if (!userEvents.contains(e)) {
