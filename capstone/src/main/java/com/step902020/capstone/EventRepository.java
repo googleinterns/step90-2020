@@ -14,5 +14,4 @@ public interface EventRepository extends DatastoreRepository<Event, Long> {
 
   public List<Event> findByUniversity(University university, Pageable pageable);
   public List<Event> findByUniversity(University university);
-  public List<Event> findByUniversityAndEventDateTimeGreaterThan(University university, String date);
 }

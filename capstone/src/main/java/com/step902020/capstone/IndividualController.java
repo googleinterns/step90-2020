@@ -204,6 +204,8 @@ public class IndividualController {
     int num = (count.equals("All")) ? Integer.MAX_VALUE : Integer.parseInt(count);
     // find recommended events from other users
     List<Event> recommended = recommender.recommend(targetUser, users, u -> u.getSavedEvents(), num);
+
+    // filter out the past events
     List<Event> noPastEvents = new ArrayList<Event>();
     LocalDateTime now = LocalDateTime.now();
     for (Event e : recommended) {
@@ -214,21 +216,22 @@ public class IndividualController {
     }
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
     if (noPastEvents.size() < num) {
-      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), LocalDateTime.now().toString());
+      List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
       int i = 0;
       int numAlreadyAdded = 0;
       int targetSize = noPastEvents.size();
       int numExtraEvents = num - targetSize;
       while (i < allEvents.size() && numAlreadyAdded < numExtraEvents) {
         Event e = allEvents.get(i);
-        if (!(noPastEvents.contains(e))) {
+        LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
+        if (!(noPastEvents.contains(e)) && eventDate.compareTo(now) >=0) {
           noPastEvents.add(e);
           numAlreadyAdded++;
         }
         i++;
       }
     }
-    return recommended;
+    return noPastEvents;
   }
 
   /**
