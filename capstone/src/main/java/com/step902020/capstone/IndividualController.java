@@ -86,7 +86,6 @@ public class IndividualController {
       current.addSavedEvents(event);
     }
     this.individualRepository.save(current);
-
     return new RedirectView("savedevents.html", true);
   }
   
