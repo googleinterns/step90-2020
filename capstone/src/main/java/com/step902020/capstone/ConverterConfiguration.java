@@ -11,6 +11,8 @@ public class ConverterConfiguration {
     @Bean
     public DatastoreCustomConversions datastoreCustomConversions() {
         return new DatastoreCustomConversions(
-                Arrays.asList(UserConverter.LIST_SET_CONVERTER));
+                Arrays.asList(UserConverter.LIST_SET_CONVERTER,
+                        UserConverter.LIST_TREESET_CONVERTER_EVENTS,
+                        UserConverter.LIST_TREESET_CONVERTER_ORGS));
     }
 }

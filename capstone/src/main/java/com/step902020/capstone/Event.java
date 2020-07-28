@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import java.util.*;
 
 @Entity(name = "event")
-public class Event{
+public class Event {
 
   @Id
   Long datastoreId;
@@ -146,5 +146,4 @@ public class Event{
   public void addReview(Review review) {
     reviews.add(review);
   }
-
 }
