@@ -73,6 +73,18 @@
                     </select>
                     <label>Description:</label>
                     <input type="text" name="description" id="org-description" placeholder="Description of your organization.."></input>
+                    <label>Organization Type:</label>
+                    <select name="org-type" id="org-type">
+                        <option value="" disabled selected hidden>Choose organization type</option>
+                        <option value="academic">Academic</option>
+                        <option value="arts">Arts</option>
+                        <option value="athletic">Athletic</option>
+                        <option value="cultural">Cultural</option>
+                        <option value="professional">Professional</option>
+                        <option value="political">Political</option>
+                        <option value="service">Service</option>
+                        <option value="studentgov">Student Government</option>
+                    </select>
                     <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
                 </form>
             </div>

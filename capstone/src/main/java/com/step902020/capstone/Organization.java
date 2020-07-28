@@ -22,7 +22,11 @@ public class Organization {
 
   @Field(name="user-type")
   String userType;
+
   String description;
+
+  @Field(name="org-type")
+  String orgType;
 
   @Reference
   List<Event> events;
@@ -30,13 +34,15 @@ public class Organization {
   public Organization() {
   }
 
-  public Organization(Long timestamp, String name, String email, University university, String userType, String description) {
+  public Organization(Long timestamp, String name, String email, University university, String userType,
+                      String description, String orgType) {
     this.timestamp = timestamp;
     this.name = name;
     this.email = email;
     this.university = university;
     this.userType = userType;
     this.description = description;
+    this.orgType = orgType;
     events = new ArrayList<Event>();
   }
   
@@ -67,6 +73,10 @@ public class Organization {
   public String getDescription() {
     return description;
   }
+
+  public String getOrgType() {
+    return orgType;
+  }
   
   public List<Event> getEvents() {
     return events;
@@ -78,6 +88,10 @@ public class Organization {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public void setOrgType(String orgType) {
+    this.orgType = orgType;
   }
 
   public void addEvent(Event event) {

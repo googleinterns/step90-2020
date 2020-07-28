@@ -19,6 +19,15 @@
         </div>
         <div id="contents">
             <div class="profile-head">
+                <button id="academic" value="academic" class="orgFilter" onclick="toggleBorderSelection('academic')">Academic</button>
+                <button id="arts" value="arts" class="orgFilter" onclick="toggleBorderSelection('arts')">Arts</button>
+                <button id="athletic" value="athletic" class="orgFilter" onclick="toggleBorderSelection('athletic')">Athletic</button>
+                <button id="cultural" value="cultural" class="orgFilter" onclick="toggleBorderSelection('cultural')">Cultural</button>
+                <button id="professional" value="professional" class="orgFilter" onclick="toggleBorderSelection('professional')">Professional</button>
+                <button id="political" value="political" class="orgFilter" onclick="toggleBorderSelection('political')">Political</button>
+                <button id="service" value="service" class="orgFilter" onclick="toggleBorderSelection('service')">Service</button>
+                <button id="studentgov" value="studentgov" class="orgFilter" onclick="toggleBorderSelection('studentgov')">Student Government</button>
+                <br/>
                 <input type="text" placeholder="Search by organization name" id="search-org">
                 <button class="button submit" onclick="searchOrg();">Search</button>
             </div>
