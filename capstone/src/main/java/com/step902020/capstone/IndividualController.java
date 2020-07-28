@@ -180,7 +180,15 @@ public class IndividualController {
   }
 
   /**
-   * get the recommended events for an individual
+   * get the recommended events for an individual. The algorithm
+   * used is user-based collaborative filtering, through which
+   * the target user is compared in terms of "distance" to every
+   * other user that is in the same university. Then the list of users
+   * is sorted by ascending distance, and their list of saved events
+   * are added to the list to be returned. The distance is determined
+   * by the number of dissimilar events that the two users have.
+   * If the number of events is shorter than the count,
+   * add other events in the same university to fill the list.
    * @param currentUser user that is currently logged in
    * @param count the number of events to be returned
    * @return list of Events
@@ -198,13 +206,14 @@ public class IndividualController {
     if (recommended.size() < num) {
       List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
       int i = 0;
-      int length = 0;
+      int numAlreadyAdded = 0;
       int targetSize = recommended.size();
-      while (i < allEvents.size() && length < num - targetSize) {
+      int numExtraEvents = num - targetSize;
+      while (i < allEvents.size() && numAlreadyAdded < numExtraEvents) {
         Event e = allEvents.get(i);
         if (!(recommended.contains(e))) {
           recommended.add(e);
-          length++;
+          numAlreadyAdded++;
         }
         i++;
       }
@@ -213,7 +222,15 @@ public class IndividualController {
   }
 
   /**
-   * get the recommended organizations for an individual
+   * get the recommended organization for an individual. The algorithm
+   * used is user-based collaborative filtering, through which
+   * the target user is compared in terms of "distance" to every
+   * other user that is in the same university. Then the list of users
+   * is sorted by ascending distance, and their list of saved organizations
+   * are added to the list to be returned. The distance is determined
+   * by the number of dissimilar organizations that the two users have.
+   * If the number of organizations is shorter than the count,
+   * add other organizations in the same university to fill the list.
    * @param currentUser user that is currently logged in
    * @param count the number of organizations to be returned
    * @return list of organizations
@@ -231,12 +248,14 @@ public class IndividualController {
     if (recommended.size() < num) {
       List<Organization> allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());
       int i = 0;
-      int length = 0;
-      while (i < allOrgs.size() && length < num - recommended.size()) {
+      int numAlreadyAdded = 0;
+      int targetSize = recommended.size();
+      int numExtraEvents = num - targetSize;
+      while (i < allOrgs.size() && numAlreadyAdded < numExtraEvents) {
         Organization e = allOrgs.get(i);
         if (!(recommended.contains(e))) {
           recommended.add(e);
-          length++;
+          numAlreadyAdded++;
         }
         i++;
       }
