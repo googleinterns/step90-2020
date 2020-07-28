@@ -13,9 +13,6 @@
 
   <body onload="generalNavActive('general-index'); getEvents()">
     <div th:replace="fragments/navbar::navbar"></div>
-    <div id="no-profile">
-      <p>You have not built your profile yet, please navigate to My Account page and submit a profile</p>
-    </div>
 
     <h1 id="event-header">FIND YOUR EVENT</h1>
     <div id="filters">
@@ -58,8 +55,17 @@
                style="display:block; margin:20px auto;" placeholder="KNOW THE NAME?">
         <button onclick="getEvents()">SEARCH</button>
     </div>
-
-    <div id="events"></div>
-    <div th:replace="fragments/eventmodal::eventmodal"></div>
+    <div class="container">
+      <div class="load-div index-load" id="load">
+        <div class="loader"></div>
+      </div>
+      <div id="contents">
+        <div id="no-profile" class="profile-head">
+          <p>You have not built your profile yet, please navigate to the "My Account" tab and submit a profile </p>
+        </div>
+        <div id="events" class="events"></div>
+        <div th:replace="fragments/eventmodal::eventmodal"></div>
+      </div>
+    </div>
   </body>
 </html>

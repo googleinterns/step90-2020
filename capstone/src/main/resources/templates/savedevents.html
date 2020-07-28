@@ -13,8 +13,15 @@
 <body onload="getUser(false, 'general-profile', 'ind-savedevents');getIndividualEventsOrOrganizations(true);">
     <div th:replace="fragments/navbar::navbar"></div>
     <br/>
-    <div th:replace="fragments/profilehead::profilehead"></div>
-    <div class="events" id="saved-events"></div>
-    <div th:replace="fragments/eventmodal::eventmodal"></div>
+    <div class="container">
+        <div class="load-div" id="load">
+            <div class="loader"></div>
+        </div>
+        <div id="contents">
+            <div th:replace="fragments/profilehead::profilehead"></div>
+            <div id="saved-events" class="events"></div>
+            <div th:replace="fragments/eventmodal::eventmodal"></div>
+        </div>
+    </div>
   </body>
 </html>

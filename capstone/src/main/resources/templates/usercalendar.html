@@ -13,12 +13,19 @@
 <body onload="getUser(false, 'general-profile', 'ind-usercalendar');createCalendar()">
     <div th:replace="fragments/navbar::navbar"></div>
     <br/>
-    <div th:replace="fragments/profilehead::profilehead"></div>
-    <div class="events">
-        <p>A calendar of all the events from your saved organizations and saved events</p>
+    <div class="container">
+        <div class="load-div" id="load">
+            <div class="loader"></div>
+        </div>
+        <div id="contents">
+            <div th:replace="fragments/profilehead::profilehead"></div>
+            <div class="events">
+                <p>A calendar of all the events from your saved organizations and saved events</p>
+            </div>
+            <div class="calendar" id="calendar"></div>
+            <div th:replace="fragments/eventmodal::eventmodal"></div>
+        </div>
     </div>
-    <div class="calendar" id="calendar"></div>
-    <div th:replace="fragments/eventmodal::eventmodal"></div>
-</body>
+  </body>
 </html>
 

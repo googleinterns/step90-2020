@@ -322,6 +322,47 @@ div.row {
   border-radius: 20px;
 }
 
+/* loading wheel */
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: spin 2s linear infinite;
+  display: block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.load-div {
+  position: fixed;
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  left: 50%;
+  margin-top: -75px; /* Negative half of height. */
+  margin-left: -75px; /* Negative half of width. */
+  z-index:2;
+}
+
+.container {
+  position: relative;
+}
+
+#contents {
+  z-index:1;
+}
+
+.index-load {
+  display: none;
+}
+
 #eventMap {
     text-align: center;
     height: 500px;

@@ -13,10 +13,17 @@
 <body onload="getUser(false, 'general-profile', 'org-manageevents');getOrganizationEvents();">
     <div th:replace="fragments/navbar::navbar"></div>
     <br/>
-    <div th:replace="fragments/profilehead::profilehead"></div>
-    <div id="main">
-        <div id="created-events" class="events"></div>
+    <div class="container">
+        <div class="load-div" id="load">
+            <div class="loader"></div>
+        </div>
+        <div id="contents">
+            <div th:replace="fragments/profilehead::profilehead"></div>
+            <div id="main">
+                <div id="created-events" class="events"></div>
+            </div>
+            <div th:replace="fragments/eventmodal::eventmodal"></div>
+        </div>
     </div>
-    <div th:replace="fragments/eventmodal::eventmodal"></div>
   </body>
 </html>

@@ -2,12 +2,17 @@
  * Retrieves events from server if current user has a profile
  */
 function getEvents() {
+  showSpinner();
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType != "unknown") {
       loadEvents(data);
     } else { // no profile
       displayMain(false);
     }
+    hideSpinner();
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
 
@@ -247,7 +252,13 @@ function loadEventInfo() {
       if (data.requiredFee == true) {
         document.getElementById("requiredFee").checked = true;
       }
+      hideSpinner();
+    }).catch((error) => {
+      // log error
+      hideSpinner();
     });
+  } else {
+    hideSpinner();
   }
 }
   

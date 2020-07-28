@@ -15,54 +15,59 @@
   </head>
   <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo(); createEventPlacementMap()">
     <div th:replace="fragments/navbar::navbar"></div>
-    <div th:replace="fragments/profilehead::profilehead"></div>
     <br />
-    <div class="profile-form general-container">
-      <form id="event-form" action="save-event" method="POST">
+    <div class="container">
+      <div class="load-div" id="load">
+        <div class="loader"></div>
+      </div>
+      <div id="contents">
+        <div th:replace="fragments/profilehead::profilehead"></div>
+        <br />
+        <div class="profile-form general-container">
+          <form id="event-form" action="save-event" method="POST">
 
-        <input type="hidden" id="university" name="university">
-        <input type="hidden" id="event-id" name="event-id">
+            <input type="hidden" id="university" name="university">
+            <input type="hidden" id="event-id" name="event-id">
 
-        <label for="eventTitle"> Event Title: </label>
-        <input type="text" id="eventTitle" name="eventTitle">
-        <br><br>
+            <label for="eventTitle"> Event Title: </label>
+            <input type="text" id="eventTitle" name="eventTitle">
+            <br><br>
 
-        <label for="eventDateTime"> Event Date and Time: </label>
-        <input type="datetime-local" id="eventDateTime" name="eventDateTime">
-        <br><br>
+            <label for="eventDateTime"> Event Date and Time: </label>
+            <input type="datetime-local" id="eventDateTime" name="eventDateTime">
+            <br><br>
 
-        <label> Event Location: </label> <br>
-        <input id="eventLatitude" name="eventLatitude" placeholder="Event Latitude"> <br>
-        <input id="eventLongitude" name="eventLongitude" placeholder="Event Longitude">
-        <br><br>
+            <label> Event Location: </label> <br>
+            <input id="eventLatitude" name="eventLatitude" placeholder="Event Latitude"> <br>
+            <input id="eventLongitude" name="eventLongitude" placeholder="Event Longitude">
+            <br><br>
 
-        <label for="eventDescription"> Event Description: </label> <br>
-        <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
-        <br><br>
+            <label for="eventDescription"> Event Description: </label> <br>
+            <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
+            <br><br>
 
-        <label> Event Map: </label>
-        <br>
-        <div id="eventMap"></div>
-        <br> <br>
+            <label> Event Map: </label>
+            <br>
+            <div id="eventMap"></div>
+            <br> <br>
 
-        <label> Additional Event Details: </label>
-        <br><br>
+           <label> Additional Event Details: </label>
+           <br><br>
 
-        <label for="foodAvailable"> Food Available </label>
-        <input type="checkbox" id="foodAvailable" name="foodAvailable">
+           <label for="foodAvailable"> Food Available </label>
+           <input type="checkbox" id="foodAvailable" name="foodAvailable">
 
-        <br>
+            <br>
+            <label for="requiredFee"> Required Fee </label>
+            <input type="checkbox" id="requiredFee" name="requiredFee">
+            <br><br>
 
-        <label for="requiredFee"> Required Fee </label>
-        <input type="checkbox" id="requiredFee" name="requiredFee">
-        <br><br>
+            <input type="submit" form="event-form" value="submit">
 
-        <input type="submit" form="event-form" value="submit">
+          </form>
 
-      </form>
-      
+        </div>
+      </div>
     </div>
-
   </body>
-
 </html>
