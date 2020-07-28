@@ -31,7 +31,7 @@ public class Individual {
   TreeSet<Event> savedEvents;
 
   @Reference
-  TreeSet<Organization> organizations;
+  List<Organization> organizations;
 
   public Individual() {
   }
@@ -45,8 +45,7 @@ public class Individual {
     this.userType = userType;
     savedEvents = new TreeSet<Event>((a, b) ->
             a.getEventTitle().toLowerCase().compareTo(b.getEventTitle().toLowerCase()));
-    organizations = new TreeSet<Organization>((a, b) ->
-            a.getName().toLowerCase().compareTo(b.getName().toLowerCase()));
+    organizations = new ArrayList<Organization>();
   }
   
   public Long getDatastoreId() {
@@ -81,7 +80,7 @@ public class Individual {
     return savedEvents;
   }
 
-  public TreeSet<Organization> getOrganizations() {
+  public List<Organization> getOrganizations() {
     return organizations;
   }
 

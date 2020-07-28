@@ -25,7 +25,7 @@ public class Organization {
   String description;
 
   @Reference
-  List<Event> events;
+  TreeSet<Event> events;
   
   public Organization() {
   }
@@ -37,7 +37,8 @@ public class Organization {
     this.university = university;
     this.userType = userType;
     this.description = description;
-    events = new ArrayList<Event>();
+    events = new TreeSet<Event>((a, b) ->
+            a.getEventTitle().toLowerCase().compareTo(b.getEventTitle().toLowerCase()));
   }
   
   public Long getDatastoreId() {
@@ -68,7 +69,7 @@ public class Organization {
     return description;
   }
   
-  public List<Event> getEvents() {
+  public TreeSet<Event> getEvents() {
     return events;
   }
 
