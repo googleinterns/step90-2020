@@ -311,6 +311,11 @@ div.row {
   border-radius: 20px;
 }
 
+#mapContent {
+    color: black;
+    font-weight: bold;
+}
+
 #eventMap {
     text-align: center;
     height: 500px;

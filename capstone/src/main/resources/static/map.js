@@ -5,7 +5,7 @@ async function createMap() {
     document.getElementById('map'),
     {center: princetonLatLng, zoom: 16});
 
-   const response = await fetch('get-all-events');
+   const response = await fetch('get-map-events');
    const jsonEvents = await response.json();
    jsonEvents.forEach(event => createMarker(event, campusMap));
   }
@@ -40,8 +40,29 @@ function createMarker(event,campusMap) {
   const newMarker = new google.maps.Marker({
     map: campusMap,
     title: event.eventTitle,
-    position: eventPosition
+    position: eventPosition,
   });
+  var eventInfoWindow = createInfoWindow(event, campusMap);
+  var eventContent = '<p id=mapContent>'+ event.eventTitle + '</p>';
+  newMarker.addListener('click', function() {
+    eventInfoWindow.setContent(eventContent);
+    console.log(eventInfoWindow.getContent());
+    eventInfoWindow.open(campusMap, newMarker);
+  });
+}
+
+/* Creates InfoWindow for event marker
+ * @param event - event object
+ * @param campusMap - Google Map object of campus
+ * return newInfoWindow = returns created info window
+*/
+function createInfoWindow(event, campusMap) {
+    var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
+    const newInfoWindow = new google.maps.InfoWindow({
+        //content: eventContent,
+        position: eventPosition
+    });
+    return newInfoWindow;
 }
 
 /* Creates Marker and Pans to location
