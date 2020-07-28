@@ -113,6 +113,7 @@ function createIndividualProfile(data, fillForm) {
     document.getElementById("ind-firstname").value = data.firstName;
     document.getElementById("ind-lastname").value = data.lastName;
     document.getElementById("university-form-display").innerText = data.university.name;
+    document.getElementById("ind-uni").value = data.university.name;
   }
 }
 
@@ -133,6 +134,7 @@ function createOrgProfile(data, fillForm) {
     document.getElementById("org-form-name").value = data.name;
     document.getElementById("org-university-form-display").innerText = data.university.name;
     document.getElementById("org-description").value = data.description;
+    document.getElementById("org-uni").value = data.university.name;
   }
 }
 
