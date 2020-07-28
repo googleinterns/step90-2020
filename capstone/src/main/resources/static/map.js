@@ -24,7 +24,6 @@ async function createMap() {
         }
          marker = placeMarkerAndPan(newMarker.latLng, campusMap);
          var markerLatLng = newMarker.latLng.toString();
-         console.log(markerLatLng);
          document.getElementById('eventLatitude').value = newMarker.latLng.lat();
          document.getElementById('eventLongitude').value = newMarker.latLng.lng();
          google.maps.event.clearListeners(newMarker, 'click');
@@ -46,7 +45,6 @@ function createMarker(event,campusMap) {
   var eventContent = '<p id=mapContent>'+ event.eventTitle + '</p>';
   newMarker.addListener('click', function() {
     eventInfoWindow.setContent(eventContent);
-    console.log(eventInfoWindow.getContent());
     eventInfoWindow.open(campusMap, newMarker);
   });
 }
