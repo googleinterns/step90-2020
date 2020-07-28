@@ -26,7 +26,8 @@ public class Organization {
 
   @Reference
   List<Event> events;
-  
+
+  Integer rank;
   public Organization() {
   }
 
@@ -38,6 +39,7 @@ public class Organization {
     this.userType = userType;
     this.description = description;
     events = new ArrayList<Event>();
+    rank = 0;
   }
   
   public Long getDatastoreId() {
@@ -72,6 +74,10 @@ public class Organization {
     return events;
   }
 
+  public Integer getRank() {
+    return rank;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -82,6 +88,20 @@ public class Organization {
 
   public void addEvent(Event event) {
     events.add(event);
+  }
+
+  /**
+   * increase rank by 1
+   */
+  public void addRank() {
+    rank++;
+  }
+
+  /**
+   * decrease rank by 1
+   */
+  public void minusRank() {
+    rank--;
   }
 
   public void deleteEvent(Event event) {

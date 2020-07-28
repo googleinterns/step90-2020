@@ -44,6 +44,8 @@ public class Event{
   @Reference
   List<Review> reviews;
 
+  Integer rank;
+
   public Event(University university, String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
     this.university = university;
     this.organizationName = organizationName;
@@ -56,6 +58,7 @@ public class Event{
     this.foodAvailable = foodAvailable;
     this.requiredFee = requiredFee;
     this.reviews = new ArrayList();
+    rank = 0;
   }
 
   public Long getDatastoreId() {
@@ -145,6 +148,20 @@ public class Event{
    */
   public void addReview(Review review) {
     reviews.add(review);
+  }
+
+  /**
+   * increases rank by 1
+   */
+  public void addRank() {
+    rank++;
+  }
+
+  /**
+   * decreases rank by 1
+   */
+  public void minusRank() {
+    rank--;
   }
 
   /**
