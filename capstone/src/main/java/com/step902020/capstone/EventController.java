@@ -60,6 +60,17 @@ public class EventController {
     return StreamSupport.stream(events.spliterator(), false).collect(Collectors.toList());
   }
 
+  @GetMapping("get-map-events")
+  public Iterable<Event> getMapEvents() {
+    return this.eventRepository.findAll();
+  }
+
+  @GetMapping("get-university-map")
+  public University getUniversityMap(CurrentUser user) throws IOException {
+    Organization organization = this.organizationRepository.findFirstByEmail(user.getEmail());
+    return organization.getUniversity();
+  }
+
   @GetMapping("get-event")
   public Event getEvent(@RequestParam("event-id") String eventId) throws IOException {
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
