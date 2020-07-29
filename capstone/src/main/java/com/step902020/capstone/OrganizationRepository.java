@@ -16,10 +16,10 @@ public interface OrganizationRepository extends DatastoreRepository<Organization
 
   public List<Organization> findByEmail(List<String> email);
 
-  public List<Organization> findByUniversity(University university);
+  public List<Organization> findByUniversityOrderByRankDesc(University university);
 
   public List<Organization> findByUniversity(University university, Pageable pageable);
 
-  @Query("select * from organization where name >= @name and name < @endname and university = @university")
-  public List<Organization> findOrganizationsByNameMatching(@Param("name") String name, @Param("endname") String endname, @Param("university") University university);
+  @Query("select * from organization where name >= @name and name < @endname and university = @university order by rank desc")
+  public List<Organization> findOrganizationsByNameMatchingOrderByRankDesc(@Param("name") String name, @Param("endname") String endname, @Param("university") University university);
 }

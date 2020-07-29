@@ -8,3 +8,15 @@ indexes:
   properties:
     - name: availableFood
     - name: requiredFee
+
+- kind: event
+  properties:
+    - name: university
+    - name: rank
+      direction: desc
+
+- kind: organization
+  properties:
+    - name: university
+    - name: rank
+      direction: desc

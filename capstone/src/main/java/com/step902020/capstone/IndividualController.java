@@ -213,7 +213,7 @@ public class IndividualController {
     List<Event> recommended = recommender.recommend(targetUser, users, u -> u.getSavedEvents(), num);
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
     if (recommended.size() < num) {
-      List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
+      List<Event> allEvents = this.eventRepository.findByUniversityOrderByRankDesc(targetUser.getUniversity());
       int i = 0;
       int numAlreadyAdded = 0;
       int targetSize = recommended.size();
@@ -255,7 +255,7 @@ public class IndividualController {
     List<Organization> recommended = recommender.recommend(targetUser, users, u -> u.getOrganizations(), num);
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
     if (recommended.size() < num) {
-      List<Organization> allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());
+      List<Organization> allOrgs = this.organizationRepository.findByUniversityOrderByRankDesc(targetUser.getUniversity());
       int i = 0;
       int numAlreadyAdded = 0;
       int targetSize = recommended.size();

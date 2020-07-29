@@ -47,40 +47,36 @@ function selectedFilter(elementId){
  * @param displaySaveButton button to save event
  */
 function createEventElement(eventListElement, event, displaySaveButton, displayUnsaveButton, displayEditDeleteButtons) {
-  const eventElement = createElement(eventListElement, 'li', '');
-  eventElement.className = 'event';
+  fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
+      const eventElement = createElement(eventListElement, 'li', '');
+      eventElement.className = 'event';
 
-  // Click for event detail modal
-  eventElement.addEventListener('click', () => {
-    showEventPage(event);
+      // Click for event detail modal
+      eventElement.addEventListener('click', () => {
+        showEventPage(event);
+      });
+
+      // Name
+      createElement(eventElement, 'p', event.eventTitle);
+
+      // Time
+      var date = new Date(event.eventDateTime);
+      createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
+      createElement(eventElement, 'p', data.name);
+
+      createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
+
+      // create save, unsave, delete, or edit event form
+      if (displayEditDeleteButtons) {
+        // if edit is allowed, then it means that delete is allowed as well
+        createEditAndDeleteEventButton(eventElement, event);
+      } else if (displaySaveButton) {
+        createSaveEventButton(eventElement, event);
+      } else if (displayUnsaveButton) {
+        createUnsaveEventButton(eventElement, event);
+      }
+      return eventElement;
   });
-
-  // Name
-  createElement(eventElement, 'p', event.eventTitle);
-
-  // Time
-  var date = new Date(event.eventDateTime);
-  createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
-
-  // Location Using latitude as a filler until we finalize the location portion
-  createElement(eventElement, 'p', event.eventLatitude);
-
-  // Organization
-  //const eventOrgElement = document.createElement('p');
-  //eventOrgElement.innerText = event.organization.name;
-  //eventElement.appendChild(eventOrgElement);
-
-  // Displays only for individual users
-  // create save, unsave, delete, or edit event form
-    if (displayEditDeleteButtons) {
-      // if edit is allowed, then it means that delete is allowed as well
-      createEditAndDeleteEventButton(eventElement, event);
-    } else if (displaySaveButton) {
-      createSaveEventButton(eventElement, event);
-    } else if (displayUnsaveButton) {
-      createUnsaveEventButton(eventElement, event);
-    }
-    return eventElement;
 }
 
 /**
@@ -192,8 +188,12 @@ function fillDetails(event) {
 
   setElementInnerText("eventName", event.eventTitle);
   setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
+  fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
+    setElementInnerText("eventOrganization", data.name);
+  });
+  setElementInnerText("eventRank", "There are " + event.rank + " users following this event");
   setElementInnerText("eventLocation", event.eventLatitude);
-  setElementInnerText("eventDescription", event.description);
+  setElementInnerText("eventDescription", event.eventDescription);
 }
 
 /**

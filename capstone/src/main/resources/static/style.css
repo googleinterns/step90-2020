@@ -152,7 +152,7 @@ img {
   width: 60%;
 }
 
-#organization, #no-profile, #user, #org-nav, #individual-nav, #user-image-form {
+#organization, #no-profile, #user, #org-nav, #individual-nav, #user-image-form, #general-recommended {
   display: none;
 }
 
