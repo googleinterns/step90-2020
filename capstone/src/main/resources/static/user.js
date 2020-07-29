@@ -12,7 +12,7 @@ function profileNavActive(tab) {
 function generalNavActive(tab) {
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "individual") {
-      document.getElementById("general-recommmended").style.display="block";
+      document.getElementById("general-recommended").style.display="inline-block";
     }
     document.getElementById(tab).setAttribute("class", "active");
   });
