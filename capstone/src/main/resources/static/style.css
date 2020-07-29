@@ -353,11 +353,21 @@ div.row {
 }
 
 #eventMap {
-    text-align: center;
-    height: 500px;
-    width: 500px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 20px;
+  text-align: center;
+  height: 500px;
+  width: 500px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 20px;
+}
+
+.about {
+  display: block;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width: 33.33%;
+  float: left;
 }
