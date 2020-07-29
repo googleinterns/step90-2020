@@ -21,9 +21,6 @@ public interface OrganizationRepository extends DatastoreRepository<Organization
 
   public List<Organization> findByUniversityAndOrgType(University university, String orgType);
 
-  @Query("select * from organization where orgType = @orgType and university = @university")
-  public List<Organization> findOrganizationsByOrgType(@Param("orgType") String orgType, @Param("university") University university);
-
   @Query("select * from organization where name >= @name and name < @endname and university = @university")
   public List<Organization> findOrganizationsByNameMatching(@Param("name") String name, @Param("endname") String endname, @Param("university") University university);
 }
