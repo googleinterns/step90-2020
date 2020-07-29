@@ -3,6 +3,7 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -131,9 +132,9 @@ public class OrganizationController {
     Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
     List<Event> allEvents = null;
     if (count.equals("All")) {
-      allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
+      allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), LocalDateTime.now().toString());
     } else {
-      allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, Integer.parseInt(count)));
+      allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), LocalDateTime.now().toString(), PageRequest.of(0, Integer.parseInt(count)));
     }
     return allEvents;
   }

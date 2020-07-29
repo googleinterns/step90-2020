@@ -98,6 +98,7 @@ public class UserDatastoreTest {
     this.organizationRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail("org@uni.edu");
     this.eventRepository.deleteByEventDateTime(expectedEvent.getEventDateTime());
+    this.universityRepository.deleteByName(expectedUniversity.getName());
   }
 
   @Test

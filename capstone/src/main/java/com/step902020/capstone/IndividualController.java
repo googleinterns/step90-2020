@@ -216,15 +216,14 @@ public class IndividualController {
     }
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
     if (noPastEvents.size() < num) {
-      List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
+      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), now.toString());
       int i = 0;
       int numAlreadyAdded = 0;
       int targetSize = noPastEvents.size();
       int numExtraEvents = num - targetSize;
       while (i < allEvents.size() && numAlreadyAdded < numExtraEvents) {
         Event e = allEvents.get(i);
-        LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
-        if (!(noPastEvents.contains(e)) && eventDate.compareTo(now) >=0) {
+        if (!(noPastEvents.contains(e))) {
           noPastEvents.add(e);
           numAlreadyAdded++;
         }
