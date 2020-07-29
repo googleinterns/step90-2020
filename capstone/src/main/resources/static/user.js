@@ -13,6 +13,11 @@ function generalNavActive(tab) {
   document.getElementById(tab).setAttribute("class", "active");
 }
 
+/* helper function to highlight active tab for recommendation nav */
+function recNavActive(tab) {
+  document.getElementById(tab).setAttribute("class", "active");
+}
+
 /* get the user information for the profile page */
 function getUser(fillForm, generalTab, profileTab) {
   generalNavActive(generalTab);
@@ -209,7 +214,6 @@ function createSavedOrgElement(orgListElement, data, deleteAllowed, displayButto
   });
 
   createElement(orgElement, 'h3', data.name);
-  createElement(orgElement, 'p', data.description);
 
   if (displayButton) {
      const form = deleteAllowed ? createDeleteButton(data.datastoreId) : createSaveButton(data);
@@ -441,6 +445,38 @@ function getPublicProfile() {
        displayMain(false);
        hideSpinner();
      }
+  });
+}
+
+function findRecommended(recommendationType) {
+  var count = document.getElementById('recommended-input').value;
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType == 'unknown') {
+      displayMain(false);
+      hideSpinner();
+    } else {
+      recommend(count, data.userType, recommendationType);
+      displayMain(true);
+    }
+  }).catch((error) => {
+    // log error
+    hideSpinner();
+  });
+}
+
+function recommend(count, userType, recommendationType) {
+  fetch('get-recommended-'+ recommendationType + '-' + userType + '?count=' + count).then(response => response.json()).then((data) => {
+    const recDiv = document.getElementById("recommended-section");
+    recDiv.innerHTML = "";
+    if (recommendationType == "events") {
+      data.forEach((event) => createEventElement(recDiv, event, userType == 'individual', false, false));
+    } else {
+      data.forEach((org) => createSavedOrgElement(recDiv, org, false, false));
+    }
+    hideSpinner();
+  }).catch((error) => {
+    // log error
+    hideSpinner();
   });
 }
 

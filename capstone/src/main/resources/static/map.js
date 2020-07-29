@@ -1,12 +1,17 @@
 /* Function to create Google Map in map.html page */
 async function createMap() {
-  var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
-  const campusMap = new google.maps.Map(
-    document.getElementById('map'),
-    {center: princetonLatLng, zoom: 16});
+  const universityResponse = await fetch('get-university-map');
+  const jsonUniversity = await universityResponse.json();
+  var campusMap;
+  campusMap = jsonUniversity.for(university => generateCampusMap(university));
 
-   const response = await fetch('get-map-events');
-   const jsonEvents = await response.json();
+//  var universityLocation = {, lng: -74.6568153};
+//  const campusMap = new google.maps.Map(
+//    document.getElementById('map'),
+//    {center: princetonLatLng, zoom: 16});
+
+   const eventResponse = await fetch('get-map-events');
+   const jsonEvents = await eventResponse.json();
    jsonEvents.forEach(event => createMarker(event, campusMap));
   }
 
@@ -28,6 +33,15 @@ async function createMap() {
          document.getElementById('eventLongitude').value = newMarker.latLng.lng();
          google.maps.event.clearListeners(newMarker, 'click');
     });
+ }
+
+ function generateCampusMap(university) {
+    universityLocation = {lat: university.latitude, lng: university.longitude};
+    const campusMap = new google.maps.Map(
+        document.getElementById('map'),
+        {center: universityLocation}
+    );
+    return campusMap;
  }
 
 /* Create a new marker for each event
