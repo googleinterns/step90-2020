@@ -61,6 +61,11 @@ public class Event{
   public Long getDatastoreId() {
     return datastoreId;
   }
+
+  public University getUniversity() {
+    return university;
+  }
+
   public String getEventTitle() {
     return eventTitle;
   }
@@ -98,16 +103,11 @@ public class Event{
     return requiredFee;
   }
 
-  public University getUniversity() {
-    return university;
-  }
-
-  public void setUniversity(University university) {
-    this.university = university;
-  }
-
   public void setDatastoreId(Long datastoreId) {
     this.datastoreId = datastoreId;
+  }
+  public void setUniversity(University university) {
+    this.university = university;
   }
   public void setEventTitle(String eventTitle) {
     this.eventTitle = eventTitle;
@@ -145,6 +145,37 @@ public class Event{
    */
   public void addReview(Review review) {
     reviews.add(review);
+  }
+
+  /**
+   * returns event information in a string format
+   * @return String
+   */
+  public String toString() {
+    return eventTitle + " " + datastoreId;
+  }
+
+  /**
+   * implement equality
+   * @param o object being compared to
+   * @return boolean
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Event)) {
+      return false;
+    }
+
+    Event e = (Event) o;
+    return this.datastoreId.equals(e.datastoreId);
+  }
+
+  @Override
+  public int hashCode() {
+    return datastoreId.hashCode();
   }
 
 }

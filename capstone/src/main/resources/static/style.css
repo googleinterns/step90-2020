@@ -365,3 +365,13 @@ div.row {
 .index-load {
   display: none;
 }
+
+.about {
+  display: block;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width: 33.33%;
+  float: left;
+}

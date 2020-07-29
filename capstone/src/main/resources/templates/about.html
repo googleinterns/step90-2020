@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta>
+    <title>About Us</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="user.js"></script>
+</head>
+<body onload="generalNavActive('general-about');">
+    <div th:replace="fragments/navbar::navbar"></div>
+    <br/>
+    <div class="about">
+        <h1>Jenny Sheng</h1>
+        <a href="images/jennysheng.jpg"><img class="image profile" src="images/jennysheng.jpg"/></a>
+        <p>Hello! I'm Jenny Sheng, a junior at Princeton University majoring in computer science. I love painting, jogging, and playing pool.</p>
+    </div>
+    <div class="about">
+        <h1>Lian Bourret</h1>
+        <a href="images/lian.jpg"><img class="image profile" src="images/lian.jpg"/></a>
+        <p>Hey I'm Lian! I'm a junior at Wellesley College majoring in computer science. You can pretty much always find me calling a friend, online shopping, or eating way too much ice cream.</p>
+    </div>
+    <div class="about">
+        <h1>Olivia Asemota</h1>
+        <a href="images/oliviaa.jpg"><img class="image profile" src="images/oliviaa.jpg"/></a>
+        <p>Hi I'm Olivia! I'm a student at Xavier University and I'm studying computer science and philosophy. I love dogs, so please send puppy pics! Thanks!</p>
+    </div>
+</body>
+</html>
