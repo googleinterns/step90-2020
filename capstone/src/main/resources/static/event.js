@@ -126,7 +126,7 @@ function createEventElement(eventListElement, event, isIndividual, userSavedEven
       createSaveEventButton(eventElement, event);
     }
   } else {
-    createEditAndDeleteButton(eventElement, event);
+    createEditAndDeleteEventButton(eventElement, event);
   }
 }
 
