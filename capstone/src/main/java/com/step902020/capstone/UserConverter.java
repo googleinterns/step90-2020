@@ -12,5 +12,13 @@ public class UserConverter {
                 }
             };
 
+  static final Converter<List<?>, TreeSet<?>> LIST_TREE_SET_CONVERTER =
+          new Converter<List<?>, TreeSet<?>>() {
+            @Override
+            public TreeSet<?> convert(List<?> source) {
+              return new TreeSet<>(source);
+            }
+          };
+
     
 }

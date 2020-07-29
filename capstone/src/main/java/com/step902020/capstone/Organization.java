@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Reference;
 import java.util.*;
 
 @Entity(name = "organization")
-public class Organization {
+public class Organization implements Comparable {
   @Id
   Long datastoreId;
 
@@ -25,7 +25,7 @@ public class Organization {
   String description;
 
   @Reference
-  List<Event> events;
+  TreeSet<Event> events;
   
   public Organization() {
   }
@@ -37,7 +37,7 @@ public class Organization {
     this.university = university;
     this.userType = userType;
     this.description = description;
-    events = new ArrayList<Event>();
+    events = new TreeSet<Event>();
   }
   
   public Long getDatastoreId() {
@@ -68,7 +68,7 @@ public class Organization {
     return description;
   }
   
-  public List<Event> getEvents() {
+  public TreeSet<Event> getEvents() {
     return events;
   }
 
@@ -118,5 +118,10 @@ public class Organization {
   public int hashCode() {
     return datastoreId.hashCode();
   }
-  
+
+  @Override
+  public int compareTo(Object o) {
+    Organization other = (Organization) o;
+    return this.getName().toLowerCase().compareTo(other.getName().toLowerCase());
+  }
 }
