@@ -11,8 +11,8 @@ public class RecommenderTests {
 
   private Recommender recommender = new Recommender();
 
-  public List<String> getListOfItems(String user) {
-    List<String> result = new ArrayList<String>();
+  public Set<String> getSetOfItems(String user) {
+    Set<String> result = new TreeSet<String>();
     if (user.equals("A")) {
       result.add("event 1");
       result.add("event 3");
@@ -29,7 +29,7 @@ public class RecommenderTests {
   @Test
   public void testRecommendWithEmptyUserListCase() throws URISyntaxException {
     List<String> list = new ArrayList<String>();
-    List<String> result = recommender.recommend("A", list, p  -> getListOfItems(p), 1);
+    List<String> result = recommender.recommend("A", list, p  -> getSetOfItems(p), 1);
     List<String> expected = new ArrayList<>();
     assertEquals("Wrong list returned", expected, result);
   }
@@ -38,7 +38,7 @@ public class RecommenderTests {
   public void testRecommendTargetUserWithNoSavedEventsCase() throws URISyntaxException {
     List<String> list = new ArrayList<String>();
     list.add("B");
-    List<String> result = recommender.recommend("D", list, p  -> getListOfItems(p), 2);
+    List<String> result = recommender.recommend("D", list, p  -> getSetOfItems(p), 2);
     List<String> expected = new ArrayList<>();
     expected.add("event 1");
     expected.add("event 2");
@@ -49,7 +49,7 @@ public class RecommenderTests {
   public void testRecommendTargetUserWithNoSavedEventsCaseWithEventLimit() throws URISyntaxException {
     List<String> list = new ArrayList<String>();
     list.add("B");
-    List<String> result = recommender.recommend("D", list, p  -> getListOfItems(p), 1);
+    List<String> result = recommender.recommend("D", list, p  -> getSetOfItems(p), 1);
     List<String> expected = new ArrayList<>();
     expected.add("event 1");
     assertEquals("Wrong list returned", expected, result);
@@ -59,7 +59,7 @@ public class RecommenderTests {
   public void testRecommendWithTwoPeopleCase() throws URISyntaxException {
     List<String> list = new ArrayList<String>();
     list.add("B");
-    List<String> result = recommender.recommend("A", list, p  -> getListOfItems(p), 1);
+    List<String> result = recommender.recommend("A", list, p  -> getSetOfItems(p), 1);
     List<String> expected = new ArrayList<>();
     expected.add("event 2");
     assertEquals("Wrong list returned", expected, result);
@@ -70,7 +70,7 @@ public class RecommenderTests {
     List<String> list = new ArrayList<String>();
     list.add("B");
     list.add("C");
-    List<String> result = recommender.recommend("A", list, p  -> getListOfItems(p), 2);
+    List<String> result = recommender.recommend("A", list, p  -> getSetOfItems(p), 2);
     List<String> expected = new ArrayList<>();
     expected.add("event 2");
     expected.add("event 4");
@@ -82,7 +82,7 @@ public class RecommenderTests {
     List<String> list = new ArrayList<String>();
     list.add("A");
     list.add("B");
-    List<String> result = recommender.recommend("A", list, p  -> getListOfItems(p), 1);
+    List<String> result = recommender.recommend("A", list, p  -> getSetOfItems(p), 1);
     List<String> expected = new ArrayList<>();
     expected.add("event 2");
     assertEquals("Wrong list returned", expected, result);
@@ -94,7 +94,7 @@ public class RecommenderTests {
     list.add("A");
     list.add("B");
     list.add("C");
-    List<String> result = recommender.recommend("D", list, p  -> getListOfItems(p), 10);
+    List<String> result = recommender.recommend("D", list, p  -> getSetOfItems(p), 10);
     List<String> expected = new ArrayList<>();
     expected.add("event 1");
     expected.add("event 3");
