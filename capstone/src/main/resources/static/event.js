@@ -97,37 +97,40 @@ function selectedFilter(elementId){
  * @param userEmail current user's email
  */
 function createEventElement(eventListElement, event, isIndividual, userSavedEvent, userEmail) {
-  const eventElement = createElement(eventListElement, 'li', '');
-  eventElement.className = 'event';
+  fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
 
-  // Click for event detail modal
-  eventElement.addEventListener('click', () => {
-    showEventPage(event, isIndividual, userEmail);
-  });
+    const eventElement = createElement(eventListElement, 'li', '');
+    eventElement.className = 'event';
 
-  // Name
-  createElement(eventElement, 'p', event.eventTitle);
+    // Click for event detail modal
+    eventElement.addEventListener('click', () => {
+      showEventPage(event, isIndividual, userEmail);
+    });
 
-  // Time
-  var date = new Date(event.eventDateTime);
-  createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
+    // Name
+    createElement(eventElement, 'p', event.eventTitle);
 
-  // Organization
-  createElement(eventElement, 'p', event.organizationName);
+    // Time
+    var date = new Date(event.eventDateTime);
+    createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
 
-  // rank
-  createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
+    // Organization
+    createElement(eventElement, 'p', data.name);
 
-  // Only for individual users can save/unsave events
-  if (isIndividual) {
-    if (userSavedEvent) { // Individual has saved event
-      createUnsaveEventButton(eventElement, event);
+    // rank
+    createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
+
+    // Only for individual users can save/unsave events
+    if (isIndividual) {
+      if (userSavedEvent) { // Individual has saved event
+        createUnsaveEventButton(eventElement, event);
+      } else {
+        createSaveEventButton(eventElement, event);
+      }
     } else {
-      createSaveEventButton(eventElement, event);
+      createEditAndDeleteEventButton(eventElement, event);
     }
-  } else {
-    createEditAndDeleteEventButton(eventElement, event);
-  }
+  });
 }
 
 /**
@@ -164,6 +167,7 @@ function fillEventDetails(event) {
     setElementInnerText("eventOrganization", data.name);
     setElementInnerText("eventDescription", event.eventDescription);
     setElementInnerText("eventRank", "There are " + event.rank + " users following this event");
+    createMapForASingleEvent(event);
   });
 }
 

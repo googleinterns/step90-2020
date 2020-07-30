@@ -66,7 +66,7 @@ public class EventDatastoreTest {
             new Organization(System.currentTimeMillis(),"new organization", currentUserEmail,
                 expectedUniversity, "organization", "hello world!"));
 
-    expectedEvent = new Event(expectedUniversity, expectedOrganization.getName(),
+    expectedEvent = new Event(expectedUniversity,
             expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST",
             "Turtles bring pizza", 40.769579, -73.973036,
             true, false);
@@ -89,7 +89,7 @@ public class EventDatastoreTest {
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
     this.organizationRepository.deleteByEmail(currentUserEmail);
     this.reviewRepository.deleteByIndividualEmail(expectedIndividual.getEmail());
-    this.universityRepository.deleteAllByName("Test");
+    this.universityRepository.deleteByName("Test");
     this.eventRepository.deleteByEventDateTime(expectedEvent.getEventDateTime());
   }
 

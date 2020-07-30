@@ -62,7 +62,7 @@ public class EventController {
       Example.of(new Event(null, 0, null,
                 null, null, 0,
                 0, foodAvailable, requiredFee),
-      ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude")
+      ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "rank")
       )
     );
     List<Event> noPastEvents = new ArrayList<Event>();
@@ -73,6 +73,9 @@ public class EventController {
         noPastEvents.add(e);
       }
     }
+
+    // order by rank
+    Collections.sort(noPastEvents, (a, b) -> Integer.compare(b.getRank(), a.getRank()));
     return noPastEvents;
   }
 

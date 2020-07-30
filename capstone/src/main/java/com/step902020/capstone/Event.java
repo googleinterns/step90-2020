@@ -161,7 +161,7 @@ public class Event implements Comparable{
    * @return String
    */
   public String toString() {
-    return eventTitle + " " + datastoreId;
+    return eventTitle + " " + datastoreId + " " + rank;
   }
 
   /**

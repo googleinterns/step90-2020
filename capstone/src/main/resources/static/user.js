@@ -331,7 +331,7 @@ function getOrganizationEvents() {
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "organization") {
       const eventDiv = document.getElementById("created-events");
-      data.events.forEach((event) => createEventElement(eventDiv, event, false, false, user.email));
+      data.events.forEach((event) => createEventElement(eventDiv, event, false, false, data.email));
       displayMain(true);
     } else {
       displayMain(false);
