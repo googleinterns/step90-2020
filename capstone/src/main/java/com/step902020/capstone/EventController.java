@@ -45,9 +45,6 @@ public class EventController {
   private UniversityRepository universityRepository;
 
   @Autowired
-  private IndividualRepository individualRepository;
-
-  @Autowired
   private DatastoreTemplate datastoreTemplate;
 
   @GetMapping("get-all-events")
