@@ -11,7 +11,12 @@ button, input, select {
   border-radius: 10px;
   color: white;
   font-size: medium;
+  margin: 5px;
   padding: 10px 20px;
+}
+
+button:hover, select:hover {
+border-color: purple;
 }
 
 select option {
@@ -195,9 +200,6 @@ div.row {
 }
 
 /* Event Search Page */
-#events, .events {
-  text-align: center;
-}
 .event {
   border-color: white;
   border-radius: 30px;
@@ -206,6 +208,19 @@ div.row {
   list-style-type: none;
   margin: 2%;
   padding: 2%;
+}
+
+.event:hover {
+  border: 4px solid blueviolet;
+  cursor: pointer;
+}
+
+#events, .events {
+  text-align: center;
+}
+  
+#events {
+  text-align: center;
 }
 
 .filters {
@@ -234,19 +249,19 @@ div.row {
   margin-bottom: 30px;
   font-size: 40px;
 }
-
+  
 #modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  display: none;
+  height: 100%;
+  left: 0;
+  overflow: auto;
+  position: fixed; /* Stay in place */
+  padding-top: 100px;
+  top: 0;
+  width: 100%;
+  z-index: 1; /* Sit on top */
 }
 
 .modal-content {
@@ -260,9 +275,8 @@ div.row {
   width: 25%;
 }
 
-.event:hover {
-  border: 4px solid blueviolet;
-  cursor: pointer;
+.selected {
+  border: 4px solid #caff00;
 }
 
 /* Reviews */
@@ -283,6 +297,11 @@ div.row {
   width: 60%;
 }
 
+.review button {
+  border: 2px solid darkgreen;
+  margin: 10px;
+}
+
 .review-details {
   margin: 0px;
   text-align: left;
@@ -299,7 +318,6 @@ div.row {
 }
 
 /* Map */
-
 #map {
   text-align: center;
   border: thin solid black;
@@ -309,6 +327,21 @@ div.row {
   margin-left: auto;
   margin-right: auto;
   border-radius: 20px;
+}
+
+#mapContent {
+    color: black;
+    font-weight: bold;
+}
+
+#eventMap {
+    text-align: center;
+    height: 500px;
+    width: 500px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
 }
 
 /* loading wheel */
@@ -352,12 +385,12 @@ div.row {
   display: none;
 }
 
-#eventMap {
-    text-align: center;
-    height: 500px;
-    width: 500px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 20px;
+.about {
+  display: block;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width: 33.33%;
+  float: left;
 }

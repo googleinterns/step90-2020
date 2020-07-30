@@ -24,19 +24,18 @@
                 <form action="save-individual" method="POST" id="user-form">
                     <div id="user-select">
                         <label>Are you an individual or a club/organization?</label>
-                        <select id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');">
+                        <select id="user-type-toggle" name="user-type" onchange="toggleForm('user-type-toggle');" required>
                             <option value="individual">Individual</option>
                             <option value="organization">Organization</option>
                         </select>
                     </div>
                     <label>First Name:</label>
-                    <input type="text" name="firstname" id="ind-firstname" placeholder="Your first name.."></input>
+                    <input type="text" name="firstname" id="ind-firstname" placeholder="Your first name.." required></input>
                     <label>Last Name:</label>
-                    <input type="text" name="lastname" id="ind-lastname" placeholder="Your last name.."></input>
+                    <input type="text" name="lastname" id="ind-lastname" placeholder="Your last name.." required></input>
                     <label>University:</label>
                     <p id="university-form-display" style="display:none"></p>
-                    <p id="university-form-display" style="display:none"></p>
-                    <select name="university" id="ind-uni">
+                    <select name="university" id="ind-uni" required>
                         <option value="" disabled selected hidden>Choose your university</option>
                         <option value="Harvard University">Harvard University</option>
                         <option value="Princeton University">Princeton University</option>
@@ -46,23 +45,23 @@
                         <option value="University of Tennessee">University of Tennessee</option>
                         <option value="Xavier University">Xavier University</option>
                     </select>
-                    <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
+                    <input class="button submit" type="submit" value="Submit"></input>
                 </form>
             </div>
             <div class="profile-form general-container" id="organization">
                 <form action="save-organization" method="POST" id="organization-form">
                     <div id="org-select">
                         <label>Are you an individual or an organization?</label>
-                        <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type">
+                        <select name="user-type" onchange="toggleForm('org-user-type');" id="org-user-type" required>
                             <option value="individual">Individual</option>
                             <option value="organization">Organization</option>
                         </select>
                     </div>
                     <label>Organization Name:</label>
-                    <input type="text" name="name" id="org-form-name" placeholder="Your organization name.."></input>
+                    <input type="text" name="name" id="org-form-name" placeholder="Your organization name.." required></input>
                     <label>Affiliated University:</label>
                     <p id="org-university-form-display"></p>
-                    <select name="university" id="org-uni">
+                    <select name="university" id="org-uni" required>
                         <option value="" disabled selected hidden>Choose your university</option>
                         <option value="Harvard University">Harvard University</option>
                         <option value="Princeton University">Princeton University</option>
@@ -74,11 +73,13 @@
                     </select>
                     <label>Description:</label>
                     <input type="text" name="description" id="org-description" placeholder="Description of your organization.."></input>
+
                     <label>Organization Type:</label>
                     <select name="org-type" id="org-type">
                         <option value="" disabled selected hidden>Choose organization type</option>
                     </select>
                     <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
+
                 </form>
             </div>
             <div class="profile-form general-container" id="user-image-form"></div>

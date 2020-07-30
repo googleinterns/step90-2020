@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Reference;
 import java.util.*;
 
 @Entity(name = "organization")
-public class Organization {
+public class Organization implements Comparable {
   @Id
   Long datastoreId;
 
@@ -29,7 +29,7 @@ public class Organization {
   String orgType;
 
   @Reference
-  List<Event> events;
+  TreeSet<Event> events;
   
   public Organization() {
   }
@@ -43,7 +43,7 @@ public class Organization {
     this.userType = userType;
     this.description = description;
     this.orgType = orgType;
-    events = new ArrayList<Event>();
+    events = new TreeSet<Event>();
   }
   
   public Long getDatastoreId() {
@@ -78,7 +78,7 @@ public class Organization {
     return orgType;
   }
   
-  public List<Event> getEvents() {
+  public TreeSet<Event> getEvents() {
     return events;
   }
 
@@ -99,7 +99,58 @@ public class Organization {
   }
 
   public void deleteEvent(Event event) {
-    events.removeIf(e -> event.getDatastoreId().equals(e.getDatastoreId()));
+    events.remove(event);
   }
-  
+
+  /**
+   * returns organization information in a string format
+   * @return String
+   */
+  public String toString() {
+    return name + " " + datastoreId;
+  }
+
+  /**
+   * implement equality
+   * @param o object being compared to
+   * @return boolean
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Organization)) {
+      return false;
+    }
+
+    Organization organization = (Organization) o;
+    return this.datastoreId.equals(organization.datastoreId);
+  }
+
+  @Override
+  public int hashCode() {
+    return datastoreId.hashCode();
+  }
+
+  /**
+   * returns how other object compares to this object
+   * @param o object being compared
+   * @return negative if current object is smaller,
+   * zero if current object is equal, positive if current object is bigger
+   */
+  @Override
+  public int compareTo(Object o) {
+    if (o == this) {
+      return 0;
+    }
+    if (!(o instanceof Organization)) {
+      return -1;
+    }
+    Organization other = (Organization) o;
+    if (this.getName() == null || other.getName() == null) {
+      return -1;
+    }
+    return this.getName().toLowerCase().compareTo(other.getName().toLowerCase());
+  }
 }
