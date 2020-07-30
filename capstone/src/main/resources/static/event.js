@@ -66,6 +66,8 @@ function createEventElement(eventListElement, event, displaySaveButton, displayU
 
       createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
 
+      createMapForASingleEvent(event);
+
       // create save, unsave, delete, or edit event form
       if (displayEditDeleteButtons) {
         // if edit is allowed, then it means that delete is allowed as well
@@ -89,7 +91,7 @@ function createReviewElement(event) {
   const reviewTitleElement = createElement(reviewElement, 'h1', 'Reviews');
 
   const reviewInputElement = createElement(reviewElement, 'input', '');
-  reviewInputElement.className = 'review-submission';
+  reviewInputElement.className = 'review-submission review-input-field';
   reviewInputElement.setAttribute('placeholder', 'Leave a review');
   reviewInputElement.setAttribute('type', 'text');
 
@@ -184,16 +186,16 @@ function loadEventInfo() {
  * @param eventId event's datastore id
  */
 function fillDetails(event) {
-  var date = new Date(event.eventDateTime);
-
-  setElementInnerText("eventName", event.eventTitle);
-  setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
   fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
+
+    var date = new Date(event.eventDateTime);
+
+    setElementInnerText("eventName", event.eventTitle);
+    setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
     setElementInnerText("eventOrganization", data.name);
+    setElementInnerText("eventDescription", event.eventDescription);
+    setElementInnerText("eventRank", "There are " + event.rank + " users following this event");
   });
-  setElementInnerText("eventRank", "There are " + event.rank + " users following this event");
-  setElementInnerText("eventLocation", event.eventLatitude);
-  setElementInnerText("eventDescription", event.eventDescription);
 }
 
 /**

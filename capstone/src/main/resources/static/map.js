@@ -10,6 +10,15 @@ async function createMap() {
    jsonEvents.forEach(event => createMarker(event, campusMap));
   }
 
+function createMapForASingleEvent(event) {
+  var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
+    const campusMap = new google.maps.Map(
+      document.getElementById('singleEventMap'),
+      {center: princetonLatLng, zoom: 15});
+
+    createMarker(event, campusMap);
+  }
+
 /* Function to create Mini Map in event.html page */
   function createEventPlacementMap() {
     var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};

@@ -247,6 +247,7 @@ div.row {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  margin-bottom: 20px;
 }
 
 .modal-content {
@@ -255,6 +256,7 @@ div.row {
   border-radius: 30px;
   margin: auto;
   margin-top: 100px;
+  margin-bottom: 100px;
   padding: 20px;
   text-align: center;
   width: 25%;
@@ -296,6 +298,9 @@ div.row {
 .review-submission {
   border: 1px solid darkgreen;
   margin-right: 10px;
+}
+.review-input-field {
+  width: 80%;
 }
 
 /* Map */
@@ -356,6 +361,18 @@ div.row {
     text-align: center;
     height: 500px;
     width: 500px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+}
+
+
+#singleEventMap {
+    text-align: center;
+    height: 300px;
+    width: 90%;
+    max-width: 300px;
     display: block;
     margin-left: auto;
     margin-right: auto;
