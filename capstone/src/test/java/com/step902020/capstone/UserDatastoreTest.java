@@ -98,6 +98,7 @@ public class UserDatastoreTest {
     this.organizationRepository.deleteByEmail(currentUserEmail);
     this.organizationRepository.deleteByEmail("org@uni.edu");
     this.eventRepository.deleteByEventDateTime(expectedEvent.getEventDateTime());
+    this.universityRepository.deleteByName(expectedUniversity.getName());
   }
 
   @Test
@@ -133,8 +134,8 @@ public class UserDatastoreTest {
 
     Individual result = authRestTemplate.getForObject(getIndividualUrl, Individual.class);
     assertEquals("Wrong number of saved events", 1, result.getSavedEvents().size());
-    assertEquals("Wrong saved event -- ID", expectedEvent.getDatastoreId(), result.getSavedEvents().get(0).getDatastoreId());
-    assertEquals("Wrong saved event -- title", expectedEvent.getEventTitle(), result.getSavedEvents().get(0).getEventTitle());
+    assertEquals("Wrong saved event -- ID", expectedEvent.getDatastoreId(), result.getSavedEvents().first().getDatastoreId());
+    assertEquals("Wrong saved event -- title", expectedEvent.getEventTitle(), result.getSavedEvents().first().getEventTitle());
   }
 
   @Test

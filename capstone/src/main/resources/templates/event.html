@@ -30,16 +30,16 @@
             <input type="hidden" id="event-id" name="event-id">
 
             <label for="eventTitle"> Event Title: </label>
-            <input type="text" id="eventTitle" name="eventTitle">
+            <input type="text" id="eventTitle" name="eventTitle" required>
             <br><br>
 
             <label for="eventDateTime"> Event Date and Time: </label>
-            <input type="datetime-local" id="eventDateTime" name="eventDateTime">
+            <input type="datetime-local" id="eventDateTime" name="eventDateTime" required>
             <br><br>
 
             <label> Event Location: </label> <br>
-            <input id="eventLatitude" name="eventLatitude" placeholder="Event Latitude"> <br>
-            <input id="eventLongitude" name="eventLongitude" placeholder="Event Longitude">
+            <input id="eventLatitude" name="eventLatitude" placeholder="Event Latitude" required> <br>
+            <input id="eventLongitude" name="eventLongitude" placeholder="Event Longitude" required>
             <br><br>
 
             <label for="eventDescription"> Event Description: </label> <br>
@@ -51,13 +51,13 @@
             <div id="eventMap"></div>
             <br> <br>
 
-            <label> Event Filters: </label>
-            <br><br>
+           <label> Additional Event Details: </label>
+           <br><br>
 
-            <label for="foodAvailable"> Food Available </label>
-            <input type="checkbox" id="foodAvailable" name="foodAvailable">
+           <label for="foodAvailable"> Food Available </label>
+           <input type="checkbox" id="foodAvailable" name="foodAvailable">
+
             <br>
-
             <label for="requiredFee"> Required Fee </label>
             <input type="checkbox" id="requiredFee" name="requiredFee">
             <br><br>

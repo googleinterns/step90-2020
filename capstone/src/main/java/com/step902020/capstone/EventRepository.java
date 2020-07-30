@@ -4,15 +4,15 @@ import org.springframework.cloud.gcp.data.datastore.repository.DatastoreReposito
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
  * Spring Data Repository for Event Entities
  */
 public interface EventRepository extends DatastoreRepository<Event, Long> {
-  // used to delete test data only
   public Long deleteByEventDateTime(String eventDateTime);
-
-  public List<Event> findByUniversityOrderByRankDesc(University university, Pageable pageable);
-  public List<Event> findByUniversityOrderByRankDesc(University university);
+  public List<Event> findByUniversity(University university, Pageable pageable);
+  public List<Event> findByUniversity(University university);
+  public List<Event> findByUniversityAndEventDateTimeGreaterThanOrderByRankDesc(University university, String date);
 }

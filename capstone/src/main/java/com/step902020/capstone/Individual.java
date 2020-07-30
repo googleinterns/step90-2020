@@ -28,10 +28,10 @@ public class Individual {
   String userType;
 
   @Reference
-  List<Event> savedEvents;
+  TreeSet<Event> savedEvents;
 
   @Reference
-  List<Organization> organizations;
+  TreeSet<Organization> organizations;
 
   public Individual() {
   }
@@ -43,8 +43,8 @@ public class Individual {
     this.email = email;
     this.university = university;
     this.userType = userType;
-    savedEvents = new ArrayList<Event>();
-    organizations = new ArrayList<Organization>();
+    savedEvents = new TreeSet<Event>();
+    organizations = new TreeSet<Organization>();
   }
   
   public Long getDatastoreId() {
@@ -75,11 +75,11 @@ public class Individual {
     return userType;
   }
 
-  public List<Event> getSavedEvents() {
+  public TreeSet<Event> getSavedEvents() {
     return savedEvents;
   }
 
-  public List<Organization> getOrganizations() {
+  public TreeSet<Organization> getOrganizations() {
     return organizations;
   }
 

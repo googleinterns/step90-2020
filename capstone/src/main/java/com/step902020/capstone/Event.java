@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import java.util.*;
 
 @Entity(name = "event")
-public class Event{
+public class Event implements Comparable{
 
   @Id
   Long datastoreId;
@@ -187,4 +187,18 @@ public class Event{
     return datastoreId.hashCode();
   }
 
+  @Override
+  public int compareTo(Object o) {
+    if (o == this) {
+      return 0;
+    }
+    if (!(o instanceof Event)) {
+      return -1;
+    }
+    Event other = (Event) o;
+    if (this.getEventTitle() == null || other.getEventTitle() == null) {
+      return -1;
+    }
+    return this.getEventTitle().toLowerCase().compareTo(other.getEventTitle().toLowerCase());
+  }
 }

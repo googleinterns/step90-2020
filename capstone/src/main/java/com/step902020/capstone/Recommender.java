@@ -3,6 +3,7 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -30,7 +31,7 @@ public class Recommender {
    * @param <U> expects Event or Organization
    * @return list of objects that are recommended for the target user
    */
-  public <E, U> List<E> recommend (U targetUser, List<U> users, Function<U, List<E>> getItemList, int numNeeded) {
+  public <E, U> List<E> recommend (U targetUser, List<U> users, Function<U, Set<E>> getItemList, int numNeeded) {
     Map<U, Integer> userToScore= new HashMap<U, Integer>();
     Set<E> targetUserEvents = new HashSet(getItemList.apply(targetUser));
     // for each user, calculate the total number of differences between the current user and the target user
@@ -53,10 +54,11 @@ public class Recommender {
     Collections.sort(sortedUsers, (o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
 
     // put data from sorted user list to ordered event list
+    LocalDateTime now = LocalDateTime.now();
     List<E> sorted = new ArrayList<>();
     int count = 0;
     for (Map.Entry<U, Integer> entry : sortedUsers) {
-      List<E> currUserEvents = getItemList.apply(entry.getKey());
+      Set<E> currUserEvents = getItemList.apply(entry.getKey());
       for (E e : currUserEvents) {
         if (!targetUserEvents.contains(e) && !sorted.contains(e) && count < numNeeded) {
           sorted.add(e);
