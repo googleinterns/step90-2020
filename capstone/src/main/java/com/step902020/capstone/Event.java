@@ -180,7 +180,16 @@ public class Event implements Comparable{
 
   @Override
   public int compareTo(Object o) {
+    if (o == this) {
+      return 0;
+    }
+    if (!(o instanceof Event)) {
+      return -1;
+    }
     Event other = (Event) o;
+    if (this.getEventTitle() == null || other.getEventTitle() == null) {
+      return -1;
+    }
     return this.getEventTitle().toLowerCase().compareTo(other.getEventTitle().toLowerCase());
   }
 }

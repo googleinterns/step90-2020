@@ -119,9 +119,24 @@ public class Organization implements Comparable {
     return datastoreId.hashCode();
   }
 
+  /**
+   * returns how other object compares to this object
+   * @param o object being compared
+   * @return negative if current object is smaller,
+   * zero if current object is equal, positive if current object is bigger
+   */
   @Override
   public int compareTo(Object o) {
+    if (o == this) {
+      return 0;
+    }
+    if (!(o instanceof Organization)) {
+      return -1;
+    }
     Organization other = (Organization) o;
+    if (this.getName() == null || other.getName() == null) {
+      return -1;
+    }
     return this.getName().toLowerCase().compareTo(other.getName().toLowerCase());
   }
 }
