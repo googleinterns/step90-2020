@@ -3,6 +3,7 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -203,23 +204,33 @@ public class IndividualController {
     int num = (count.equals("All")) ? Integer.MAX_VALUE : Integer.parseInt(count);
     // find recommended events from other users
     List<Event> recommended = recommender.recommend(targetUser, users, u -> u.getSavedEvents(), num);
+
+    // filter out the past events
+    List<Event> noPastEvents = new ArrayList<Event>();
+    LocalDateTime now = LocalDateTime.now();
+    for (Event e : recommended) {
+      LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
+      if (eventDate.compareTo(now) >=0) {
+        noPastEvents.add(e);
+      }
+    }
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
-    if (recommended.size() < num) {
-      List<Event> allEvents = this.eventRepository.findByUniversity(targetUser.getUniversity());
+    if (noPastEvents.size() < num) {
+      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), now.toString());
       int i = 0;
       int numAlreadyAdded = 0;
-      int targetSize = recommended.size();
+      int targetSize = noPastEvents.size();
       int numExtraEvents = num - targetSize;
       while (i < allEvents.size() && numAlreadyAdded < numExtraEvents) {
         Event e = allEvents.get(i);
-        if (!(recommended.contains(e))) {
-          recommended.add(e);
+        if (!(noPastEvents.contains(e))) {
+          noPastEvents.add(e);
           numAlreadyAdded++;
         }
         i++;
       }
     }
-    return recommended;
+    return noPastEvents;
   }
 
   /**

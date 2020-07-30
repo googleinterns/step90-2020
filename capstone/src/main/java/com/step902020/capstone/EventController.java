@@ -1,6 +1,8 @@
 package com.step902020.capstone;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDateTime;
 
@@ -56,8 +58,15 @@ public class EventController {
       )
 
     );
-
-    return StreamSupport.stream(events.spliterator(), false).collect(Collectors.toList());
+    List<Event> noPastEvents = new ArrayList<Event>();
+    LocalDateTime now = LocalDateTime.now();
+    for (Event e : events) {
+      LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
+      if (eventDate.compareTo(now) >= 0) {
+        noPastEvents.add(e);
+      }
+    }
+    return noPastEvents;
   }
 
   @GetMapping("get-map-events")

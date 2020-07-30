@@ -8,3 +8,8 @@ indexes:
   properties:
     - name: availableFood
     - name: requiredFee
+
+- kind: event
+  properties:
+    - name: university
+    - name: eventDateTime
