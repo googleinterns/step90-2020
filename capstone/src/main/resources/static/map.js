@@ -70,27 +70,7 @@ function createMarker(event,campusMap) {
   newMarker.addListener('click', function() {
     eventInfoWindow.open(campusMap, newMarker);
   });
-  var eventInfoWindow = createInfoWindow(event, campusMap);
-  var eventContent = '<p id=mapContent>'+ event.eventTitle + '</p>';
-  newMarker.addListener('click', function() {
-    eventInfoWindow.setContent(eventContent);
-    eventInfoWindow.open(campusMap, newMarker);
-  });
 }
-
-/* Creates InfoWindow for event marker
- * @param event - event object
- * @param campusMap - Google Map object of campus
- * return newInfoWindow = returns created info window
- */
- function createInfoWindow(event, campusMap) {
-    var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
-    const newInfoWindow = new google.maps.InfoWindow({
-        //content: eventContent,
-        position: eventPosition
-    });
-    return newInfoWindow;
- }
 
 /* Creates InfoWindow for event marker
  * @param event - event object
