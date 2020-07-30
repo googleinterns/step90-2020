@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import java.util.*;
 
 @Entity(name = "event")
-public class Event{
+public class Event implements Comparable{
 
   @Id
   Long datastoreId;
@@ -61,6 +61,11 @@ public class Event{
   public Long getDatastoreId() {
     return datastoreId;
   }
+
+  public University getUniversity() {
+    return university;
+  }
+
   public String getEventTitle() {
     return eventTitle;
   }
@@ -98,16 +103,11 @@ public class Event{
     return requiredFee;
   }
 
-  public University getUniversity() {
-    return university;
-  }
-
-  public void setUniversity(University university) {
-    this.university = university;
-  }
-
   public void setDatastoreId(Long datastoreId) {
     this.datastoreId = datastoreId;
+  }
+  public void setUniversity(University university) {
+    this.university = university;
   }
   public void setEventTitle(String eventTitle) {
     this.eventTitle = eventTitle;
@@ -147,4 +147,49 @@ public class Event{
     reviews.add(review);
   }
 
+  /**
+   * returns event information in a string format
+   * @return String
+   */
+  public String toString() {
+    return eventTitle + " " + datastoreId;
+  }
+
+  /**
+   * implement equality
+   * @param o object being compared to
+   * @return boolean
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Event)) {
+      return false;
+    }
+
+    Event e = (Event) o;
+    return this.datastoreId.equals(e.datastoreId);
+  }
+
+  @Override
+  public int hashCode() {
+    return datastoreId.hashCode();
+  }
+
+  @Override
+  public int compareTo(Object o) {
+    if (o == this) {
+      return 0;
+    }
+    if (!(o instanceof Event)) {
+      return -1;
+    }
+    Event other = (Event) o;
+    if (this.getEventTitle() == null || other.getEventTitle() == null) {
+      return -1;
+    }
+    return this.getEventTitle().toLowerCase().compareTo(other.getEventTitle().toLowerCase());
+  }
 }

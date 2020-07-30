@@ -3,8 +3,10 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -127,6 +129,45 @@ public class OrganizationController {
       this.eventRepository.deleteById(Long.parseLong(eventId));
     }
     return new RedirectView("manageevents.html", true);
+  }
+
+  /**
+   * get the recommended events for an organization
+   * @param currentUser user that is currently logged in
+   * @param count the number of events to be returned
+   * @return list of Events
+   */
+  @GetMapping("get-recommended-events-organization")
+  public List<Event> recommendEvents(CurrentUser currentUser,
+                                     @RequestParam("count") String count) {
+    Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
+    List<Event> allEvents = null;
+    if (count.equals("All")) {
+      allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), LocalDateTime.now().toString());
+    } else {
+      allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), LocalDateTime.now().toString(), PageRequest.of(0, Integer.parseInt(count)));
+    }
+    return allEvents;
+  }
+
+  /**
+   * get the recommended organizations for an organization
+   * @param currentUser user that is currently logged in
+   * @param count the number of organizations to be returned
+   * @return list of organizations
+   */
+  @GetMapping("get-recommended-organizations-organization")
+  public List<Organization> recommendedOrganizations(CurrentUser currentUser,
+                                     @RequestParam("count") String count) {
+    Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
+    int num = Integer.parseInt(count);
+    List<Organization> allOrgs = null;
+    if (count.equals("All")) {
+      allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());
+    } else {
+      allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, num));
+    }
+    return allOrgs;
   }
 
   /**

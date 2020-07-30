@@ -1,6 +1,8 @@
 package com.step902020.capstone;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDateTime;
 
@@ -32,6 +34,9 @@ public class EventController {
   private EventRepository eventRepository;
 
   @Autowired
+  private IndividualRepository individualRepository;
+
+  @Autowired
   private OrganizationRepository organizationRepository;
 
   @Autowired
@@ -40,26 +45,43 @@ public class EventController {
   @Autowired
   private DatastoreTemplate datastoreTemplate;
 
-  @GetMapping("get-all-events")
-  public List<Event> getAllEvent(
-    CurrentUser user,
-    @RequestParam("foodAvailable") Boolean foodAvailable,
-    @RequestParam("requiredFee") Boolean requiredFee) throws IOException {
+  @GetMapping("get-filtered-events")
+  public List<Event> getFilteredEvents(
+          @RequestParam("foodAvailable") Boolean foodAvailable,
+          @RequestParam("requiredFee") Boolean requiredFee) throws IOException {
     // False values changed to null for matching
     foodAvailable = foodAvailable == false ? null: foodAvailable;
     requiredFee = requiredFee == false ? null: requiredFee;
     Organization organization = organizationRepository.findFirstByEmail(user.getEmail());
 
     Iterable<Event> events = this.eventRepository.findAll(
-      Example.of(new Event(null, null, 0, null,
-                null, null, 0,
-                0, foodAvailable, requiredFee),
-      ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude")
-      )
+            Example.of(new Event(null, null, 0, null,
+                            null, null, 0,
+                            0, foodAvailable, requiredFee),
+                    ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude")
+            )
 
     );
+    List<Event> noPastEvents = new ArrayList<Event>();
+    LocalDateTime now = LocalDateTime.now();
+    for (Event e : events) {
+      LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
+      if (eventDate.compareTo(now) >= 0) {
+        noPastEvents.add(e);
+      }
+    }
+    return noPastEvents;
+  }
 
-    return StreamSupport.stream(events.spliterator(), false).collect(Collectors.toList());
+  @GetMapping("get-map-events")
+  public Iterable<Event> getMapEvents() {
+    return this.eventRepository.findAll();
+  }
+
+  @GetMapping("get-university-map")
+  public University getUniversityMap(CurrentUser user) throws IOException {
+    Organization organization = this.organizationRepository.findFirstByEmail(user.getEmail());
+    return organization.getUniversity();
   }
 
   @GetMapping("get-event")
@@ -104,14 +126,24 @@ public class EventController {
       return new RedirectView("manageevents.html", true);
   }
 
+  /**
+   * Add new review to event
+   * @param user current user
+   * @param eventId Event's datastore id
+   * @param text Review's text
+   * @return Updated review list
+   */
   @PostMapping("/new-review")
   public List<Review> addReview(
+          CurrentUser user,
           @RequestParam("text") String text,
-          @RequestParam("eventId") Long eventId,
-          @RequestParam("name") String name) throws IOException {
+          @RequestParam("eventId") Long eventId) throws IOException {
 
     Event event = this.eventRepository.findById(eventId).get();
-    Review review = new Review(text, name);
+    Individual individual = this.individualRepository.findFirstByEmail(user.getEmail());
+    String individualName = individual.firstName + " " + individual.lastName;
+    String individualEmail = individual.email;
+    Review review = new Review(individualName, individualEmail, text);
     event.addReview(review);
     this.eventRepository.save(event);
     return event.reviews;
