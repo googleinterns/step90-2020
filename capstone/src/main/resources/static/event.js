@@ -100,7 +100,6 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
   fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
     const eventElement = createElement(eventListElement, 'li', '');
     eventElement.className = 'event';
-
     // Click for event detail modal
     eventElement.addEventListener('click', () => {
       showEventPage(event, isIndividual, userEmail);
@@ -132,6 +131,7 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
         createEditAndDeleteEventButton(eventElement, event);
       }
     }
+    return eventElement;
   });
 }
 
