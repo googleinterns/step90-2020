@@ -195,10 +195,6 @@ div.row {
 }
 
 /* Event Search Page */
-#filters {
- display: block;
-}
-
 #events, .events {
   text-align: center;
 }
@@ -212,27 +208,31 @@ div.row {
   padding: 2%;
 }
 
-#event-header {
-  text-align: center;;
-  margin-top: 100px;
-  margin-bottom: 30px;
-  font-size: 40px;
+.filters {
+ display: block;
+ margin: auto;
+ text-align: center;
+ width: 50%;
 }
 
-#filters {
-  text-align: center;
-}
-
-#filters button, #filters input, #filters select {
+.filters button, #filters input, #filters select {
   margin: 10px;
+  text-transform: uppercase;
 }
 
-#filters select option[value=""] {
+.filters select option[value=""] {
   color: #999999;
 }
 
 .selected {
   border: 4px solid #caff00;
+}
+
+.search-header {
+  text-align: center;;
+  margin-top: 100px;
+  margin-bottom: 30px;
+  font-size: 40px;
 }
 
 #modal {

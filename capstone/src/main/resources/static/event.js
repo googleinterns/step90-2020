@@ -197,32 +197,6 @@ function fillDetails(event) {
 }
 
 /**
- * Fill an existing document element's inner text
- * @param elementId document element's id
- * @param innerText text for inner text
- * @return element with added text
- */
-function setElementInnerText(elementId, innerText){
-  const element = document.getElementById(elementId);
-  element.innerText = innerText;
-  return element;
-}
-
-/**
- * Create new element with inner text and appended to an element
- * @param elementElement element to append
- * @param elementType element to create
- * @param innerText text for inner text
- * @return created element
- */
-function createElement(appendElement, elementType, innerText){
-  const element = document.createElement(elementType);
-  element.innerText = innerText;
-  appendElement.appendChild(element);
-  return element;
-}
-
-/**
  * Create a page to view event details
  * @param eventId event's datastore id
  */

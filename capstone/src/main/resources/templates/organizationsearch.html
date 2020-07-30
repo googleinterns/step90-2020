@@ -10,7 +10,7 @@
     <script src="user.js"></script>
     <script src="event.js"></script>
 </head>
-<body onload="searchOrg();generalNavActive('general-organizationsearch')">
+<body onload="searchOrg();generalNavActive('general-organizationsearch'); createOrgTypeElements('org-filters', 'button')">
     <div th:replace="fragments/navbar::navbar"></div>
     <br/>
     <div class="container">
@@ -18,18 +18,12 @@
             <div class="loader"></div>
         </div>
         <div id="contents">
-            <div class="profile-head">
-                <button id="academic" value="academic" class="orgFilter" onclick="toggleBorderSelection('academic')">Academic</button>
-                <button id="arts" value="arts" class="orgFilter" onclick="toggleBorderSelection('arts')">Arts</button>
-                <button id="athletic" value="athletic" class="orgFilter" onclick="toggleBorderSelection('athletic')">Athletic</button>
-                <button id="cultural" value="cultural" class="orgFilter" onclick="toggleBorderSelection('cultural')">Cultural</button>
-                <button id="professional" value="professional" class="orgFilter" onclick="toggleBorderSelection('professional')">Professional</button>
-                <button id="political" value="political" class="orgFilter" onclick="toggleBorderSelection('political')">Political</button>
-                <button id="service" value="service" class="orgFilter" onclick="toggleBorderSelection('service')">Service</button>
-                <button id="studentgov" value="studentgov" class="orgFilter" onclick="toggleBorderSelection('studentgov')">Student Government</button>
+            <div class="profile-head filters">
+                <h1 class="search-header">FIND AN ORGANIZATION</h1>
+                <div id="org-filters"></div>
                 <br/>
-                <input type="text" placeholder="Search by organization name" id="search-org">
-                <button class="button submit" onclick="searchOrg();">Search</button>
+                <input type="text" placeholder="KNOW THE NAME?" id="search-org">
+                <button class="button submit" onclick="searchOrg();">SEARCH</button>
             </div>
             <div id="main">
                 <div id="no-profile" class="profile-head">

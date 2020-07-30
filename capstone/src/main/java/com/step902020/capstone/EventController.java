@@ -42,11 +42,13 @@ public class EventController {
 
   @GetMapping("get-all-events")
   public List<Event> getAllEvent(
+    CurrentUser user,
     @RequestParam("foodAvailable") Boolean foodAvailable,
     @RequestParam("requiredFee") Boolean requiredFee) throws IOException {
     // False values changed to null for matching
     foodAvailable = foodAvailable == false ? null: foodAvailable;
     requiredFee = requiredFee == false ? null: requiredFee;
+    Organization organization = organizationRepository.findFirstByEmail(user.getEmail());
 
     Iterable<Event> events = this.eventRepository.findAll(
       Example.of(new Event(null, null, 0, null,
