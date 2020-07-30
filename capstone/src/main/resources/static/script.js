@@ -65,16 +65,21 @@ function toggleBorderSelection(elementId) {
   }
 }
 
+/*
+ * Create elements from list of organization types
+ * @param appendElementId id of DOM element
+ * @param elementType type of element to create
+ */
 function createOrgTypeElements(appendElementId, elementType) {
   var orgTypeValues = ["academic", "athletic", "arts", "cultural", "professional", "political", "service", "studentgov"];
   var orgTypeNames = ["Academic", "Athletic", "Arts", "Cultural", "Professional", "Political", "Service", "Student Government"];
   var appendElement = document.getElementById(appendElementId);
-    console.log(appendElement);
+
   orgTypeValues.forEach(function (item, index) {
     var value = orgTypeValues[index];
     var element = createElement(appendElement, elementType, orgTypeNames[index]);
     element.value = value;
-console.log(element);
+
     if (elementType == "button") {
       element.id = value;
       element.className = "orgFilter";
