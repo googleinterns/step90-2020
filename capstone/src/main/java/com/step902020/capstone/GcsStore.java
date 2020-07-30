@@ -47,7 +47,7 @@ public class GcsStore {
                       + "' type='hidden' />\n");
     }
     htmlForm.append("  <input type='file' name='file' required/><br />\n");
-    htmlForm.append("  <input type='submit' value='Upload File' name='x-ignore-submit' onclick='closeImageForm();'/><br />\n");
+    htmlForm.append("  <input type='submit' value='Upload File' name='x-ignore-submit' onsubmit='closeImageForm();'/><br />\n");
     htmlForm.append("</form>\n");
 
     return htmlForm.toString();
