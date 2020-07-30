@@ -1,27 +1,33 @@
-/* Function to create Google Map in map.html page */
-async function createMap() {
+/* Function to create Google Map and markers in map.html page */
+ async function createMap() {
+   var user;
+   const response = await fetch('user-info');
+   const jsonUser = await response.json();
+   user = jsonUser.userType;
 
-  var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
-  const campusMap = new google.maps.Map(
-    document.getElementById('map'),
-    {center: princetonLatLng, zoom: 16});
+   const universityResponse = await fetch('get-university-map?userType=' + user);
+   const jsonUniversity = await universityResponse.json();
+   const campusMap = generateCampusMap(jsonUniversity);
 
-<<<<<<< HEAD
-   const response = await fetch('get-map-events');
-   const jsonEvents = await response.json();
-=======
    const eventResponse = await fetch('get-map-events');
    const jsonEvents = await eventResponse.json();
->>>>>>> a83929f2e7b21a38d0f3384f5db077b22e5b25ea
    jsonEvents.forEach(event => createMarker(event, campusMap));
-  }
+ }
 
 /* Function to create Mini Map in event.html page */
-  function createEventPlacementMap() {
-    var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
+  async function createEventPlacementMap() {
+     var user;
+     const response = await fetch('user-info');
+     const jsonUser = await response.json();
+     user = jsonUser.userType;
+
+     const universityMiniMapResponse = await fetch('get-university-map?userType=' + user);
+     const university = await universityMiniMapResponse.json();
+
+    var universityLocation = {lat: university.latitude, lng: university.longitude};
     const campusMap = new google.maps.Map(
       document.getElementById('eventMap'),
-      {center: princetonLatLng, zoom: 16});
+      {center: universityLocation, zoom: 16});
 
     var marker;
     google.maps.event.addListener(campusMap, 'click', function(newMarker) {
@@ -34,6 +40,19 @@ async function createMap() {
          document.getElementById('eventLongitude').value = newMarker.latLng.lng();
          google.maps.event.clearListeners(newMarker, 'click');
     });
+ }
+
+/* Create Google Map
+ * @param university - jsonUniversity object
+ */
+ function generateCampusMap(university) {
+    var universityCenter = {lat: university.latitude, lng: university.longitude};
+    const campusMap = new google.maps.Map(
+        document.getElementById('map'),
+        {center: universityCenter,
+         zoom: 16
+        });
+    return campusMap;
  }
 
 /* Create a new marker for each event
@@ -63,22 +82,22 @@ function createMarker(event,campusMap) {
  * @param event - event object
  * @param campusMap - Google Map object of campus
  * return newInfoWindow = returns created info window
-*/
-function createInfoWindow(event, campusMap) {
+ */
+ function createInfoWindow(event, campusMap) {
     var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
     const newInfoWindow = new google.maps.InfoWindow({
         //content: eventContent,
         position: eventPosition
     });
     return newInfoWindow;
-}
+ }
 
 /* Creates InfoWindow for event marker
  * @param event - event object
  * @param campusMap - Google Map object of campus
  * return newInfoWindow = returns created info window
-*/
-function createInfoWindow(event, campusMap) {
+ */
+ function createInfoWindow(event, campusMap) {
     var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
     var eventContent = '<p id=mapContent>'+ event.eventTitle + '</p>';
     const newInfoWindow = new google.maps.InfoWindow({
@@ -86,18 +105,18 @@ function createInfoWindow(event, campusMap) {
         position: eventPosition
     });
     return newInfoWindow;
-}
+ }
 
 /* Creates Marker and Pans to location
  * @param latLng - latitude and longitude of marker
  * @param campusMap - Google Map of campus
  * return marker - returns created marker
-*/
-function placeMarkerAndPan(latLng, campusMap) {
+ */
+ function placeMarkerAndPan(latLng, campusMap) {
     const marker = new google.maps.Marker({
         position: latLng,
         map: campusMap
     });
     campusMap.panTo(latLng);
     return marker;
-}
+ }

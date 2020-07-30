@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import com.step902020.capstone.security.CurrentUser;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import com.step902020.capstone.security.IdentityController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
 import org.springframework.data.domain.Example;
@@ -38,6 +40,9 @@ public class EventController {
   private UniversityRepository universityRepository;
 
   @Autowired
+  private IndividualRepository individualRepository;
+
+  @Autowired
   private DatastoreTemplate datastoreTemplate;
 
   @GetMapping("get-all-events")
@@ -66,9 +71,16 @@ public class EventController {
   }
 
   @GetMapping("get-university-map")
-  public University getUniversityMap(CurrentUser user) throws IOException {
-    Organization organization = this.organizationRepository.findFirstByEmail(user.getEmail());
-    return organization.getUniversity();
+  public University getUniversityMap(CurrentUser currentUser, @RequestParam String userType) throws IOException {
+
+    Organization organization = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
+    Individual individual = this.individualRepository.findFirstByEmail(currentUser.getEmail());
+
+    if(userType.equals("organization")) {
+      return organization.getUniversity();
+    } else {
+        return individual.getUniversity();
+    }
   }
 
   @GetMapping("get-event")
