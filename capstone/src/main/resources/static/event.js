@@ -120,11 +120,12 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
     createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
 
     // Only for individual users can save/unsave events
+    // Only for individual users can save/unsave events
     if (isIndividual) {
       if (userEvent) { // Individual has saved event
         createUnsaveEventButton(eventElement, event);
       } else {
-        createEditAndDeleteEventButton(eventElement, event);
+        createSaveEventButton(eventElement, event);
       }
     } else {
       if (userEvent) {
