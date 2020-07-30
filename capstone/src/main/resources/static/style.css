@@ -11,6 +11,7 @@ button, input, select {
   border-radius: 10px;
   color: white;
   font-size: medium;
+  margin: 5px;
   padding: 10px 20px;
 }
 

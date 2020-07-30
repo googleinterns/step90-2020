@@ -93,12 +93,11 @@ function selectedFilter(elementId){
  * @param eventListElement DOM element to append
  * @param event event object
  * @param isIndividual if user is an individual user
- * @param userSavedEvent if user saved the event
+ * @param userEvent if individual has saved the event or org owns the event
  * @param userEmail current user's email
  */
-function createEventElement(eventListElement, event, isIndividual, userSavedEvent, userEmail) {
+function createEventElement(eventListElement, event, isIndividual, userEvent, userEmail) {
   fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
-
     const eventElement = createElement(eventListElement, 'li', '');
     eventElement.className = 'event';
 
@@ -122,13 +121,15 @@ function createEventElement(eventListElement, event, isIndividual, userSavedEven
 
     // Only for individual users can save/unsave events
     if (isIndividual) {
-      if (userSavedEvent) { // Individual has saved event
+      if (userEvent) { // Individual has saved event
         createUnsaveEventButton(eventElement, event);
       } else {
-        createSaveEventButton(eventElement, event);
+        createEditAndDeleteEventButton(eventElement, event);
       }
     } else {
-      createEditAndDeleteEventButton(eventElement, event);
+      if (userEvent) {
+        createEditAndDeleteEventButton(eventElement, event);
+      }
     }
   });
 }
