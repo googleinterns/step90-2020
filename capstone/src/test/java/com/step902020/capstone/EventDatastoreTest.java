@@ -89,7 +89,7 @@ public class EventDatastoreTest {
     this.organizationRepository.deleteByEmail(expectedOrganization.getEmail());
     this.organizationRepository.deleteByEmail(currentUserEmail);
     this.reviewRepository.deleteByIndividualEmail(expectedIndividual.getEmail());
-    this.universityRepository.deleteAllByName("Test");
+    this.universityRepository.deleteByName("Test");
     this.eventRepository.deleteByEventDateTime(expectedEvent.getEventDateTime());
   }
 
