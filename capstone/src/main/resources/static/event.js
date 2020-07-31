@@ -96,43 +96,43 @@ function selectedFilter(elementId){
  * @param userEvent if individual has saved the event or org owns the event
  * @param userEmail current user's email
  */
-function createEventElement(eventListElement, event, isIndividual, userEvent, userEmail) {
-  fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
-    const eventElement = createElement(eventListElement, 'li', '');
-    eventElement.className = 'event';
-    // Click for event detail modal
-    eventElement.addEventListener('click', () => {
-      showEventPage(event, isIndividual, userEmail);
-    });
-
-    // Name
-    createElement(eventElement, 'p', event.eventTitle);
-
-    // Time
-    var date = new Date(event.eventDateTime);
-    createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
-
-    // Organization
-    createElement(eventElement, 'p', data.name);
-
-    // rank
-    createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
-
-    // Only for individual users can save/unsave events
-    // Only for individual users can save/unsave events
-    if (isIndividual) {
-      if (userEvent) { // Individual has saved event
-        createUnsaveEventButton(eventElement, event);
-      } else {
-        createSaveEventButton(eventElement, event);
-      }
-    } else {
-      if (userEvent) {
-        createEditAndDeleteEventButton(eventElement, event);
-      }
-    }
-    return eventElement;
+async function createEventElement(eventListElement, event, isIndividual, userEvent, userEmail) {
+  const eventElement = createElement(eventListElement, 'li', '');
+  eventElement.className = 'event';
+  // Click for event detail modal
+  eventElement.addEventListener('click', () => {
+    showEventPage(event, isIndividual, userEmail);
   });
+
+  // Name
+  createElement(eventElement, 'p', event.eventTitle);
+
+  // Time
+  var date = new Date(event.eventDateTime);
+  createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
+
+  // Organization
+  var organizationInfo = await fetch("get-public-profile?organization-id=" + event.organizationId);
+  var organization = await organizationInfo.json();
+  createElement(eventElement, 'p', organization.name);
+
+  // rank
+  createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
+
+  // Only for individual users can save/unsave events
+  // Only for individual users can save/unsave events
+  if (isIndividual) {
+    if (userEvent) { // Individual has saved event
+      createUnsaveEventButton(eventElement, event);
+    } else {
+      createSaveEventButton(eventElement, event);
+    }
+  } else {
+    if (userEvent) {
+      createEditAndDeleteEventButton(eventElement, event);
+    }
+  }
+  return eventElement;
 }
 
 /**

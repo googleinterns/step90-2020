@@ -61,7 +61,6 @@ function addImageField(formName) {
     const form = document.getElementById(formName);
     form.innerHTML = data;
   });
-
 }
 
 /* upon submission, hide the image form */
