@@ -17,18 +17,24 @@
   </head>
 
   <body onload="createMap();generalNavActive('general-map')">
+      <div th:replace="fragments/navbar::navbar"></div>
+      <div class="container">
+          <div class="load-div index-load" id="load">
+              <div class="loader"></div>
+          </div>
+          <div id="contents">
+              <div id="no-profile" class="profile-head">
+                  <p>You have not built your profile yet, please navigate to the "My Account" tab and submit a profile </p>
+              </div>
 
-    <div th:replace="fragments/navbar::navbar"></div>
-    <div id="contents" class="events">
-      <h1> Event Map </h1>
-      <div>
-        <h3>Welcome to the Map!</h3>
-        <p>Click on a Marker to see the event information.</p>
-        <p>If the map is blank, you will need to save events first in order to view them.</p>
+              <div class="events">
+                  <h1> Event Map </h1>
+                  <h3>Welcome to the Map!</h3>
+                  <p>Click on a Marker to see the event information.</p>
+              </div>
+              <div id="map"> </div>
+              <div th:replace="fragments/eventmodal::eventmodal"></div>
+          </div>
       </div>
-      <div id="map"> </div>
-      <div th:replace="fragments/eventmodal::eventmodal"></div>
-    </div>
   </body>
-
 </html>

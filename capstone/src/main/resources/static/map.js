@@ -4,14 +4,21 @@
    const response = await fetch('user-info');
    const jsonUser = await response.json();
    user = jsonUser.userType;
+   if (user == "unknown") {
+      hideSpinner();
+      displayMain(false);
+   } else {
+      const universityResponse = await fetch('get-university-map?userType=' + user);
+      const jsonUniversity = await universityResponse.json();
+      const campusMap = generateCampusMap(jsonUniversity);
 
-   const universityResponse = await fetch('get-university-map?userType=' + user);
-   const jsonUniversity = await universityResponse.json();
-   const campusMap = generateCampusMap(jsonUniversity);
+      const eventResponse = await fetch('get-map-events');
+      const jsonEvents = await eventResponse.json();
+      jsonEvents.forEach(event => createMarker(event, campusMap));
+      hideSpinner();
+      displayMain(true);
+   }
 
-   const eventResponse = await fetch('get-map-events');
-   const jsonEvents = await eventResponse.json();
-   jsonEvents.forEach(event => createMarker(event, campusMap));
  }
 
 function createMapForASingleEvent(event) {
