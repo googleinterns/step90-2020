@@ -4,13 +4,14 @@
   <head>
     <meta charset="UTF-8">
     <title> Create an Event </title>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8">
+    </script>
     <script src="event.js"> </script>
     <script src="user.js"> </script>
     <script src="script.js"> </script>
     <script src="map.js"> </script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8&callback=createMap">
-    </script>
+
     <link rel="stylesheet" href="style.css">
   </head>
   <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo(); createEventPlacementMap()">
@@ -48,6 +49,7 @@
 
             <label> Event Map: </label>
             <br>
+            <p>Click on the map to add a marker for the event's location.</p>
             <div id="eventMap"></div>
             <br> <br>
 

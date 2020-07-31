@@ -31,7 +31,6 @@ function createElement(appendElement, elementType, innerText){
   return element;
 }
 
-
 /**
  * Toggle advanced filters
  */

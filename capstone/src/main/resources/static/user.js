@@ -393,7 +393,7 @@ function createCalendar() {
         calendar.append(dateDiv);
         calendar.append(eventDiv);
       }
-      data.savedEvents.forEach((event) => {
+      userData.savedEvents.forEach((event) => {
         createCalendarEvent(event, today, endDate, "coral", true, userData.email);
       });
       fetch('get-all-org-events').then(response => response.json()).then((data) => {
