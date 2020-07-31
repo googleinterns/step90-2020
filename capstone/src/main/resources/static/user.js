@@ -62,6 +62,8 @@ function addImageField(formName) {
 /* upon submission, hide the image form */
 function closeImageForm() {
   document.getElementById("user-image-form").style.display = "none";
+  document.getElementById("user").style.display = "none";
+  document.getElementById("organization").style.display = "none";
   // refresh the page 8 seconds after submission
   setTimeout(function () {
     document.getElementById("get-image").setAttribute("src", "get-image?" + new Date().getTime());
@@ -413,11 +415,7 @@ function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, u
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
     var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
     const generalDateDiv = document.getElementById("date" + diff);
-    const newEvent = createEventElement(generalDateDiv, event, true, isSavedEvent, userEmail);
-    if (!isSavedEvent) {
-      newEvent.appendChild(createDeleteButton(event.organizationId));
-    }
-    newEvent.style.borderColor = borderColor;
+    createEventElement(generalDateDiv, event, false, false, userEmail);
   }
 }
 /* function to create a public profile of an organization */
