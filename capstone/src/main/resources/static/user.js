@@ -483,7 +483,7 @@ function recommend(count, recommendationType, email) {
     if (recommendationType == "events") {
       data.forEach((event) => createEventElement(recDiv, event, true, false, email));
     } else {
-      data.forEach((org) => createSavedOrgElement(recDiv, org, false, false));
+      data.forEach((org) => createSavedOrgElement(recDiv, org, false, true));
     }
     hideSpinner();
   }).catch((error) => {
