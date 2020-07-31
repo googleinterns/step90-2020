@@ -37,7 +37,7 @@ public class GcsStore {
                     "<form action='"
                             + policy.getUrl()
                             + "' method='POST' enctype='multipart/form-data'>\n");
-    htmlForm.append("<label>Profile Image (After clicking submit the change will take effect after refreshing the page):</label>");
+    htmlForm.append("<label>Profile Image (After clicking submit the change will take effect after 8 seconds):</label>");
     for (Map.Entry<String, String> entry : policy.getFields().entrySet()) {
       htmlForm.append(
               "  <input name='"
@@ -47,7 +47,7 @@ public class GcsStore {
                       + "' type='hidden' />\n");
     }
     htmlForm.append("  <input type='file' name='file' required/><br />\n");
-    htmlForm.append("  <input type='submit' value='Upload File' name='x-ignore-submit' onsubmit='closeImageForm();'/><br />\n");
+    htmlForm.append("  <input type='submit' value='Upload File' name='x-ignore-submit' onclick='closeImageForm();'/><br />\n");
     htmlForm.append("</form>\n");
 
     return htmlForm.toString();

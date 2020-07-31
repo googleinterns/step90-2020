@@ -62,6 +62,8 @@ function addImageField(formName) {
 /* upon submission, hide the image form */
 function closeImageForm() {
   document.getElementById("user-image-form").style.display = "none";
+  document.getElementById("user").style.display = "none";
+  document.getElementById("organization").style.display = "none";
   // refresh the page 8 seconds after submission
   setTimeout(function () {
     document.getElementById("get-image").setAttribute("src", "get-image?" + new Date().getTime());
