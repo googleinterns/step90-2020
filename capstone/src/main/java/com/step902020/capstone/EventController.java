@@ -82,7 +82,7 @@ public class EventController {
   @GetMapping("get-map-events")
   public Iterable<Event> getMapEvents(CurrentUser user) {
     University university = this.individualRepository.findFirstByEmail(user.getEmail()).getUniversity();
-    return this.eventRepository.findByUniversityAndEventDateTimeGreaterThanOrderByRankDesc(university, LocalDateTime.now().toString());
+    return this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(university, LocalDateTime.now().toString());
   }
 
   @GetMapping("get-university-map")

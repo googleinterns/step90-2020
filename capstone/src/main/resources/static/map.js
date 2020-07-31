@@ -45,15 +45,19 @@ function createMapForASingleEvent(event) {
  * @param campusMap - Google Map object
  */
 function createMarker(event,campusMap) {
-  var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
-  const newMarker = new google.maps.Marker({
-    map: campusMap,
-    title: event.eventTitle,
-    position: eventPosition,
-  });
-  var eventInfoWindow = createInfoWindow(event, campusMap);
-  newMarker.addListener('click', function() {
-    eventInfoWindow.open(campusMap, newMarker);
+  fetch("user-info").then(response => response.json()).then((data) => {
+    if (data.userType != 'unknown') {
+      var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
+      const newMarker = new google.maps.Marker({
+        map: campusMap,
+        title: event.eventTitle,
+        position: eventPosition,
+      });
+      var eventInfoWindow = createInfoWindow(event, campusMap, data.userType == 'individual', data.email);
+      newMarker.addListener('click', function() {
+        eventInfoWindow.open(campusMap, newMarker);
+      });
+    }
   });
 }
 
@@ -62,9 +66,11 @@ function createMarker(event,campusMap) {
  * @param campusMap - Google Map object of campus
  * return newInfoWindow = returns created info window
 */
-function createInfoWindow(event, campusMap) {
+function createInfoWindow(event, campusMap, isIndividual, userEmail) {
     var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
-    var eventContent = '<p id=mapContent>'+ event.eventTitle + '</p>';
+    var eventContent = document.createElement("div");
+    eventContent.className = "map-info-window";
+    createEventElement(eventContent, event, isIndividual, false, userEmail)
     const newInfoWindow = new google.maps.InfoWindow({
         content: eventContent,
         position: eventPosition

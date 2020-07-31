@@ -408,3 +408,9 @@ div.row {
     margin-right: auto;
     border-radius: 20px;
 }
+
+.map-info-window {
+  background-color: #073763ff;
+  color: #ffffff;
+  font-family: 'Lato', sans-serif;
+}

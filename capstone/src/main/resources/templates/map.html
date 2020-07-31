@@ -4,13 +4,15 @@
   <head>
     <meta charset="UTF-8">
     <title> Map </title>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8&callback=createMap">
-    </script>
-    <script src="map.js"> </script>
-    <script src="script.js"> </script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+    <script src="script.js"></script>
     <script src="user.js"></script>
-    <script src="event.js"> </script>
+    <script src="event.js"></script>
+    <script src="map.js"> </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8">
+    </script>
     <link rel="stylesheet" href="style.css">
   </head>
 
@@ -19,6 +21,7 @@
     <div th:replace="fragments/navbar::navbar"></div>
     <div id="contents">
       <div id="map"> </div>
+      <div th:replace="fragments/eventmodal::eventmodal"></div>
     </div>
   </body>
 
