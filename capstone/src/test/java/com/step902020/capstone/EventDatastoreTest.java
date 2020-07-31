@@ -68,7 +68,7 @@ public class EventDatastoreTest {
 
     expectedEvent = new Event(expectedUniversity, expectedOrganization.getName(),
             expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST",
-            "Turtles bring pizza", 40.769579, -73.973036,
+            "Turtles bring pizza", 40.769579, -73.973036, "movie",
             true, false);
 
     String individualName = individual.firstName + " " + individual.lastName;

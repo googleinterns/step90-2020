@@ -26,7 +26,9 @@ import java.io.IOException;
  * Event functionalities
  *   - Add new reviews
  *   - List reviews
- * TODO: filtering, creating event with front end input
+ *   - Filters events
+ *   - Create event
+ *   - Update event
  */
  
 @RestController
@@ -54,20 +56,28 @@ public class EventController {
 
   @GetMapping("get-filtered-events")
   public List<Event> getFilteredEvents(
+          @RequestParam("universityName") String universityName,
           @RequestParam("foodAvailable") Boolean foodAvailable,
-          @RequestParam("requiredFee") Boolean requiredFee) throws IOException {
-    // False values changed to null for matching
-    foodAvailable = foodAvailable == false ? null: foodAvailable;
-    requiredFee = requiredFee == false ? null: requiredFee;
+          @RequestParam("free") Boolean free,
+          @RequestParam("eventType") String eventType,
+          @RequestParam("eventTitle") String eventTitle) throws IOException {
+    Iterable<Event> events;
+    University university = this.universityRepository.findFirstByName(universityName);
 
-    Iterable<Event> events = this.eventRepository.findAll(
-            Example.of(new Event(null, null, 0, null,
-                            null, null, 0,
-                            0, foodAvailable, requiredFee),
-                    ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude")
-            )
+    if (eventTitle.equals("")) {
+      // False values changed to null for matching
+      foodAvailable = foodAvailable == false ? null: foodAvailable;
+      free = free == false ? null: free;
+      eventType = eventType.equals("") ? null: eventType;
 
-    );
+      events = this.eventRepository.findAll(
+          Example.of(new Event(null, null, 0, null, null,
+                          null, 0, 0, eventType, foodAvailable, free),
+          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "EventLongitude")));
+    } else {
+      events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
+    }
+
     List<Event> noPastEvents = new ArrayList<Event>();
     LocalDateTime now = LocalDateTime.now();
     for (Event e : events) {
@@ -111,8 +121,9 @@ public class EventController {
      @RequestParam("eventDescription") String eventDescription,
      @RequestParam("eventLatitude") String eventLatitude,
      @RequestParam("eventLongitude") String eventLongitude,
+     @RequestParam("eventType") String eventType,
      @RequestParam("foodAvailable") Optional<Boolean> foodAvailable,
-     @RequestParam("requiredFee") Optional<Boolean> requiredFee,
+     @RequestParam("free") Optional<Boolean> free,
      @RequestParam("event-id") String eventId
     ) throws IOException {
       Organization organization = organizationRepository.findFirstByEmail(user.getEmail());
@@ -125,13 +136,14 @@ public class EventController {
         event.setEventTitle(eventTitle);
         event.setOrganizationId(organization.getDatastoreId());
         event.setOrganizationName(organization.getName());
+        event.setEventType(eventType);
         event.setFoodAvailable(foodAvailable.orElse(false));
-        event.setRequiredFee(requiredFee.orElse(false));
+        event.setFree(free.orElse(false));
         this.eventRepository.save(event);
       } else {
         Event newEvent = new Event(organization.getUniversity(), organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime,
-                eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude),
-                foodAvailable.orElse(false), requiredFee.orElse(false));
+                eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), eventType,
+                foodAvailable.orElse(false), free.orElse(false));
         this.eventRepository.save(newEvent);
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);

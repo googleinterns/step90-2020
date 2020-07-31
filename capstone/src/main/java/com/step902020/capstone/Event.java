@@ -20,31 +20,28 @@ public class Event implements Comparable{
 
   Long organizationId;
 
-  @Field(name="eventTitle")
   String eventTitle;
 
-  @Field(name="eventDateTime")
   String eventDateTime;
 
-  @Field(name="eventDescription")
   String eventDescription;
 
-  @Field(name="eventLatitude")
   double eventLatitude;
 
-  @Field(name="eventLongitude")
   double eventLongitude;
 
-  @Field(name="foodAvailable")
+  String eventType;
+
   Boolean foodAvailable;
 
-  @Field(name="requiredFee")
-  Boolean requiredFee;
+  Boolean free;
   
   @Reference
   List<Review> reviews;
 
-  public Event(University university, String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
+  public Event(University university, String organizationName, long organizationId, String eventTitle,
+               String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude,
+               String eventType, Boolean foodAvailable, Boolean free) {
     this.university = university;
     this.organizationName = organizationName;
     this.organizationId = organizationId;
@@ -53,8 +50,9 @@ public class Event implements Comparable{
     this.eventDescription = eventDescription;
     this.eventLatitude = eventLatitude;
     this.eventLongitude = eventLongitude;
+    this.eventType = eventType;
     this.foodAvailable = foodAvailable;
-    this.requiredFee = requiredFee;
+    this.free = free;
     this.reviews = new ArrayList();
   }
 
@@ -95,12 +93,16 @@ public class Event implements Comparable{
     return eventDescription;
   }
 
+  public String getEventType() {
+    return eventType;
+  }
+
   public Boolean getFoodAvailable() {
     return foodAvailable;
   }
 
-  public Boolean getRequiredFee() {
-    return requiredFee;
+  public Boolean getFree() {
+    return free;
   }
 
   public void setDatastoreId(Long datastoreId) {
@@ -124,11 +126,14 @@ public class Event implements Comparable{
   public void setEventLongitude(double eventLongitude) {
     this.eventLongitude = eventLongitude;
   }
+  public void setEventType(String eventType) {
+    this.eventType = eventType;
+  }
   public void setFoodAvailable(Boolean foodAvailable) {
     this.foodAvailable = foodAvailable;
   }
-  public void setRequiredFee(Boolean requiredFee) {
-    this.requiredFee = requiredFee;
+  public void setFree(Boolean free) {
+    this.free = free;
   }
 
   public void setOrganizationName(String organizationName) {
