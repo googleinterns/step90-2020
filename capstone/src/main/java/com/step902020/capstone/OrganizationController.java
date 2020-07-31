@@ -57,7 +57,8 @@ public class OrganizationController {
       CurrentUser user,
       @RequestParam("user-type") String userType,
       @RequestParam("university") String university,
-      @RequestParam("description") String description) throws IOException {
+      @RequestParam("description") String description,
+      @RequestParam("org-type") String orgType) throws IOException {
 
     Organization current = getOrganization(user);
     
@@ -65,9 +66,10 @@ public class OrganizationController {
     if (current != null) {
       current.setName(name);
       current.setDescription(description);
+      current.setOrgType(orgType);
     } else {
       University universityReference = this.universityRepository.findFirstByName(university);
-      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), universityReference, userType, description);
+      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), universityReference, userType, description, orgType);
     }
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
@@ -83,10 +85,19 @@ public class OrganizationController {
   @GetMapping("search-organization")
   public List<Organization> searchOrganization(
       @RequestParam("name") String name, 
-      @RequestParam("university") String university) throws IOException {
+      @RequestParam("university") String university,
+      @RequestParam("orgTypes") List<String> orgTypes) throws IOException {
     University universityReference = this.universityRepository.findFirstByName(university);
     if (name.equals("")) {
+      if (orgTypes.isEmpty()) {
         return this.organizationRepository.findByUniversity(universityReference);
+      } else {
+        List<Organization> filteredOrgs = new ArrayList();
+        for(String orgType: orgTypes) {
+          filteredOrgs.addAll(this.organizationRepository.findByUniversityAndOrgType(universityReference, orgType));
+        }
+        return filteredOrgs;
+      }
     } else {
         return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", universityReference);
     } 

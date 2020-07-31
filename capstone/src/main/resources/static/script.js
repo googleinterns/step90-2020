@@ -1,3 +1,36 @@
+function createMap() {
+  var nycLatLng = {lat: 40.730610, lng: -73.935242};
+  const map = new google.maps.Map(
+      document.getElementById('map'),
+      {center: nycLatLng, zoom: 11});
+}
+
+/**
+ * Fill an existing document element's inner text
+ * @param elementId document element's id
+ * @param innerText text for inner text
+ * @return element with added text
+ */
+function setElementInnerText(elementId, innerText){
+  const element = document.getElementById(elementId);
+  element.innerText = innerText;
+  return element;
+}
+
+/**
+ * Create new element with inner text and appended to an element
+ * @param elementElement element to append
+ * @param elementType element to create
+ * @param innerText text for inner text
+ * @return created element
+ */
+function createElement(appendElement, elementType, innerText){
+  const element = document.createElement(elementType);
+  element.innerText = innerText;
+  appendElement.appendChild(element);
+  return element;
+}
+
 /**
  * Toggle advanced filters
  */
@@ -29,4 +62,29 @@ function toggleBorderSelection(elementId) {
       element.classList.remove('selected');
     }
   }
+}
+
+/*
+ * Create elements from list of organization types
+ * @param appendElementId id of DOM element
+ * @param elementType type of element to create
+ */
+function createOrgTypeElements(appendElementId, elementType) {
+  var orgTypeValues = ["academic", "athletic", "arts", "cultural", "professional", "political", "service", "studentgov"];
+  var orgTypeNames = ["Academic", "Athletic", "Arts", "Cultural", "Professional", "Political", "Service", "Student Government"];
+  var appendElement = document.getElementById(appendElementId);
+
+  orgTypeValues.forEach(function (item, index) {
+    var value = orgTypeValues[index];
+    var element = createElement(appendElement, elementType, orgTypeNames[index]);
+    element.value = value;
+
+    if (elementType == "button") {
+      element.id = value;
+      element.className = "orgFilter";
+      element.addEventListener('click', () => {
+         toggleBorderSelection(value);
+      });
+    }
+  });
 }

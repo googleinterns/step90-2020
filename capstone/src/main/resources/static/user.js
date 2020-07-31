@@ -344,7 +344,12 @@ function searchOrg() {
     } else {
       var displaySaveButton = data.userType == "individual";
       var name = document.getElementById("search-org").value;
-      fetch('search-organization?name=' + name + "&university=" + data.university.name).then(response => response.json()).then((organizations) => {
+      var selectedOrgTypes = document.querySelectorAll('.orgFilter.selected');
+      var orgTypes = new Array();
+      for(var value of selectedOrgTypes.values()) {
+        orgTypes.push(value.value);
+      }
+      fetch('search-organization?name=' + name + "&university=" + data.university.name + "&orgTypes=" + orgTypes).then(response => response.json()).then((organizations) => {
         const orgListElement = document.getElementById('list-organizations');
         orgListElement.innerHTML = '';
 
