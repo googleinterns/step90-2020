@@ -49,9 +49,14 @@ function loadEvents(data) {
    fetch('get-filtered-events?universityName=' + universityName + '&foodAvailable=' + selectedFilter('food') +
    '&free=' + selectedFilter('free') + '&eventType=' + '&eventTitle=').then(response => response.json()).then((events) => {
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
-    events.forEach((event) => {
-      createEventElement(eventListElement, event, isIndividual, false, data.email);
-    })
+    if (events.length > 0){
+      events.forEach((event) => {
+         createEventElement(eventListElement, event, isIndividual, false, data.email);
+      })
+    } else {
+      createElement(eventListElement, 'p', 'No events fit your filters');
+    }
+
   });
 }
 

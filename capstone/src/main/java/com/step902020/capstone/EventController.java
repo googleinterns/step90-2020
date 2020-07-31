@@ -73,7 +73,7 @@ public class EventController {
       events = this.eventRepository.findAll(
           Example.of(new Event(null, null, 0, null, null,
                           null, 0, 0, eventType, foodAvailable, free),
-          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "EventLongitude")));
+          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "requiredFee")));
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
     }
@@ -84,7 +84,7 @@ public class EventController {
       LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
       if (eventDate.compareTo(now) >= 0) {
         noPastEvents.add(e);
-      }git
+      }
     }
     return noPastEvents;
   }
