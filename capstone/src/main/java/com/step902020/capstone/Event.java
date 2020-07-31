@@ -145,14 +145,14 @@ public class Event implements Comparable{
   /**
    * increases rank by 1
    */
-  public void addRank() {
+  public void incrementRank() {
     rank++;
   }
 
   /**
    * decreases rank by 1
    */
-  public void minusRank() {
+  public void decrementRank() {
     rank--;
   }
 

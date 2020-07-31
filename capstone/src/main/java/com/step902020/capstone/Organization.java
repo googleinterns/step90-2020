@@ -93,14 +93,14 @@ public class Organization implements Comparable {
   /**
    * increase rank by 1
    */
-  public void addRank() {
+  public void incrementRank() {
     rank++;
   }
 
   /**
    * decrease rank by 1
    */
-  public void minusRank() {
+  public void decrementRank() {
     rank--;
   }
 

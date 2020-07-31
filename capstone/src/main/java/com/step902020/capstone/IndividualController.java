@@ -85,7 +85,7 @@ public class IndividualController {
     Individual current = getIndividual(user);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (current != null) {
-      event.addRank();
+      event.incrementRank();
       this.eventRepository.save(event);
       current.addSavedEvents(event);
     }
@@ -109,7 +109,7 @@ public class IndividualController {
     Individual current = getIndividual(user);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (current != null) {
-      event.minusRank();
+      event.decrementRank();
       this.eventRepository.save(event);
       current.deleteSavedEvents(event);
     }
@@ -133,7 +133,7 @@ public class IndividualController {
     Individual current = getIndividual(user);
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
     if (current != null) {
-      organization.addRank();
+      organization.incrementRank();
       this.organizationRepository.save(organization);
       current.addOrganizations(organization);
     } 
@@ -158,7 +158,7 @@ public class IndividualController {
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
 
     if (current != null) {
-      organization.minusRank();
+      organization.decrementRank();
       this.organizationRepository.save(organization);
       current.deleteOrganizations(organization);
     } 
