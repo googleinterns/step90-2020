@@ -467,7 +467,7 @@ function findRecommended(recommendationType) {
       displayMain(false);
       hideSpinner();
     } else {
-      recommend(count, recommendationType);
+      recommend(count, recommendationType, data.email);
       displayMain(true);
     }
   }).catch((error) => {
@@ -476,12 +476,12 @@ function findRecommended(recommendationType) {
   });
 }
 
-function recommend(count, recommendationType) {
+function recommend(count, recommendationType, email) {
   fetch('get-recommended-'+ recommendationType + '-individual?count=' + count).then(response => response.json()).then((data) => {
     const recDiv = document.getElementById("recommended-section");
     recDiv.innerHTML = "";
     if (recommendationType == "events") {
-      data.forEach((event) => createEventElement(recDiv, event, true, false, false));
+      data.forEach((event) => createEventElement(recDiv, event, true, false, email));
     } else {
       data.forEach((org) => createSavedOrgElement(recDiv, org, false, false));
     }
