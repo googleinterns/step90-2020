@@ -3,6 +3,7 @@ body {
   background-color: #073763ff;
   color: #ffffff;
   font-family: 'Lato', sans-serif;
+  text-transform: lowercase;
 }
 
 button, input, select {
@@ -223,6 +224,13 @@ div.row {
   cursor: pointer;
 }
 
+.eventDetail {
+  border: 2px solid deepskyblue;
+  border-radius: 20px;
+  margin: 5px;
+  padding: 15px;
+}
+
 #events {
   text-align: center;
 }
@@ -270,6 +278,10 @@ div.row {
   padding: 20px;
   text-align: center;
   width: 25%;
+}
+
+.eventDetail {
+  display: -webkit-inline-box;
 }
 
 .selected {

@@ -30,3 +30,18 @@ function toggleBorderSelection(elementId) {
     }
   }
 }
+
+/*
+ * Create elements from list of event types
+ * @param appendElementId id of DOM element
+ * @param elementType type of element to create
+ */
+function createEventTypeElements(appendElementId, elementType) {
+  var eventTypeValues = ["forum", "game", "movie", "party", "performance", "speaker", "volunteer", "workshop"];
+  var appendElement = document.getElementById(appendElementId);
+
+  eventTypeValues.forEach(function (item, index) {
+    var element = createElement(appendElement, elementType, item);
+    element.value = item;
+  });
+}

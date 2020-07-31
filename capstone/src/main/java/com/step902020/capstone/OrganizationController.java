@@ -19,10 +19,13 @@ import java.io.IOException;
 public class OrganizationController {
 
   @Autowired
+  private EventRepository eventRepository;
+
+  @Autowired
   private OrganizationRepository organizationRepository;
 
   @Autowired
-  private EventRepository eventRepository;
+  private IndividualRepository individualRepository;
 
   @Autowired
   private UniversityRepository universityRepository;
@@ -85,6 +88,7 @@ public class OrganizationController {
       @RequestParam("name") String name, 
       @RequestParam("university") String university) throws IOException {
     University universityReference = this.universityRepository.findFirstByName(university);
+
     if (name.equals("")) {
         return this.organizationRepository.findByUniversity(universityReference);
     } else {
@@ -168,5 +172,28 @@ public class OrganizationController {
   @GetMapping(value = "get-public-image", produces = MediaType.IMAGE_JPEG_VALUE)
   public @ResponseBody byte[] getImage(@RequestParam("email") String email) throws IOException {
     return gcsstore.serveImage("step90-2020", "step90-2020.appspot.com", email);
+  }
+
+  /**
+   * Add new review to event
+   * @param user current user
+   * @param orgId Organization's datastore id
+   * @param text Review's text
+   * @return Updated review list
+   */
+  @PostMapping("/new-org-review")
+  public List<Review> addReview(
+          CurrentUser user,
+          @RequestParam("text") String text,
+          @RequestParam("orgId") Long orgId) throws IOException {
+
+    Organization organization = this.organizationRepository.findById(orgId).get();
+    Individual individual = this.individualRepository.findFirstByEmail(user.getEmail());
+    String individualName = individual.firstName + " " + individual.lastName;
+    String individualEmail = individual.email;
+    Review review = new Review(individualName, individualEmail, text);
+    organization.addReview(review);
+    this.organizationRepository.save(organization);
+    return organization.reviews;
   }
 }

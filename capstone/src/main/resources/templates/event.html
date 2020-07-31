@@ -14,7 +14,8 @@
 
     <link rel="stylesheet" href="style.css">
   </head>
-  <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo(); createEventPlacementMap()">
+  <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo(); createEventPlacementMap();
+        createEventTypeElements('eventType', 'option')">
     <div th:replace="fragments/navbar::navbar"></div>
     <br />
     <div class="container">
@@ -43,15 +44,19 @@
             <input id="eventLongitude" name="eventLongitude" placeholder="Event Longitude" required>
             <br><br>
 
-            <label for="eventDescription"> Event Description: </label> <br>
-            <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
-            <br><br>
-
             <label> Event Map: </label>
             <br>
             <p>Click on the map to add a marker for the event's location.</p>
             <div id="eventMap"></div>
             <br> <br>
+
+            <label for="eventDescription"> Event Description: </label> <br>
+            <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
+            <br><br>
+
+            <label for="eventType"> Event Type: </label> <br>
+            <select name="eventType" id="eventType" required></select>
+            <br><br>
 
            <label> Additional Event Details: </label>
            <br><br>

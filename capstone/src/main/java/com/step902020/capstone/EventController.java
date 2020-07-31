@@ -84,7 +84,7 @@ public class EventController {
       LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
       if (eventDate.compareTo(now) >= 0) {
         noPastEvents.add(e);
-      }
+      }git
     }
     return noPastEvents;
   }

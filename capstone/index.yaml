@@ -6,10 +6,11 @@ indexes:
 
 - kind: event
   properties:
-    - name: availableFood
-    - name: requiredFee
+    - name: university
+    - name: eventDateTime
 
 - kind: event
   properties:
     - name: university
-    - name: eventDateTime
+    - name: eventTitle
+
