@@ -89,7 +89,7 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
 
   // Click for event detail modal
   eventElement.addEventListener('click', () => {
-    showEventPage(event, isIndividual, userEmail);
+    showEventPage(event, isIndividual, userEvent, userEmail);
   });
 
   // Name
@@ -104,19 +104,6 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
 
   // Organization
   createElement(eventElement, 'p', event.organizationName);
-
-  // Only for individual users can save/unsave events
-  if (isIndividual) {
-    if (userEvent) { // Individual has saved event
-      createUnsaveEventButton(eventElement, event);
-    } else {
-      createSaveEventButton(eventElement, event);
-    }
-  } else {
-    if (userEvent) {
-      createEditAndDeleteEventButton(eventElement, event);
-    }
-  }
 }
 
 /**
@@ -125,7 +112,7 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
  * @param isIndividual if current user is an individual user
  * @param userEmail current user's email
  */
-function showEventPage(event, isIndividual, userEmail) {
+function showEventPage(event, isIndividual, userEvent, userEmail) {
   fillEventDetails(event);
   const modal = document.getElementById('modal');
   modal.style.display = 'block';
@@ -133,6 +120,21 @@ function showEventPage(event, isIndividual, userEmail) {
   const extraDetailsContainer =  document.getElementById("details-container");
   extraDetailsContainer.innerHTML = '';
   createExtraDetailsElement(extraDetailsContainer, event);
+
+  const userFunctionButtonsContainer =  document.getElementById("user-function-buttons-container");
+  userFunctionButtonsContainer.innerHTML = '';
+  // Only for individual users can save/unsave events
+  if (isIndividual) {
+    if (userEvent) { // Individual has saved event
+      createUnsaveEventButton(userFunctionButtonsContainer, event);
+    } else {
+      createSaveEventButton(userFunctionButtonsContainer, event);
+    }
+  } else {
+    if (userEvent) {
+      createEditAndDeleteEventButton(userFunctionButtonsContainer, event);
+    }
+  }
 
   const reviewContainer = document.getElementById("review-container");
   reviewContainer.innerHTML = '';

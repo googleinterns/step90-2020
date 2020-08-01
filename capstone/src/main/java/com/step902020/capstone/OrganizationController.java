@@ -177,8 +177,8 @@ public class OrganizationController {
   /**
    * Add new review to event
    * @param user current user
-   * @param orgId Organization's datastore id
    * @param text Review's text
+   * @param orgId Organization's datastore id
    * @return Updated review list
    */
   @PostMapping("/new-org-review")
