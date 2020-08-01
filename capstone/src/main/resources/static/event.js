@@ -47,7 +47,8 @@ function loadEvents(data) {
   var universityName = data.university.name;
 
    fetch('get-filtered-events?universityName=' + universityName + '&eventTitle=' + '&eventType=' + selectedFilter('type')
-    + '&energyLevel=' + selectedFilter('energyLevel') + '&location=' + selectedFilter('location') + '&foodAvailable=' + selectedFilter('food') + '&free=' + selectedFilter('free') +
+    + '&energyLevel=' + selectedFilter('energyLevel') + '&location=' + selectedFilter('location') +
+    '&foodAvailable=' + selectedFilter('food') + '&free=' + selectedFilter('free') +
     '&visitorAllowed=' + selectedFilter('visitorAllowed')).then(response => response.json()).then((events) => {
 
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
@@ -150,7 +151,7 @@ function createExtraDetailsElement(appendElement, event) {
     createElement(appendElement, 'p', 'Free').className = 'eventDetail';
   }
   if (event.eventType) {
-    createElement(appendElement, 'p', event.eventType.toUpperCase()).className = 'eventDetail';
+    createElement(appendElement, 'p', event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)).className = 'eventDetail';
   }
 }
 

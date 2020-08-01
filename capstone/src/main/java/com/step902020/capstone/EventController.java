@@ -54,6 +54,18 @@ public class EventController {
     return this.eventRepository.findAll();
   }
 
+  /**
+   * Find events that fit filters, have not happened, belong to user's university
+   * @param universityName university name
+   * @param eventTitle name of event
+   * @param eventType event type
+   * @param energyLevel amount of energy/excitement/work suggest for event
+   * @param location is event indoors or outddors
+   * @param foodAvailable if event provides food
+   * @param free if event is free
+   * @param visitorAllowed if visitors can attend event
+   * @return list of valid events that fit selected filters
+   */
   @GetMapping("get-filtered-events")
   public List<Event> getFilteredEvents(
           @RequestParam("universityName") String universityName,
@@ -67,6 +79,7 @@ public class EventController {
     Iterable<Event> events;
     University university = this.universityRepository.findFirstByName(universityName);
 
+    // Can search with filters or by name -- cannot combine
     if (eventTitle.equals("")) {
       eventType = eventType.equals("") ? null: eventType;
       energyLevel = energyLevel.equals("") ? null: energyLevel;
@@ -80,16 +93,7 @@ public class EventController {
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
     }
-
-    List<Event> noPastEvents = new ArrayList<Event>();
-    LocalDateTime now = LocalDateTime.now();
-    for (Event e : events) {
-      LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
-      if (eventDate.compareTo(now) >= 0) {
-        noPastEvents.add(e);
-      }
-    }
-    return noPastEvents;
+    return getValidEvents(events, university.datastoreId);
   }
 
   @GetMapping("get-map-events")
@@ -182,5 +186,26 @@ public class EventController {
     event.addReview(review);
     this.eventRepository.save(event);
     return event.reviews;
+  }
+
+  /**
+   * Filter out past events and events from other universities
+   * @param events list of events
+   * @param universityId user's university's datastoreId
+   * @return valid events
+   * * FILTER UNIVERSITY MANUALLY DUE TO SMALL EVENT VOLUME*
+   */
+  private List<Event> getValidEvents(Iterable<Event> events, long universityId) {
+    List<Event> validEvents = new ArrayList<Event>();
+    LocalDateTime now = LocalDateTime.now();
+    for (Event e : events) {
+      if (e.university.datastoreId == universityId) {
+        LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
+        if (eventDate.compareTo(now) >= 0) {
+          validEvents.add(e);
+        }
+      }
+    }
+    return validEvents;
   }
 }

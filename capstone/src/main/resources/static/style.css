@@ -15,7 +15,7 @@ button, input, select {
   padding: 10px 20px;
 }
 
-button:hover, select:hover {
+button:hover, select:hover, input:hover{
 border-color: purple;
 }
 
@@ -42,6 +42,15 @@ li a {
   text-decoration: none;
 }
 
+/* Change color on hover */
+li a:hover, .active a {
+  background-color: #073763ff;
+  border-style: solid;
+  border-color: #ffffff;
+  border-radius:10px;
+  color: #ffffff;
+}
+
 nav li {
   color: white;
   display: inline-block;
@@ -54,7 +63,7 @@ ul {
   overflow: hidden;
 }
 
-/* Shared Nav Bar */
+/* Nav Bar */
 .active-highlighted {
   background-color: #073763ff;
   border-color: coral;
@@ -63,22 +72,19 @@ ul {
   color: #ffffff;
 }
 
-.home {
-  font-size: 18px;
-}
-
-/* Change color on hover */
-li a:hover, .active a {
-  background-color: #073763ff;
-  color: #ffffff;
-  border-style: solid;
-  border-color: #ffffff;
-  border-radius:10px;
+#logo {
+  width: 150px;
+  margin: -40px 10px -50px 10px;
 }
 
 .nav-bar {
   background-color: #ffffff;
   color: #073763ff;
+  height: 70px;
+}
+
+.nav-bar li a {
+  display: table-cell;
 }
 
 /* Profile Page */
