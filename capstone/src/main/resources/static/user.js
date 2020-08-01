@@ -434,6 +434,9 @@ function getPublicProfile() {
            data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, data.email));
            document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
            document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
+           const reviewContainer = document.getElementById("org-review-container");
+           reviewContainer.innerHTML = '';
+           createReviewElement(reviewContainer, data, userType, "org", data.email);
            hideSpinner();
          }).catch((error) => {
            // log error

@@ -136,9 +136,9 @@ function showEventPage(event, isIndividual, userEvent, userEmail) {
     }
   }
 
-  const reviewContainer = document.getElementById("review-container");
+  const reviewContainer = document.getElementById("event-review-container");
   reviewContainer.innerHTML = '';
-  createReviewElement(event, isIndividual, userEmail);
+  createReviewElement(reviewContainer, event, isIndividual, "event", userEmail);
 
   if (event.reviews.length) { // Format time to *** time ago
     timeago.render(document.querySelectorAll('.timeago'));

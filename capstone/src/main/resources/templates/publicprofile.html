@@ -9,6 +9,8 @@
         <script src="script.js"></script>
         <script src="user.js"></script>
         <script src="event.js"></script>
+        <script src="review.js"></script>
+
     </head>
     <body onload="getPublicProfile();">
         <div th:replace="fragments/navbar::navbar"></div>
@@ -31,6 +33,7 @@
                     </div>
                 </div>
                 <div id="hosted-events" class="events"></div>
+                <div id="org-review-container"></div>
                 <div th:replace="fragments/eventmodal::eventmodal"></div>
             </div>
         </div>

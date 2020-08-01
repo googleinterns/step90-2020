@@ -185,7 +185,7 @@ public class OrganizationController {
   public List<Review> addReview(
           CurrentUser user,
           @RequestParam("text") String text,
-          @RequestParam("orgId") Long orgId) throws IOException {
+          @RequestParam("reviewedObjectId") Long orgId) throws IOException {
 
     Organization organization = this.organizationRepository.findById(orgId).get();
     Individual individual = this.individualRepository.findFirstByEmail(user.getEmail());

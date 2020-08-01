@@ -172,13 +172,14 @@ public class EventController {
    * @param text Review's text
    * @return Updated review list
    */
-  @PostMapping("/new-review")
+  @PostMapping("/new-event-review")
   public List<Review> addReview(
           CurrentUser user,
           @RequestParam("text") String text,
-          @RequestParam("eventId") Long eventId) throws IOException {
+          @RequestParam("reviewedObjectId") Long eventId) throws IOException {
 
     Event event = this.eventRepository.findById(eventId).get();
+    System.out.println(event);
     Individual individual = this.individualRepository.findFirstByEmail(user.getEmail());
     String individualName = individual.firstName + " " + individual.lastName;
     String individualEmail = individual.email;

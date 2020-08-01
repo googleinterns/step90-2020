@@ -286,18 +286,30 @@ div.row {
   padding: 15px;
 }
 
+.user-function-buttons-container {
+  margin: 10px;
+}
+
 .selected {
   border: 4px solid #caff00;
 }
 
 /* Reviews */
-#review-container {
+#event-review-container {
   text-align: left;
 }
 
-#review-container h1{
+#event-review-container h1{
   font-size: 25px;
   margin-bottom: 10px;
+}
+
+#org-review-container {
+  text-align: center;
+}
+
+#org-review-container .review {
+  margin: auto;
 }
 
 .review {

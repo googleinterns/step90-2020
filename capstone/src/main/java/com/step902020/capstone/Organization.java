@@ -27,6 +27,7 @@ public class Organization implements Comparable {
   @Reference
   TreeSet<Event> events;
 
+  @Reference
   List<Review> reviews;
   
   public Organization() {
@@ -39,8 +40,8 @@ public class Organization implements Comparable {
     this.university = university;
     this.userType = userType;
     this.description = description;
-    events = new TreeSet<Event>();
-    reviews = new ArrayList<Review>();
+    this.events = new TreeSet<Event>();
+    this.reviews = new ArrayList();
   }
   
   public Long getDatastoreId() {

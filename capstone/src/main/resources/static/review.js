@@ -1,35 +1,34 @@
 /**
  * Create event's review submission elements and formats review listing
  * Only individuals will see review submission option
- * @param event event object
+ * @param reviewedObject event or organization object
  * @param isIndividual if user is an individual user
  * @param userEmail current user's email
  */
-function createReviewElement(event, isIndividual, userEmail) {
-  const reviewElement = document.getElementById('review-container');
-  const reviewTitleElement = createElement(reviewElement, 'h1', 'Reviews');
+function createReviewElement(reviewContainer, reviewedObject, isIndividual, reviewedObjectType, userEmail) {
+  const reviewTitleElement = createElement(reviewContainer, 'h1', 'Reviews');
 
   if (isIndividual) {
-    const reviewInputElement = createElement(reviewElement, 'input', '');
+    const reviewInputElement = createElement(reviewContainer, 'input', '');
     reviewInputElement.className = 'review-submission';
     reviewInputElement.setAttribute('placeholder', 'Leave a review');
     reviewInputElement.setAttribute('type', 'text');
 
-    reviewButtonElement = createElement(reviewElement, 'button', 'Submit');
+    reviewButtonElement = createElement(reviewContainer, 'button', 'Submit');
     reviewButtonElement.className = 'review-submission';
 
     reviewButtonElement.addEventListener('click', () => {
       if (reviewInputElement.value != '') {
-        newReview(event.datastoreId, reviewInputElement.value).then((reviews) => {
-          reviewsContainer.innerHTML = '';
-          createReviewContainerElement(reviewsContainer, reviews, userEmail);
+        newReview(reviewedObject.datastoreId, reviewInputElement.value, reviewedObjectType).then((reviews) => {
+          reviewElementsContainer.innerHTML = '';
+          createReviewContainerElement(reviewElementsContainer, reviews, userEmail);
         });
       }
     });
   }
-  const reviewsContainer = createElement(reviewElement, 'div', '');
-  reviewsContainer.id = 'review-list-container';
-  createReviewContainerElement(reviewsContainer, event.reviews, userEmail);
+  const reviewElementsContainer = createElement(reviewContainer, 'div', '');
+  reviewElementsContainer.id = 'review-list-container';
+  createReviewContainerElement(reviewElementsContainer, reviewedObject.reviews, userEmail);
 }
 
 /**
@@ -112,11 +111,16 @@ function createReviewEditButton(reviewContainer, reviewTextElement, reviewId) {
  * @param text review's text content
  * @return update list of reviews
  */
-async function newReview(eventId, text) {
+async function newReview(reviewedObjectId, text, reviewedObjectType) {
   const params = new URLSearchParams();
   params.append('text', text);
-  params.append('eventId', eventId);
-  const response = await fetch('new-review', {method:'POST', body: params});
+  params.append('reviewedObjectId', reviewedObjectId);
+  var response;
+  if (reviewedObjectType == "event") {
+    response = await fetch('new-event-review', {method:'POST', body: params});
+  } else if (reviewedObjectType == "org"){
+    response = await fetch('new-org-review', {method:'POST', body: params});
+  }
   const reviews = response.json();
   getEvents();
   return reviews;
