@@ -70,13 +70,13 @@ function toggleBorderSelection(elementId) {
  * @param elementType type of element to create
  */
 function createEventTypeElements(appendElementId, elementType) {
-  var eventTypeValues = ["forum", "game", "movie", "party", "performance", "speaker", "volunteer", "workshop"];
+  var eventTypeValues = ["forum", "game", "movie", "party", "performance", "speaker", "volunteer", "workshop", "other"];
   var appendElement = document.getElementById(appendElementId);
 
   eventTypeValues.forEach(function (item, index) {
     var element = createElement(appendElement, elementType, item);
     element.value = item;
-    }
+    });
 }
 
 /*

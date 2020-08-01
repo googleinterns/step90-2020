@@ -57,22 +57,25 @@ public class EventController {
   @GetMapping("get-filtered-events")
   public List<Event> getFilteredEvents(
           @RequestParam("universityName") String universityName,
+          @RequestParam("eventTitle") String eventTitle,
+          @RequestParam("eventType") String eventType,
+          @RequestParam("energyLevel") String energyLevel,
+          @RequestParam("location") String location,
           @RequestParam("foodAvailable") Boolean foodAvailable,
           @RequestParam("free") Boolean free,
-          @RequestParam("eventType") String eventType,
-          @RequestParam("eventTitle") String eventTitle) throws IOException {
+          @RequestParam("visitorAllowed") Boolean visitorAllowed) throws IOException {
     Iterable<Event> events;
     University university = this.universityRepository.findFirstByName(universityName);
 
     if (eventTitle.equals("")) {
-      // False values changed to null for matching
-      foodAvailable = foodAvailable == false ? null: foodAvailable;
-      free = free == false ? null: free;
       eventType = eventType.equals("") ? null: eventType;
+      energyLevel = energyLevel.equals("") ? null: energyLevel;
+      location = location.equals("") ? null: location;
 
       events = this.eventRepository.findAll(
           Example.of(new Event(null, null, 0, null, null,
-                          null, 0, 0, eventType, foodAvailable, free),
+                          null, 0, 0, eventType, null, location,
+                          foodAvailable, free, visitorAllowed),
           ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "requiredFee")));
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
@@ -122,8 +125,11 @@ public class EventController {
      @RequestParam("eventLatitude") String eventLatitude,
      @RequestParam("eventLongitude") String eventLongitude,
      @RequestParam("eventType") String eventType,
+     @RequestParam("energyLevel") String energyLevel,
+     @RequestParam("location") String location,
      @RequestParam("foodAvailable") Optional<Boolean> foodAvailable,
      @RequestParam("free") Optional<Boolean> free,
+     @RequestParam("visitorAllowed") Optional<Boolean> visitorAllowed,
      @RequestParam("event-id") String eventId
     ) throws IOException {
       Organization organization = organizationRepository.findFirstByEmail(user.getEmail());
@@ -137,13 +143,17 @@ public class EventController {
         event.setOrganizationId(organization.getDatastoreId());
         event.setOrganizationName(organization.getName());
         event.setEventType(eventType);
+        event.setEnergyLevel(energyLevel);
+        event.setLocation(location);
         event.setFoodAvailable(foodAvailable.orElse(false));
         event.setFree(free.orElse(false));
+        event.setVisitorAllowed(visitorAllowed.orElse(false));
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization.getUniversity(), organization.getName(), organization.getDatastoreId(), eventTitle, eventDateTime,
-                eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude), eventType,
-                foodAvailable.orElse(false), free.orElse(false));
+        Event newEvent = new Event(organization.getUniversity(), organization.getName(), organization.getDatastoreId(),
+                eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude),
+                Double.parseDouble(eventLongitude), eventType, energyLevel, location,
+                foodAvailable.orElse(false), free.orElse(false), visitorAllowed.orElse(false));
         this.eventRepository.save(newEvent);
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);

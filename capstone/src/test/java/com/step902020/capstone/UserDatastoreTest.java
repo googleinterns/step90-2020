@@ -81,8 +81,10 @@ public class UserDatastoreTest {
                 "hello world!"));
 
 
-    expectedEvent = this.eventRepository.save(new Event(expectedUniversity, expectedOrganization.getName(), expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST", "Turtles bring pizza",
-        40.769579, -73.973036, "movie",true, false));
+    expectedEvent = this.eventRepository.save(new Event(expectedUniversity, expectedOrganization.getName(),
+            expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST",
+            "Turtles bring pizza",40.769579, -73.973036, "movie",
+            "2", "indoors", true, false, true));
     expectedOrganization.addEvent(expectedEvent);
     this.organizationRepository.save(expectedOrganization);
 

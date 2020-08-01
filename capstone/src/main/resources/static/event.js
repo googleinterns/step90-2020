@@ -46,30 +46,33 @@ function loadEvents(data) {
   var isIndividual = data.userType == "individual";
   var universityName = data.university.name;
 
-   fetch('get-filtered-events?universityName=' + universityName + '&foodAvailable=' + selectedFilter('food') +
-   '&free=' + selectedFilter('free') + '&eventType=' + '&eventTitle=').then(response => response.json()).then((events) => {
+   fetch('get-filtered-events?universityName=' + universityName + '&eventTitle=' + '&eventType=' + selectedFilter('type')
+    + '&energyLevel=' + selectedFilter('energyLevel') + '&location=' + selectedFilter('location') + '&foodAvailable=' + selectedFilter('food') + '&free=' + selectedFilter('free') +
+    '&visitorAllowed=' + selectedFilter('visitorAllowed')).then(response => response.json()).then((events) => {
+
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
+
     if (events.length > 0){
       events.forEach((event) => {
          createEventElement(eventListElement, event, isIndividual, false, data.email);
       })
     } else {
-      createElement(eventListElement, 'p', 'No events fit your filters');
+      createElement(eventListElement, 'p', 'Sorry! No events fit your filters');
     }
-
   });
 }
 
 /**
  * Check if a filter has been selected
  * @param elementId Id of filter element
- * @return true if filter was selected, false if not
+ * @return value of filter element if selected, empty string if not
  */
 function selectedFilter(elementId){
-  if (document.getElementById(elementId).classList.contains('selected')) {
-    return true;
+  const filterElement = document.getElementById(elementId);
+  if (filterElement.classList.contains('selected')) {
+    return filterElement.value;
   }
-  return false;
+  return '';
 }
 /**
  * Create a formatted list of events
@@ -143,9 +146,11 @@ function createExtraDetailsElement(appendElement, event) {
   if (event.foodAvailable) {
     createElement(appendElement, 'p', 'Food Available').className = 'eventDetail';
   }
-
   if (event.free) {
     createElement(appendElement, 'p', 'Free').className = 'eventDetail';
+  }
+  if (event.eventType) {
+    createElement(appendElement, 'p', event.eventType.toUpperCase()).className = 'eventDetail';
   }
 }
 

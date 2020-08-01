@@ -19,10 +19,10 @@
   <body onload="generalNavActive('general-index'); getEvents(); createEventTypeElements('type', 'option');">
     <div th:replace="fragments/navbar::navbar"></div>
 
-    <h1 id="event-header">FIND YOUR EVENT</h1>
-    <div id="filters">
-      <button id="free" value="free" onclick="toggleBorderSelection('free')">FREE</button>
-      <button id="food" value="food" onclick="toggleBorderSelection('food')">FOOD</button>
+    <h1 class="search-header">FIND YOUR EVENT</h1>
+    <div class="filters">
+      <button id="free" value="true" onclick="toggleBorderSelection('free')">FREE</button>
+      <button id="food" value="true" onclick="toggleBorderSelection('food')">FOOD</button>
 
         <select name="type" id="type" onclick="toggleBorderSelection('type')">
           <option value="">EVENT TYPE</option>
@@ -31,7 +31,7 @@
         <button onclick="showMore(); toggleBorderSelection('filterButton')" id="filterButton">MORE</button>
 
         <div id="additionalFilters" style="display:none">
-          <select name="energy" id="energy" onclick="toggleBorderSelection('energy')">
+          <select name="energyLevel" id="energyLevel" onclick="toggleBorderSelection('energyLevel')">
             <option value="">ENERGY LEVEL</option>
             <option value="1">1 (lowest)</option>
             <option value="2">2</option>
@@ -46,7 +46,7 @@
             <option value="outdoor">OUTDOOR</option>=
           </select>
 
-          <button id="visitor" value="visitor" onclick="toggleBorderSelection('visitor')">VISITORS ALLOWED</button>
+          <button id="visitorAllowed" value="true" onclick="toggleBorderSelection('visitorAllowed')">Visitors Allowed</button>
         </div>
         <input type="text" id="searchEvent" name="searchEvent"
                style="display:block; margin:20px auto;" placeholder="KNOW THE NAME?">

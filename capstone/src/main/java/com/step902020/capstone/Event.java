@@ -32,16 +32,22 @@ public class Event implements Comparable{
 
   String eventType;
 
+  String energyLevel;
+
+  String location; // Indoor/Outdoor
+
   Boolean foodAvailable;
 
   Boolean free;
+
+  Boolean visitorAllowed;
   
   @Reference
   List<Review> reviews;
 
   public Event(University university, String organizationName, long organizationId, String eventTitle,
                String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude,
-               String eventType, Boolean foodAvailable, Boolean free) {
+               String eventType, String energyLevel, String location, Boolean foodAvailable, Boolean free, Boolean visitorAllowed) {
     this.university = university;
     this.organizationName = organizationName;
     this.organizationId = organizationId;
@@ -51,8 +57,11 @@ public class Event implements Comparable{
     this.eventLatitude = eventLatitude;
     this.eventLongitude = eventLongitude;
     this.eventType = eventType;
+    this.energyLevel = energyLevel;
+    this.location = location;
     this.foodAvailable = foodAvailable;
     this.free = free;
+    this.visitorAllowed = visitorAllowed;
     this.reviews = new ArrayList();
   }
 
@@ -97,12 +106,24 @@ public class Event implements Comparable{
     return eventType;
   }
 
+  public String getEnergyLevel() {
+    return energyLevel;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
   public Boolean getFoodAvailable() {
     return foodAvailable;
   }
 
   public Boolean getFree() {
     return free;
+  }
+
+  public Boolean getVisitorAllowed() {
+    return visitorAllowed;
   }
 
   public void setDatastoreId(Long datastoreId) {
@@ -129,13 +150,21 @@ public class Event implements Comparable{
   public void setEventType(String eventType) {
     this.eventType = eventType;
   }
+  public void setEnergyLevel(String energyLevel) {
+    this.energyLevel = energyLevel;
+  }
+  public void setLocation(String location) {
+    this.location = location;
+  }
   public void setFoodAvailable(Boolean foodAvailable) {
     this.foodAvailable = foodAvailable;
   }
   public void setFree(Boolean free) {
     this.free = free;
   }
-
+  public void setVisitorAllowed(Boolean visitorAllowed) {
+    this.visitorAllowed = visitorAllowed;
+  }
   public void setOrganizationName(String organizationName) {
     this.organizationName = organizationName;
   }

@@ -54,8 +54,26 @@
             <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
             <br><br>
 
-            <label for="eventType"> Event Type: </label> <br>
-            <select name="eventType" id="eventType" required></select>
+            <select name="eventType" id="eventType" required>
+              <option value="">Event Type</option>
+            </select>
+            <br><br>
+
+            <select name="energyLevel" id="energyLevel" required>
+              <option value="">Energy Level</option>
+              <option value="1">1 (lowest)</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 (highest)</option>
+            </select>
+            <br><br>
+
+            <select name="location" id="location" required>
+              <option value=''>Indoor/Outdoor</option>
+              <option value="indoor">Indoor</option>
+              <option value="outdoor">Outdoor</option>=
+            </select>
             <br><br>
 
            <label> Additional Event Details: </label>
@@ -63,10 +81,14 @@
 
            <label for="foodAvailable"> Food Available </label>
            <input type="checkbox" id="foodAvailable" name="foodAvailable">
-
             <br>
-            <label for="requiredFee"> Required Fee </label>
-            <input type="checkbox" id="requiredFee" name="requiredFee">
+            <label for="free"> Free </label>
+            <input type="checkbox" id="free" name="free">
+            <br>
+            <label for="visitorAllowed"> Visitors Allowed </label>
+            <input type="checkbox" id="visitorAllowed" name="visitorAllowed">
+            <br>
+
             <br><br>
 
             <input type="submit" form="event-form" value="submit">
