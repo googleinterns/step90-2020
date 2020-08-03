@@ -9,6 +9,10 @@
     <script src="script.js"></script>
     <script src="user.js"></script>
     <script src="event.js"></script>
+    <script src="map.js"> </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8">
+    </script>
 </head>
 <body onload="getUser(false, 'general-profile', 'ind-usercalendar');createCalendar()">
     <div th:replace="fragments/navbar::navbar"></div>
@@ -20,7 +24,7 @@
         <div id="contents">
             <div th:replace="fragments/profilehead::profilehead"></div>
             <div class="events">
-                <p>A calendar of all the events from your saved organizations and saved events</p>
+                <p>A calendar of all the events from your saved organizations and saved events for the next 7 days</p>
             </div>
             <div class="calendar" id="calendar"></div>
             <div th:replace="fragments/eventmodal::eventmodal"></div>

@@ -24,13 +24,14 @@ public class Organization implements Comparable {
   String userType;
 
   String description;
+  Integer rank;
 
   @Field(name="org-type")
   String orgType;
 
   @Reference
   TreeSet<Event> events;
-  
+
   public Organization() {
   }
 
@@ -44,6 +45,7 @@ public class Organization implements Comparable {
     this.description = description;
     this.orgType = orgType;
     events = new TreeSet<Event>();
+    rank = 0;
   }
   
   public Long getDatastoreId() {
@@ -82,6 +84,10 @@ public class Organization implements Comparable {
     return events;
   }
 
+  public Integer getRank() {
+    return rank;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -96,6 +102,20 @@ public class Organization implements Comparable {
 
   public void addEvent(Event event) {
     events.add(event);
+  }
+
+  /**
+   * increase rank by 1
+   */
+  public void incrementRank() {
+    rank++;
+  }
+
+  /**
+   * decrease rank by 1
+   */
+  public void decrementRank() {
+    rank--;
   }
 
   public void deleteEvent(Event event) {

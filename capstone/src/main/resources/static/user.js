@@ -10,7 +10,12 @@ function profileNavActive(tab) {
 
 /* helper function to highlight active tab for profile nav */
 function generalNavActive(tab) {
-  document.getElementById(tab).setAttribute("class", "active");
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType == "individual") {
+      document.getElementById("general-recommended").style.display="inline-block";
+    }
+    document.getElementById(tab).setAttribute("class", "active");
+  });
 }
 
 /* helper function to highlight active tab for recommendation nav */
@@ -56,7 +61,6 @@ function addImageField(formName) {
     const form = document.getElementById(formName);
     form.innerHTML = data;
   });
-
 }
 
 /* upon submission, hide the image form */
@@ -114,6 +118,7 @@ function createIndividualProfile(data, fillForm) {
 
   // hide fields that pertain to organizations only
   document.getElementById("description").style.display = "none";
+  document.getElementById("rank").style.display = "none";
 
   if (fillForm) {
     // prefill form
@@ -135,6 +140,11 @@ function createOrgProfile(data, fillForm) {
   const pElementDescription = document.createElement('p');
   pElementDescription.innerText = "About Us: " + data.description;
   descriptionContainer.appendChild(pElementDescription);
+
+  const rankContainer = document.getElementById("rank");
+  const pElementRank = document.createElement("p");
+  pElementRank.innerText = "There are " + data.rank + " users following";
+  rankContainer.appendChild(pElementRank);
 
   if (fillForm) {
     // prefill form
@@ -218,6 +228,7 @@ function createSavedOrgElement(orgListElement, data, deleteAllowed, displayButto
   });
 
   createElement(orgElement, 'h3', data.name);
+  createElement(orgElement, 'p', "There are " + data.rank + " users following this organization");
 
   if (displayButton) {
      const form = deleteAllowed ? createDeleteButton(data.datastoreId) : createSaveButton(data);
@@ -417,6 +428,7 @@ function createCalendar() {
 /* helper function to create calendar events */
 function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, userEmail) {
   var eventDate = new Date(event.eventDateTime);
+  // only add events to the container if they are future events
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
     var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
     const generalDateDiv = document.getElementById("date" + diff);
@@ -456,11 +468,11 @@ function getPublicProfile() {
 function findRecommended(recommendationType) {
   var count = document.getElementById('recommended-input').value;
   fetch('user-info').then(response => response.json()).then((data) => {
-    if (data.userType == 'unknown') {
+    if (data.userType != 'individual') {
       displayMain(false);
       hideSpinner();
     } else {
-      recommend(count, data.userType, recommendationType);
+      recommend(count, recommendationType, data.email);
       displayMain(true);
     }
   }).catch((error) => {
@@ -469,14 +481,14 @@ function findRecommended(recommendationType) {
   });
 }
 
-function recommend(count, userType, recommendationType) {
-  fetch('get-recommended-'+ recommendationType + '-' + userType + '?count=' + count).then(response => response.json()).then((data) => {
+function recommend(count, recommendationType, email) {
+  fetch('get-recommended-'+ recommendationType + '-individual?count=' + count).then(response => response.json()).then((data) => {
     const recDiv = document.getElementById("recommended-section");
     recDiv.innerHTML = "";
     if (recommendationType == "events") {
-      data.forEach((event) => createEventElement(recDiv, event, userType == 'individual', false, false));
+      data.forEach((event) => createEventElement(recDiv, event, true, false, email));
     } else {
-      data.forEach((org) => createSavedOrgElement(recDiv, org, false, false));
+      data.forEach((org) => createSavedOrgElement(recDiv, org, false, true));
     }
     hideSpinner();
   }).catch((error) => {

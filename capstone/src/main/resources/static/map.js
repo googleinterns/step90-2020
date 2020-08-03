@@ -4,15 +4,31 @@
    const response = await fetch('user-info');
    const jsonUser = await response.json();
    user = jsonUser.userType;
+   if (user == "unknown") {
+      hideSpinner();
+      displayMain(false);
+   } else {
+      const universityResponse = await fetch('get-university-map?userType=' + user);
+      const jsonUniversity = await universityResponse.json();
+      const campusMap = generateCampusMap(jsonUniversity);
 
-   const universityResponse = await fetch('get-university-map?userType=' + user);
-   const jsonUniversity = await universityResponse.json();
-   const campusMap = generateCampusMap(jsonUniversity);
+      const eventResponse = await fetch('get-map-events');
+      const jsonEvents = await eventResponse.json();
+      jsonEvents.forEach(event => createMarker(event, campusMap));
+      hideSpinner();
+      displayMain(true);
+   }
 
-   const eventResponse = await fetch('get-map-events');
-   const jsonEvents = await eventResponse.json();
-   jsonEvents.forEach(event => createMarker(event, campusMap));
  }
+
+function createMapForASingleEvent(event) {
+  var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
+    const campusMap = new google.maps.Map(
+      document.getElementById('singleEventMap'),
+      {center: princetonLatLng, zoom: 15});
+
+    createMarker(event, campusMap);
+  }
 
 /* Function to create Mini Map in event.html page */
   async function createEventPlacementMap() {
@@ -60,26 +76,34 @@
  * @param campusMap - Google Map object
  */
 function createMarker(event,campusMap) {
-  var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
-  const newMarker = new google.maps.Marker({
-    map: campusMap,
-    title: event.eventTitle,
-    position: eventPosition,
-  });
-  var eventInfoWindow = createInfoWindow(event, campusMap);
-  newMarker.addListener('click', function() {
-    eventInfoWindow.open(campusMap, newMarker);
+  fetch("user-info").then(response => response.json()).then((data) => {
+    if (data.userType != 'unknown') {
+      var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
+      const newMarker = new google.maps.Marker({
+        map: campusMap,
+        title: event.eventTitle,
+        position: eventPosition,
+      });
+      var eventInfoWindow = createInfoWindow(event, campusMap, data.userType == 'individual', data.email);
+      newMarker.addListener('click', function() {
+        eventInfoWindow.open(campusMap, newMarker);
+      });
+    }
   });
 }
 
 /* Creates InfoWindow for event marker
  * @param event - event object
  * @param campusMap - Google Map object of campus
+ * @param isIndividual - user type
+ * @param userEmail - email of current user
  * return newInfoWindow = returns created info window
- */
- function createInfoWindow(event, campusMap) {
+*/
+function createInfoWindow(event, campusMap, isIndividual, userEmail) {
     var eventPosition = {lat: event.eventLatitude, lng: event.eventLongitude};
-    var eventContent = '<p id=mapContent>'+ event.eventTitle + '</p>';
+    var eventContent = document.createElement("div");
+    eventContent.className = "map-info-window";
+    createEventElement(eventContent, event, isIndividual, false, userEmail)
     const newInfoWindow = new google.maps.InfoWindow({
         content: eventContent,
         position: eventPosition

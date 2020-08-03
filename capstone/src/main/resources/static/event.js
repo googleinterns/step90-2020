@@ -72,10 +72,9 @@ function selectedFilter(elementId){
  * @param userEvent if individual has saved the event or org owns the event
  * @param userEmail current user's email
  */
-function createEventElement(eventListElement, event, isIndividual, userEvent, userEmail) {
+async function createEventElement(eventListElement, event, isIndividual, userEvent, userEmail) {
   const eventElement = createElement(eventListElement, 'li', '');
   eventElement.className = 'event';
-
   // Click for event detail modal
   eventElement.addEventListener('click', () => {
     showEventPage(event, isIndividual, userEmail);
@@ -88,12 +87,15 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
   var date = new Date(event.eventDateTime);
   createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
 
-  // Location Using latitude as a filler until we finalize the location portion
-  createElement(eventElement, 'p', event.eventLatitude);
-
   // Organization
-  createElement(eventElement, 'p', event.organizationName);
+  var organizationInfo = await fetch("get-public-profile?organization-id=" + event.organizationId);
+  var organization = await organizationInfo.json();
+  createElement(eventElement, 'p', organization.name);
 
+  // rank
+  createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
+
+  // Only for individual users can save/unsave events
   // Only for individual users can save/unsave events
   if (isIndividual) {
     if (userEvent) { // Individual has saved event
@@ -106,6 +108,7 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
       createEditAndDeleteEventButton(eventElement, event);
     }
   }
+  return eventElement;
 }
 
 /**
@@ -133,13 +136,17 @@ function showEventPage(event, isIndividual, userEmail) {
  * @param event event object
  */
 function fillEventDetails(event) {
-  var date = new Date(event.eventDateTime);
+  fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
 
-  setElementInnerText("eventName", event.eventTitle);
-  setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
-  setElementInnerText("eventLocation", event.eventLatitude);
-  setElementInnerText("eventOrganization", event.organizationName);
-  setElementInnerText("eventDescription", event.eventDescription);
+    var date = new Date(event.eventDateTime);
+
+    setElementInnerText("eventName", event.eventTitle);
+    setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
+    setElementInnerText("eventOrganization", data.name);
+    setElementInnerText("eventDescription", event.eventDescription);
+    setElementInnerText("eventRank", "There are " + event.rank + " users following this event");
+    createMapForASingleEvent(event);
+  });
 }
 
 /**
@@ -162,7 +169,6 @@ window.onclick = function(event) {
 function createReviewElement(event, isIndividual, userEmail) {
   const reviewElement = document.getElementById('review-container');
   const reviewTitleElement = createElement(reviewElement, 'h1', 'Reviews');
-
   if (isIndividual) {
     const reviewInputElement = createElement(reviewElement, 'input', '');
     reviewInputElement.className = 'review-submission';

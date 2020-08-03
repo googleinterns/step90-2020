@@ -16,8 +16,6 @@ public class Event implements Comparable{
   @Reference
   University university;
 
-  String organizationName;
-
   Long organizationId;
 
   @Field(name="eventTitle")
@@ -44,9 +42,10 @@ public class Event implements Comparable{
   @Reference
   List<Review> reviews;
 
-  public Event(University university, String organizationName, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
+  Integer rank;
+
+  public Event(University university, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
     this.university = university;
-    this.organizationName = organizationName;
     this.organizationId = organizationId;
     this.eventTitle = eventTitle;
     this.eventDateTime = eventDateTime;
@@ -56,6 +55,7 @@ public class Event implements Comparable{
     this.foodAvailable = foodAvailable;
     this.requiredFee = requiredFee;
     this.reviews = new ArrayList();
+    rank = 0;
   }
 
   public Long getDatastoreId() {
@@ -83,10 +83,6 @@ public class Event implements Comparable{
     return reviews;
   }
 
-  public String getOrganizationName() {
-    return organizationName;
-  }
-
   public Long getOrganizationId() {
     return organizationId;
   }
@@ -101,6 +97,10 @@ public class Event implements Comparable{
 
   public Boolean getRequiredFee() {
     return requiredFee;
+  }
+
+  public Integer getRank() {
+    return rank;
   }
 
   public void setDatastoreId(Long datastoreId) {
@@ -130,11 +130,6 @@ public class Event implements Comparable{
   public void setRequiredFee(Boolean requiredFee) {
     this.requiredFee = requiredFee;
   }
-
-  public void setOrganizationName(String organizationName) {
-    this.organizationName = organizationName;
-  }
-
   public void setOrganizationId(Long organizationId) {
     this.organizationId = organizationId;
   }
@@ -148,11 +143,25 @@ public class Event implements Comparable{
   }
 
   /**
+   * increases rank by 1
+   */
+  public void incrementRank() {
+    rank++;
+  }
+
+  /**
+   * decreases rank by 1
+   */
+  public void decrementRank() {
+    rank--;
+  }
+
+  /**
    * returns event information in a string format
    * @return String
    */
   public String toString() {
-    return eventTitle + " " + datastoreId;
+    return eventTitle + " " + datastoreId + " " + rank;
   }
 
   /**
