@@ -422,21 +422,21 @@ function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, u
 }
 /* function to create a public profile of an organization */
 function getPublicProfile() {
-  fetch('user-info').then(response => response.json()).then((data) => {
-     if (data.userType != "unknown") {
+  fetch('user-info').then(response => response.json()).then((userData) => {
+     if (userData.userType != "unknown") {
        var searchParams = new URLSearchParams(location.search);
        var organizationId = searchParams.get("organization-id");
-       var userType = data.userType == "individual";
+       var userType = userData.userType == "individual";
        if (organizationId != null) {
          fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
            createProfile(data, false, true);
            const eventDiv = document.getElementById("hosted-events");
-           data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, data.email));
+           data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, userData.email));
            document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
            document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
            const reviewContainer = document.getElementById("org-review-container");
            reviewContainer.innerHTML = '';
-           createReviewElement(reviewContainer, data, userType, "org", data.email);
+           createReviewElement(reviewContainer, data, userType, "org", userData.email);
            hideSpinner();
          }).catch((error) => {
            // log error

@@ -179,7 +179,6 @@ public class EventController {
           @RequestParam("reviewedObjectId") Long eventId) throws IOException {
 
     Event event = this.eventRepository.findById(eventId).get();
-    System.out.println(event);
     Individual individual = this.individualRepository.findFirstByEmail(user.getEmail());
     String individualName = individual.firstName + " " + individual.lastName;
     String individualEmail = individual.email;

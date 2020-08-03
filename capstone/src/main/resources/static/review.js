@@ -3,6 +3,7 @@
  * Only individuals will see review submission option
  * @param reviewedObject event or organization object
  * @param isIndividual if user is an individual user
+ * @reviewedObjectedType object type review is attached to
  * @param userEmail current user's email
  */
 function createReviewElement(reviewContainer, reviewedObject, isIndividual, reviewedObjectType, userEmail) {
@@ -63,7 +64,8 @@ function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
         reviewLikeElement.innerText = reviewLikes + ' Likes';
       });
     });
-
+    console.log(review.individualEmail);
+    console.log(userEmail);
     if (review.individualEmail == userEmail) {
       createReviewEditButton(reviewContainer, reviewTextElement, review.datastoreId);
       createReviewDeleteButton(reviewContainer, review.datastoreId);
@@ -109,6 +111,7 @@ function createReviewEditButton(reviewContainer, reviewTextElement, reviewId) {
  * Create new review to add to event's list
  * @param eventId event's datastoreId
  * @param text review's text content
+ * @reviewedObjectType object type review is attached to
  * @return update list of reviews
  */
 async function newReview(reviewedObjectId, text, reviewedObjectType) {

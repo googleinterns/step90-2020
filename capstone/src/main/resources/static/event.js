@@ -110,6 +110,7 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
  * Create a page to view event details
  * @param event event object
  * @param isIndividual if current user is an individual user
+ * @param userEvent if the user has saved/owns the event
  * @param userEmail current user's email
  */
 function showEventPage(event, isIndividual, userEvent, userEmail) {
@@ -123,14 +124,16 @@ function showEventPage(event, isIndividual, userEvent, userEmail) {
 
   const userFunctionButtonsContainer =  document.getElementById("user-function-buttons-container");
   userFunctionButtonsContainer.innerHTML = '';
-  // Only for individual users can save/unsave events
+
+
+  // Only individual users can save/unsave events
   if (isIndividual) {
     if (userEvent) { // Individual has saved event
       createUnsaveEventButton(userFunctionButtonsContainer, event);
     } else {
       createSaveEventButton(userFunctionButtonsContainer, event);
     }
-  } else {
+  } else {  // Event owners can edit and delete their events
     if (userEvent) {
       createEditAndDeleteEventButton(userFunctionButtonsContainer, event);
     }
@@ -145,15 +148,29 @@ function showEventPage(event, isIndividual, userEvent, userEmail) {
   }
 }
 
+/*
+ * Add the event's filterable details to modal
+ * @param appendElement element to append new elements to
+ * @param event event object
+ */
 function createExtraDetailsElement(appendElement, event) {
+  if (event.eventType) {
+    createElement(appendElement, 'p', event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)).className = 'eventDetail';
+  }
+  if (event.energyLevel) {
+    createElement(appendElement, 'p', 'Energy Level ' + event.energyLevel).className = 'eventDetail';
+  }
+  if (event.location) {
+    createElement(appendElement, 'p',  event.location.charAt(0).toUpperCase() + event.location.slice(1)).className = 'eventDetail';
+  }
   if (event.foodAvailable) {
     createElement(appendElement, 'p', 'Food Available').className = 'eventDetail';
   }
   if (event.free) {
     createElement(appendElement, 'p', 'Free').className = 'eventDetail';
   }
-  if (event.eventType) {
-    createElement(appendElement, 'p', event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)).className = 'eventDetail';
+  if (event.visitorAllowed) {
+    createElement(appendElement, 'p', 'Visitors Allowed').className = 'eventDetail';
   }
 }
 
