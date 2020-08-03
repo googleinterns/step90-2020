@@ -1,16 +1,11 @@
 package com.step902020.capstone;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDateTime;
 
 import com.step902020.capstone.security.CurrentUser;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import com.step902020.capstone.security.IdentityController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
 import org.springframework.data.domain.Example;
@@ -18,10 +13,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-import java.time.LocalDateTime;
 import java.lang.Double;
-
-import java.io.IOException;
 
 /**
  * Event functionalities
@@ -82,10 +74,11 @@ public class EventController {
       location = location.equals("") ? null: location;
 
       events = this.eventRepository.findAll(
-          Example.of(new Event(null, null, 0, null, null,
-                          null, 0, 0, eventType, null, location,
+          Example.of(new Event(null, 0, null, null, null,
+                          0, 0,  eventType, null, location,
                           foodAvailable, free, visitorAllowed),
-          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "requiredFee")));
+          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "requiredFee", "organizationName", "rank")),
+          Sort.by(Sort.Direction.DESC, "rank"));
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
     }
@@ -150,7 +143,7 @@ public class EventController {
         event.setVisitorAllowed(visitorAllowed.orElse(false));
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization.getUniversity(), organization.getName(), organization.getDatastoreId(),
+        Event newEvent = new Event(organization.getUniversity(), organization.getDatastoreId(),
                 eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude),
                 Double.parseDouble(eventLongitude), eventType, energyLevel, location,
                 foodAvailable.orElse(false), free.orElse(false), visitorAllowed.orElse(false));

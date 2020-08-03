@@ -16,9 +16,8 @@ public interface EventRepository extends DatastoreRepository<Event, Long> {
   public List<Event> findByUniversity(University university, Pageable pageable);
   public List<Event> findByUniversity(University university);
   public List<Event> findByUniversityAndEventDateTimeGreaterThan(University university, String date);
-  public List<Event> findByUniversityAndEventDateTimeGreaterThan(University university, String date, Pageable pageable);
+  public List<Event> findByUniversityAndEventDateTimeGreaterThanOrderByRankDesc(University university, String date);
 
   @Query("select * from event where eventTitle >= @eventTitle and eventTitle < @endname and university = @university")
   public List<Event> findEventsByNameMatching(@Param("eventTitle") String eventTitle, @Param("endname") String endname, @Param("university") University university);
-  public List<Event> findByUniversityAndEventDateTimeGreaterThanOrderByRankDesc(University university, String date);
 }

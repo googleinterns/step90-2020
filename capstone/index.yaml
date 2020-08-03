@@ -7,7 +7,7 @@ indexes:
 - kind: event
   properties:
     - name: university
-    - name: eventDateTime
+    - name: eventTitle
 
 - kind: event
   properties:

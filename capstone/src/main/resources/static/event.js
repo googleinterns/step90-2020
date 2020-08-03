@@ -1,25 +1,3 @@
-/* Function to prefill event information if editing event */
-function loadEventInfo() {
-  const event = window.location.hash.substring(1);
-  if (event != "") {
-    fetch('get-event?event-id=' + event).then(response => response.json()).then((data) => {
-      document.getElementById("eventTitle").value = data.eventTitle;
-      document.getElementById("eventDateTime").value = data.eventDateTime;
-      document.getElementById("eventLatitude").value = data.eventLatitude;
-      document.getElementById("eventLongitude").value = data.eventLongitude;
-      document.getElementById("eventDescription").value = data.description;
-      document.getElementById("event-id").value = data.datastoreId;
-      if (data.foodAvailable == true) {
-        document.getElementById("foodAvailable").checked = true;
-      }
-      if (data.requiredFee == true) {
-        document.getElementById("requiredFee").checked = true;
-      }
-    });
-  }
-}
-
-
 /**
  * Retrieves events from server if current user has a profile
  */
@@ -46,9 +24,9 @@ function loadEvents(data) {
   var isIndividual = data.userType == "individual";
   var universityName = data.university.name;
 
-   fetch('get-filtered-events?universityName=' + universityName + '&eventTitle=' + '&eventType=' + selectedFilter('type')
-    + '&energyLevel=' + selectedFilter('energyLevel') + '&location=' + selectedFilter('location') +
-    '&foodAvailable=' + selectedFilter('food') + '&free=' + selectedFilter('free') +
+   fetch('get-filtered-events?universityName=' + universityName + '&eventTitle=' + selectedFilter('searchEvent') +
+    '&eventType=' + selectedFilter('type') + '&energyLevel=' + selectedFilter('energyLevel') +
+    '&location=' + selectedFilter('location') + '&foodAvailable=' + selectedFilter('food') + '&free=' + selectedFilter('free') +
     '&visitorAllowed=' + selectedFilter('visitorAllowed')).then(response => response.json()).then((events) => {
 
     const eventListElement = setElementInnerText('events', ''); // Clear elements in div
@@ -75,6 +53,7 @@ function selectedFilter(elementId){
   }
   return '';
 }
+
 /**
  * Create a formatted list of events
  * @param eventListElement DOM element to append
@@ -86,10 +65,6 @@ function selectedFilter(elementId){
 async function createEventElement(eventListElement, event, isIndividual, userEvent, userEmail) {
   const eventElement = createElement(eventListElement, 'li', '');
   eventElement.className = 'event';
-  // Click for event detail modal
-  eventElement.addEventListener('click', () => {
-    showEventPage(event, isIndividual, userEvent, userEmail);
-  });
 
   // Name
   createElement(eventElement, 'p', event.eventTitle);
@@ -105,17 +80,23 @@ async function createEventElement(eventListElement, event, isIndividual, userEve
 
   // Rank
   createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
+
+  // Click for event detail modal
+  eventElement.addEventListener('click', () => {
+    showEventPage(event, isIndividual, organization.name, userEvent, userEmail);
+  });
 }
 
 /**
  * Create a page to view event details
  * @param event event object
  * @param isIndividual if current user is an individual user
+ * @param organizationName event's organization name
  * @param userEvent if the user has saved/owns the event
  * @param userEmail current user's email
  */
-function showEventPage(event, isIndividual, userEvent, userEmail) {
-  fillEventDetails(event);
+function showEventPage(event, isIndividual, organizationName, userEvent, userEmail) {
+  fillEventDetails(event, organizationName);
   const modal = document.getElementById('modal');
   modal.style.display = 'block';
 
@@ -139,7 +120,6 @@ function showEventPage(event, isIndividual, userEvent, userEmail) {
       createEditAndDeleteEventButton(userFunctionButtonsContainer, event);
     }
   }
-
   const reviewContainer = document.getElementById("event-review-container");
   reviewContainer.innerHTML = '';
   createReviewElement(reviewContainer, event, isIndividual, "event", userEmail);
@@ -178,19 +158,16 @@ function createExtraDetailsElement(appendElement, event) {
 /**
  * Populate event details in the modal
  * @param event event object
+ * @param organizatiionName event's organization name
  */
-function fillEventDetails(event) {
-  fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
-
-    var date = new Date(event.eventDateTime);
-
-    setElementInnerText("eventName", event.eventTitle);
-    setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
-    setElementInnerText("eventOrganization", data.name);
-    setElementInnerText("eventDescription", event.eventDescription);
-    setElementInnerText("eventRank", "There are " + event.rank + " users following this event");
-    createMapForASingleEvent(event);
-  });
+function fillEventDetails(event, organizationName) {
+  var date = new Date(event.eventDateTime);
+  setElementInnerText("eventName", event.eventTitle);
+  setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
+  setElementInnerText("eventOrganization", organizationName);
+  setElementInnerText("eventDescription", event.eventDescription);
+  setElementInnerText("eventRank", "There are " + event.rank + " users following this event");
+  createMapForASingleEvent(event);
 }
 
 /**
@@ -214,13 +191,19 @@ function loadEventInfo() {
       document.getElementById("eventLatitude").value = data.eventLatitude;
       document.getElementById("eventLongitude").value = data.eventLongitude;
       document.getElementById("eventDescription").value = data.eventDescription;
+      document.getElementById("eventType").value = data.eventType;
+      document.getElementById("energyLevel").value = data.energyLevel;
+      document.getElementById("location").value = data.location;
       document.getElementById("event-id").value = data.datastoreId;
       if (data.foodAvailable == true) {
         document.getElementById("foodAvailable").checked = true;
       }
       if (data.requiredFee == true) {
-        document.getElementById("requiredFee").checked = true;
+        document.getElementById("free").checked = true;
       }
+      if (data.visitorAllowed == true) {
+        document.getElementById("visitorAllowed").checked = true;
+       }
       hideSpinner();
     }).catch((error) => {
       // log error
@@ -228,30 +211,5 @@ function loadEventInfo() {
     });
   } else {
     hideSpinner();
-  }
-}
-
-/**
- * Create a page to view event details
- * @param eventId event's datastore id
- */
-function showEventPage(event) {
-  fillDetails(event);
-  const modal = document.getElementById('modal');
-  modal.style.display = "block";
-  const myNode = document.getElementById("review-container");
-  myNode.innerHTML = '';
-  createReviewElement(event);
-
-  if (event.reviews.length) { // Format time to *** time ago
-    timeago.render(document.querySelectorAll('.timeago'));
-  }
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  const modal = document.getElementById('modal');
-  if (event.target == modal) {
-    modal.style.display = "none";
   }
 }

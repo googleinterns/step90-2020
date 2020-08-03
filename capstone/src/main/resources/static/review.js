@@ -64,8 +64,6 @@ function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
         reviewLikeElement.innerText = reviewLikes + ' Likes';
       });
     });
-    console.log(review.individualEmail);
-    console.log(userEmail);
     if (review.individualEmail == userEmail) {
       createReviewEditButton(reviewContainer, reviewTextElement, review.datastoreId);
       createReviewDeleteButton(reviewContainer, review.datastoreId);
