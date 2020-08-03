@@ -18,8 +18,8 @@
   <body onload="generalNavActive('general-index'); getEvents();">
     <div th:replace="fragments/navbar::navbar"></div>
 
-    <h1 id="event-header">FIND YOUR EVENT</h1>
-    <div id="filters">
+    <h1 class="search-header">FIND YOUR EVENT</h1>
+    <div class="filters">
       <button id="free" value="free" onclick="toggleBorderSelection('free')">FREE</button>
       <button id="food" value="food" onclick="toggleBorderSelection('food')">FOOD</button>
 

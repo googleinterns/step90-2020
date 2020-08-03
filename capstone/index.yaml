@@ -21,3 +21,10 @@ indexes:
     - name: university
     - name: rank
       direction: desc
+
+- kind: organization
+  properties:
+    - name: university
+    - name: org-type
+    - name: rank
+      direction: desc

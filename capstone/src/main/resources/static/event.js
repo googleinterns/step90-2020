@@ -350,27 +350,26 @@ function loadEventInfo() {
 }
 
 /**
- * Fill an existing document element's inner text
- * @param elementId document element's id
- * @param innerText text for inner text
- * @return element with added text
+ * Create a page to view event details
+ * @param eventId event's datastore id
  */
-function setElementInnerText(elementId, innerText){
-  const element = document.getElementById(elementId);
-  element.innerText = innerText;
-  return element;
+function showEventPage(event) {
+  fillDetails(event);
+  const modal = document.getElementById('modal');
+  modal.style.display = "block";
+  const myNode = document.getElementById("review-container");
+  myNode.innerHTML = '';
+  createReviewElement(event);
+
+  if (event.reviews.length) { // Format time to *** time ago
+    timeago.render(document.querySelectorAll('.timeago'));
+  }
 }
 
-/**
- * Create new element with inner text and appended to an element
- * @param elementElement element to append
- * @param elementType element to create
- * @param innerText text for inner text
- * @return created element
- */
-function createElement(appendElement, elementType, innerText){
-  const element = document.createElement(elementType);
-  element.innerText = innerText;
-  appendElement.appendChild(element);
-  return element;
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  const modal = document.getElementById('modal');
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
 }

@@ -1,8 +1,10 @@
 package com.step902020.capstone;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.collect.ImmutableList;
 import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
 import org.springframework.cloud.gcp.data.datastore.repository.query.Query;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,8 @@ public interface OrganizationRepository extends DatastoreRepository<Organization
   public List<Organization> findByEmail(List<String> email);
 
   public List<Organization> findByUniversityOrderByRankDesc(University university);
+
+  public List<Organization> findByUniversityAndOrgTypeOrderByRankDesc(University university, String orgType);
 
   public List<Organization> findByUniversity(University university, Pageable pageable);
 

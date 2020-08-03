@@ -47,11 +47,6 @@ public class EventController {
   @Autowired
   private DatastoreTemplate datastoreTemplate;
 
-  @GetMapping("get-all-events")
-  public Iterable<Event> getAllEvent() throws IOException {
-    return this.eventRepository.findAll();
-  }
-
   @GetMapping("get-filtered-events")
   public List<Event> getFilteredEvents(
           @RequestParam("foodAvailable") Boolean foodAvailable,

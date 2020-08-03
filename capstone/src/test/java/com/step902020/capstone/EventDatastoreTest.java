@@ -64,7 +64,7 @@ public class EventDatastoreTest {
 
     expectedOrganization = this.organizationRepository.save(
             new Organization(System.currentTimeMillis(),"new organization", currentUserEmail,
-                expectedUniversity, "organization", "hello world!"));
+                expectedUniversity, "organization", "hello world!", "service"));
 
     expectedEvent = new Event(expectedUniversity,
             expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST",
