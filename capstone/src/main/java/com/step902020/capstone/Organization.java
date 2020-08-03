@@ -90,6 +90,7 @@ public class Organization implements Comparable {
 
   public List<Review> getReviews() {
     return reviews;
+  }
 
   public Integer getRank() {
     return rank;
