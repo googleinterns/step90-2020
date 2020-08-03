@@ -85,6 +85,8 @@ public class IndividualController {
     Individual current = getIndividual(user);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (current != null) {
+      event.incrementRank();
+      this.eventRepository.save(event);
       current.addSavedEvents(event);
     }
     this.individualRepository.save(current);
@@ -107,6 +109,8 @@ public class IndividualController {
     Individual current = getIndividual(user);
     Event event = this.eventRepository.findById(Long.parseLong(eventId)).orElse(null);
     if (current != null) {
+      event.decrementRank();
+      this.eventRepository.save(event);
       current.deleteSavedEvents(event);
     }
     this.individualRepository.save(current);
@@ -129,6 +133,8 @@ public class IndividualController {
     Individual current = getIndividual(user);
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
     if (current != null) {
+      organization.incrementRank();
+      this.organizationRepository.save(organization);
       current.addOrganizations(organization);
     } 
     this.individualRepository.save(current);
@@ -152,6 +158,8 @@ public class IndividualController {
     Organization organization = this.organizationRepository.findById(Long.parseLong(organizationId)).orElse(null);
 
     if (current != null) {
+      organization.decrementRank();
+      this.organizationRepository.save(organization);
       current.deleteOrganizations(organization);
     } 
     this.individualRepository.save(current);
@@ -217,7 +225,7 @@ public class IndividualController {
     }
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
     if (noPastEvents.size() < num) {
-      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), now.toString());
+      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThanOrderByRankDesc(targetUser.getUniversity(), now.toString());
       int i = 0;
       int numAlreadyAdded = 0;
       int targetSize = noPastEvents.size();
@@ -259,7 +267,7 @@ public class IndividualController {
     List<Organization> recommended = recommender.recommend(targetUser, users, u -> u.getOrganizations(), num);
     // if the list of recommended events is shorter than the list we want, add in more events from general event pool
     if (recommended.size() < num) {
-      List<Organization> allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());
+      List<Organization> allOrgs = this.organizationRepository.findByUniversityOrderByRankDesc(targetUser.getUniversity());
       int i = 0;
       int numAlreadyAdded = 0;
       int targetSize = recommended.size();

@@ -6,8 +6,9 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="user.js"></script>
+    <script src="script.js"></script>
 </head>
-<body onload="getUser(true, 'general-profile', 'profile');addImageField('user-image-form')">
+<body onload="getUser(true, 'general-profile', 'profile');addImageField('user-image-form'); createOrgTypeElements('org-type', 'option')">
     <div th:replace="fragments/navbar::navbar"></div>
     <br/>
     <div class="container">
@@ -72,7 +73,13 @@
                     </select>
                     <label>Description:</label>
                     <input type="text" name="description" id="org-description" placeholder="Description of your organization.."></input>
-                    <input class="button submit" type="submit" value="Submit" onsubmit="closeForm()"></input>
+
+                    <label>Organization Type:</label>
+                    <select name="org-type" id="org-type">
+                        <option value="" disabled selected hidden>Choose organization type</option>
+                    </select>
+                    <input class="button submit" type="submit" value="Submit" onclick="closeForm()"></input>
+
                 </form>
             </div>
             <div class="profile-form general-container" id="user-image-form"></div>

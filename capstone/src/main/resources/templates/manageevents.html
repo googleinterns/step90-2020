@@ -10,6 +10,10 @@
     <script src="user.js"></script>
     <script src="event.js"></script>
     <script src="review.js"></script>
+    <script src="map.js"> </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8">
+    </script>
 </head>
 <body onload="getUser(false, 'general-profile', 'org-manageevents');getOrganizationEvents();">
     <div th:replace="fragments/navbar::navbar"></div>

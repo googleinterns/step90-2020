@@ -13,4 +13,19 @@ indexes:
   properties:
     - name: university
     - name: eventTitle
+    - name: rank
+      direction: desc
+    - name: eventDateTime
 
+- kind: organization
+  properties:
+    - name: university
+    - name: rank
+      direction: desc
+
+- kind: organization
+  properties:
+    - name: university
+    - name: org-type
+    - name: rank
+      direction: desc

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import java.time.LocalDateTime;
@@ -48,11 +49,6 @@ public class EventController {
 
   @Autowired
   private DatastoreTemplate datastoreTemplate;
-
-  @GetMapping("get-all-events")
-  public Iterable<Event> getAllEvent() throws IOException {
-    return this.eventRepository.findAll();
-  }
 
   /**
    * Find events that fit filters, have not happened, belong to user's university
@@ -97,8 +93,9 @@ public class EventController {
   }
 
   @GetMapping("get-map-events")
-  public Iterable<Event> getMapEvents() {
-    return this.eventRepository.findAll();
+  public Iterable<Event> getMapEvents(CurrentUser user) {
+    University university = this.individualRepository.findFirstByEmail(user.getEmail()).getUniversity();
+    return this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(university, LocalDateTime.now().toString());
   }
 
   @GetMapping("get-university-map")
@@ -145,7 +142,6 @@ public class EventController {
         event.setEventLongitude(Double.parseDouble(eventLongitude));
         event.setEventTitle(eventTitle);
         event.setOrganizationId(organization.getDatastoreId());
-        event.setOrganizationName(organization.getName());
         event.setEventType(eventType);
         event.setEnergyLevel(energyLevel);
         event.setLocation(location);

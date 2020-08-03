@@ -22,18 +22,24 @@ public class Organization implements Comparable {
 
   @Field(name="user-type")
   String userType;
+
   String description;
+  Integer rank;
+
+  @Field(name="org-type")
+  String orgType;
 
   @Reference
   TreeSet<Event> events;
-
+  
   @Reference
   List<Review> reviews;
   
   public Organization() {
   }
 
-  public Organization(Long timestamp, String name, String email, University university, String userType, String description) {
+  public Organization(Long timestamp, String name, String email, University university, String userType,
+                      String description, String orgType) {
     this.timestamp = timestamp;
     this.name = name;
     this.email = email;
@@ -42,6 +48,8 @@ public class Organization implements Comparable {
     this.description = description;
     this.events = new TreeSet<Event>();
     this.reviews = new ArrayList();
+    this.orgType = orgType;
+    rank = 0;
   }
   
   public Long getDatastoreId() {
@@ -71,6 +79,10 @@ public class Organization implements Comparable {
   public String getDescription() {
     return description;
   }
+
+  public String getOrgType() {
+    return orgType;
+  }
   
   public TreeSet<Event> getEvents() {
     return events;
@@ -78,6 +90,9 @@ public class Organization implements Comparable {
 
   public List<Review> getReviews() {
     return reviews;
+
+  public Integer getRank() {
+    return rank;
   }
 
   public void setName(String name) {
@@ -88,8 +103,26 @@ public class Organization implements Comparable {
     this.description = description;
   }
 
+  public void setOrgType(String orgType) {
+    this.orgType = orgType;
+  }
+
   public void addEvent(Event event) {
     events.add(event);
+  }
+
+  /**
+   * increase rank by 1
+   */
+  public void incrementRank() {
+    rank++;
+  }
+
+  /**
+   * decrease rank by 1
+   */
+  public void decrementRank() {
+    rank--;
   }
 
   public void deleteEvent(Event event) {

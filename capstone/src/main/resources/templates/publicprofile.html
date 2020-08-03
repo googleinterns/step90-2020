@@ -10,7 +10,10 @@
         <script src="user.js"></script>
         <script src="event.js"></script>
         <script src="review.js"></script>
-
+        <script src="map.js"> </script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcUGlXG2igIndFEDR1TsvtCTUgTukD6C8">
+        </script>
     </head>
     <body onload="getPublicProfile();">
         <div th:replace="fragments/navbar::navbar"></div>
@@ -28,6 +31,7 @@
                     <div id="email"></div>
                     <div id="university"></div>
                     <div id="description"></div>
+                    <div id="rank"></div>
                     <div id="no-profile">
                         <p>You have not built your profile yet, please navigate to My Account page and submit a profile </p>
                     </div>

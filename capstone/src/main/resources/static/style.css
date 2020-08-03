@@ -163,7 +163,7 @@ img {
   width: 60%;
 }
 
-#organization, #no-profile, #user, #org-nav, #individual-nav, #user-image-form {
+#organization, #no-profile, #user, #org-nav, #individual-nav, #user-image-form, #general-recommended {
   display: none;
 }
 
@@ -252,10 +252,12 @@ div.row {
   font-size: 40px;
 }
 
+
 /* Modal */
 #modal {
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  margin-bottom: 20px;
   display: none;
   height: 100%;
   left: 0;
@@ -273,6 +275,7 @@ div.row {
   border-radius: 30px;
   margin: auto;
   margin-top: 100px;
+  margin-bottom: 100px;
   padding: 20px;
   text-align: center;
   width: 25%;
@@ -338,6 +341,9 @@ div.row {
 .review-submission {
   border: 1px solid darkgreen;
   margin-right: 10px;
+}
+.review-input-field {
+  width: 80%;
 }
 
 /* Map */
@@ -416,4 +422,22 @@ div.row {
   text-align: center;
   width: 33.33%;
   float: left;
+}
+
+
+#singleEventMap {
+    text-align: center;
+    height: 300px;
+    width: 90%;
+    max-width: 300px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 20px;
+}
+
+.map-info-window {
+  background-color: #073763ff;
+  color: #ffffff;
+  font-family: 'Lato', sans-serif;
 }

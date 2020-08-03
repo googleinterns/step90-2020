@@ -83,10 +83,9 @@ function selectedFilter(elementId){
  * @param userEvent if individual has saved the event or org owns the event
  * @param userEmail current user's email
  */
-function createEventElement(eventListElement, event, isIndividual, userEvent, userEmail) {
+async function createEventElement(eventListElement, event, isIndividual, userEvent, userEmail) {
   const eventElement = createElement(eventListElement, 'li', '');
   eventElement.className = 'event';
-
   // Click for event detail modal
   eventElement.addEventListener('click', () => {
     showEventPage(event, isIndividual, userEvent, userEmail);
@@ -99,11 +98,13 @@ function createEventElement(eventListElement, event, isIndividual, userEvent, us
   var date = new Date(event.eventDateTime);
   createElement(eventElement, 'p', date.toString().substring(0, 21)); // Exclude GMT time zone offset
 
-  // Location Using latitude as a filler until we finalize the location portion
-  createElement(eventElement, 'p', event.eventLatitude);
-
   // Organization
-  createElement(eventElement, 'p', event.organizationName);
+  var organizationInfo = await fetch("get-public-profile?organization-id=" + event.organizationId);
+  var organization = await organizationInfo.json();
+  createElement(eventElement, 'p', organization.name);
+
+  // Rank
+  createElement(eventElement, 'p', "Number of people following this event: " + event.rank);
 }
 
 /**
@@ -179,13 +180,17 @@ function createExtraDetailsElement(appendElement, event) {
  * @param event event object
  */
 function fillEventDetails(event) {
-  var date = new Date(event.eventDateTime);
+  fetch("get-public-profile?organization-id=" + event.organizationId).then(response => response.json()).then((data) => {
 
-  setElementInnerText("eventName", event.eventTitle);
-  setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
-  setElementInnerText("eventLocation", event.eventLatitude);
-  setElementInnerText("eventOrganization", event.organizationName);
-  setElementInnerText("eventDescription", event.eventDescription);
+    var date = new Date(event.eventDateTime);
+
+    setElementInnerText("eventName", event.eventTitle);
+    setElementInnerText("eventTime", date.toString().substring(0, 21)); // Exclude GMT time zone offset
+    setElementInnerText("eventOrganization", data.name);
+    setElementInnerText("eventDescription", event.eventDescription);
+    setElementInnerText("eventRank", "There are " + event.rank + " users following this event");
+    createMapForASingleEvent(event);
+  });
 }
 
 /**
@@ -227,27 +232,26 @@ function loadEventInfo() {
 }
 
 /**
- * Fill an existing document element's inner text
- * @param elementId document element's id
- * @param innerText text for inner text
- * @return element with added text
+ * Create a page to view event details
+ * @param eventId event's datastore id
  */
-function setElementInnerText(elementId, innerText){
-  const element = document.getElementById(elementId);
-  element.innerText = innerText;
-  return element;
+function showEventPage(event) {
+  fillDetails(event);
+  const modal = document.getElementById('modal');
+  modal.style.display = "block";
+  const myNode = document.getElementById("review-container");
+  myNode.innerHTML = '';
+  createReviewElement(event);
+
+  if (event.reviews.length) { // Format time to *** time ago
+    timeago.render(document.querySelectorAll('.timeago'));
+  }
 }
 
-/**
- * Create new element with inner text and appended to an element
- * @param elementElement element to append
- * @param elementType element to create
- * @param innerText text for inner text
- * @return created element
- */
-function createElement(appendElement, elementType, innerText){
-  const element = document.createElement(elementType);
-  element.innerText = innerText;
-  appendElement.appendChild(element);
-  return element;
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  const modal = document.getElementById('modal');
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
 }

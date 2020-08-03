@@ -16,8 +16,6 @@ public class Event implements Comparable{
   @Reference
   University university;
 
-  String organizationName;
-
   Long organizationId;
 
   String eventTitle;
@@ -45,11 +43,12 @@ public class Event implements Comparable{
   @Reference
   List<Review> reviews;
 
-  public Event(University university, String organizationName, long organizationId, String eventTitle,
-               String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude,
-               String eventType, String energyLevel, String location, Boolean foodAvailable, Boolean free, Boolean visitorAllowed) {
+  Integer rank;
+
+  public Event(University university, long organizationId, String eventTitle,String eventDateTime, String eventDescription, 
+               double eventLatitude, double eventLongitude, String eventType, String energyLevel, String location, 
+               Boolean foodAvailable, Boolean free, Boolean visitorAllowed) {
     this.university = university;
-    this.organizationName = organizationName;
     this.organizationId = organizationId;
     this.eventTitle = eventTitle;
     this.eventDateTime = eventDateTime;
@@ -63,6 +62,7 @@ public class Event implements Comparable{
     this.free = free;
     this.visitorAllowed = visitorAllowed;
     this.reviews = new ArrayList();
+    rank = 0;
   }
 
   public Long getDatastoreId() {
@@ -88,10 +88,6 @@ public class Event implements Comparable{
   }
   public List<Review> getReviews() {
     return reviews;
-  }
-
-  public String getOrganizationName() {
-    return organizationName;
   }
 
   public Long getOrganizationId() {
@@ -124,6 +120,10 @@ public class Event implements Comparable{
 
   public Boolean getVisitorAllowed() {
     return visitorAllowed;
+  }
+
+  public Integer getRank() {
+    return rank;
   }
 
   public void setDatastoreId(Long datastoreId) {
@@ -165,10 +165,6 @@ public class Event implements Comparable{
   public void setVisitorAllowed(Boolean visitorAllowed) {
     this.visitorAllowed = visitorAllowed;
   }
-  public void setOrganizationName(String organizationName) {
-    this.organizationName = organizationName;
-  }
-
   public void setOrganizationId(Long organizationId) {
     this.organizationId = organizationId;
   }
@@ -182,11 +178,25 @@ public class Event implements Comparable{
   }
 
   /**
+   * increases rank by 1
+   */
+  public void incrementRank() {
+    rank++;
+  }
+
+  /**
+   * decreases rank by 1
+   */
+  public void decrementRank() {
+    rank--;
+  }
+
+  /**
    * returns event information in a string format
    * @return String
    */
   public String toString() {
-    return eventTitle + " " + datastoreId;
+    return eventTitle + " " + datastoreId + " " + rank;
   }
 
   /**

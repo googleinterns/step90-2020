@@ -60,7 +60,8 @@ public class OrganizationController {
       CurrentUser user,
       @RequestParam("user-type") String userType,
       @RequestParam("university") String university,
-      @RequestParam("description") String description) throws IOException {
+      @RequestParam("description") String description,
+      @RequestParam("org-type") String orgType) throws IOException {
 
     Organization current = getOrganization(user);
     
@@ -68,9 +69,10 @@ public class OrganizationController {
     if (current != null) {
       current.setName(name);
       current.setDescription(description);
+      current.setOrgType(orgType);
     } else {
       University universityReference = this.universityRepository.findFirstByName(university);
-      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), universityReference, userType, description);
+      current = new Organization(System.currentTimeMillis(), name, user.getEmail(), universityReference, userType, description, orgType);
     }
     this.organizationRepository.save(current);
     return new RedirectView("profile.html", true);
@@ -86,13 +88,23 @@ public class OrganizationController {
   @GetMapping("search-organization")
   public List<Organization> searchOrganization(
       @RequestParam("name") String name, 
-      @RequestParam("university") String university) throws IOException {
+      @RequestParam("university") String university,
+      @RequestParam("orgTypes") List<String> orgTypes) throws IOException {
     University universityReference = this.universityRepository.findFirstByName(university);
 
     if (name.equals("")) {
-        return this.organizationRepository.findByUniversity(universityReference);
+      if (orgTypes.isEmpty()) {
+        return this.organizationRepository.findByUniversityOrderByRankDesc(universityReference);
+      } else {
+        List<Organization> filteredOrgs = new ArrayList();
+        for(String orgType: orgTypes) {
+          filteredOrgs.addAll(this.organizationRepository.findByUniversityAndOrgType(universityReference, orgType));
+        }
+        Collections.sort(filteredOrgs, (a, b) -> Integer.compare(b.getRank(), a.getRank()));
+        return filteredOrgs;
+      }
     } else {
-        return this.organizationRepository.findOrganizationsByNameMatching(name, name + "\ufffd", universityReference);
+        return this.organizationRepository.findOrganizationsByNameMatchingOrderByRankDesc(name, name + "\ufffd", universityReference);
     } 
   }
 
@@ -122,45 +134,6 @@ public class OrganizationController {
       this.eventRepository.deleteById(Long.parseLong(eventId));
     }
     return new RedirectView("manageevents.html", true);
-  }
-
-  /**
-   * get the recommended events for an organization
-   * @param currentUser user that is currently logged in
-   * @param count the number of events to be returned
-   * @return list of Events
-   */
-  @GetMapping("get-recommended-events-organization")
-  public List<Event> recommendEvents(CurrentUser currentUser,
-                                     @RequestParam("count") String count) {
-    Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
-    List<Event> allEvents = null;
-    if (count.equals("All")) {
-      allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), LocalDateTime.now().toString());
-    } else {
-      allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(targetUser.getUniversity(), LocalDateTime.now().toString(), PageRequest.of(0, Integer.parseInt(count)));
-    }
-    return allEvents;
-  }
-
-  /**
-   * get the recommended organizations for an organization
-   * @param currentUser user that is currently logged in
-   * @param count the number of organizations to be returned
-   * @return list of organizations
-   */
-  @GetMapping("get-recommended-organizations-organization")
-  public List<Organization> recommendedOrganizations(CurrentUser currentUser,
-                                     @RequestParam("count") String count) {
-    Organization targetUser = this.organizationRepository.findFirstByEmail(currentUser.getEmail());
-    int num = Integer.parseInt(count);
-    List<Organization> allOrgs = null;
-    if (count.equals("All")) {
-      allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity());
-    } else {
-      allOrgs = this.organizationRepository.findByUniversity(targetUser.getUniversity(), PageRequest.of(0, num));
-    }
-    return allOrgs;
   }
 
   /**
