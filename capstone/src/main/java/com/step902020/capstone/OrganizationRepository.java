@@ -20,7 +20,7 @@ public interface OrganizationRepository extends DatastoreRepository<Organization
 
   public List<Organization> findByUniversityOrderByRankDesc(University university);
 
-  public List<Organization> findByUniversityAndOrgTypeOrderByRankDesc(University university, String orgType);
+  public List<Organization> findByUniversityAndOrgType(University university, String orgType);
 
   public List<Organization> findByUniversity(University university, Pageable pageable);
 

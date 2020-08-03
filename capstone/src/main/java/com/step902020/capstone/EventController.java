@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import java.time.LocalDateTime;
@@ -60,7 +61,7 @@ public class EventController {
                 null, null, 0,
                 0, foodAvailable, requiredFee),
       ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "rank")
-      )
+      ), Sort.by(Sort.Direction.DESC, "rank")
     );
     List<Event> noPastEvents = new ArrayList<Event>();
     LocalDateTime now = LocalDateTime.now();
@@ -70,9 +71,6 @@ public class EventController {
         noPastEvents.add(e);
       }
     }
-
-    // order by rank
-    Collections.sort(noPastEvents, (a, b) -> Integer.compare(b.getRank(), a.getRank()));
     return noPastEvents;
   }
 

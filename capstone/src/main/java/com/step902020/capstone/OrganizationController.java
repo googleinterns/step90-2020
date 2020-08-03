@@ -94,8 +94,9 @@ public class OrganizationController {
       } else {
         List<Organization> filteredOrgs = new ArrayList();
         for(String orgType: orgTypes) {
-          filteredOrgs.addAll(this.organizationRepository.findByUniversityAndOrgTypeOrderByRankDesc(universityReference, orgType));
+          filteredOrgs.addAll(this.organizationRepository.findByUniversityAndOrgType(universityReference, orgType));
         }
+        Collections.sort(filteredOrgs, (a, b) -> Integer.compare(b.getRank(), a.getRank()));
         return filteredOrgs;
       }
     } else {
