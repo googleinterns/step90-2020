@@ -107,7 +107,6 @@ function showEventPage(event, isIndividual, organizationName, userEvent, userEma
   const userFunctionButtonsContainer =  document.getElementById("user-function-buttons-container");
   userFunctionButtonsContainer.innerHTML = '';
 
-
   // Only individual users can save/unsave events
   if (isIndividual) {
     if (userEvent) { // Individual has saved event
@@ -122,14 +121,14 @@ function showEventPage(event, isIndividual, organizationName, userEvent, userEma
   }
   const reviewContainer = document.getElementById("event-review-container");
   reviewContainer.innerHTML = '';
-  createReviewElement(reviewContainer, event, isIndividual, "event", userEmail);
+  createReviewElement(reviewContainer, event, isIndividual, userEmail);
 
   if (event.reviews.length) { // Format time to *** time ago
     timeago.render(document.querySelectorAll('.timeago'));
   }
 }
 
-/*
+/**
  * Add the event's filterable details to modal
  * @param appendElement element to append new elements to
  * @param event event object
@@ -158,7 +157,7 @@ function createExtraDetailsElement(appendElement, event) {
 /**
  * Populate event details in the modal
  * @param event event object
- * @param organizatiionName event's organization name
+ * @param organizationName event's organization name
  */
 function fillEventDetails(event, organizationName) {
   var date = new Date(event.eventDateTime);

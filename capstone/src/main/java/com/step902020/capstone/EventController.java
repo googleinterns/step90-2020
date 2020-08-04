@@ -34,6 +34,9 @@ public class EventController {
   private IndividualRepository individualRepository;
 
   @Autowired
+  private ReviewRepository reviewRepository;
+
+  @Autowired
   private OrganizationRepository organizationRepository;
 
   @Autowired
@@ -77,7 +80,7 @@ public class EventController {
           Example.of(new Event(null, 0, null, null, null,
                           0, 0,  eventType, null, location,
                           foodAvailable, free, visitorAllowed),
-          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "requiredFee", "organizationName", "rank")),
+          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "rank")),
           Sort.by(Sort.Direction.DESC, "rank"));
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
@@ -157,12 +160,12 @@ public class EventController {
   /**
    * Add new review to event
    * @param user current user
-   * @param eventId Event's datastore id
-   * @param text Review's text
-   * @return Updated review list
+   * @param eventId event's datastore id
+   * @param text review's text
+   * @return updated review list
    */
-  @PostMapping("/new-event-review")
-  public List<Review> addReview(
+  @PostMapping("/add-event-review")
+  public Event addReview(
           CurrentUser user,
           @RequestParam("text") String text,
           @RequestParam("reviewedObjectId") Long eventId) throws IOException {
@@ -174,7 +177,30 @@ public class EventController {
     Review review = new Review(individualName, individualEmail, text);
     event.addReview(review);
     this.eventRepository.save(event);
-    return event.reviews;
+    return event;
+  }
+
+  /**
+   * Remove review from event list
+   * Only author of review can delete review
+   * @param user current user
+   * @param reviewId reviews's datastore id
+   * @param eventId event's datastore id   *
+   * @return updated review list
+   */
+  @PostMapping("/remove-event-review")
+  public void removeReview(
+          CurrentUser user,
+          @RequestParam("reviewId") Long reviewId,
+          @RequestParam("reviewedObjectId") Long eventId) throws IOException {
+
+    Review review = this.reviewRepository.findById(reviewId).get();
+    if (review.individualEmail.equals(user.getEmail())) {
+      this.reviewRepository.delete(review);
+      Event event = this.eventRepository.findById(eventId).get();
+      event.removeReview(review);
+      this.eventRepository.save(event);
+    }
   }
 
   /**

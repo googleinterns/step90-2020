@@ -33,8 +33,9 @@ public class Review {
 
   /**
    * Creates a new Review
-   * @param individualName Name of individual who authored review
-   * @param text Text content of review
+   * @param individualName name of individual who authored review
+   * @param individualEmail email of individual who authored review
+   * @param text text content of review
    */
   public Review(String individualName, String individualEmail, String text) {
     this.timestamp = System.currentTimeMillis();
@@ -93,7 +94,7 @@ public class Review {
 
   /**
    * Remove individual who added their like
-   * @param email Email of individual who liked review
+   * @param email email of individual who liked review
    */
   public void addReviewLiker(String email) {
     reviewLikers.add(email);
@@ -101,7 +102,7 @@ public class Review {
 
   /**
    * Remove individual who removed their like
-   * @param email Email of individual who unlike review
+   * @param email email of individual who unlike review
    */
   public void removeReviewLiker(String email) {
     reviewLikers.remove(email);
@@ -109,7 +110,7 @@ public class Review {
 
   /**
    * Individual has liked this review
-   * @param email Email of Individual to check if they've liked review
+   * @param email email of individual to check if they've liked review
    * @return true if individual has liked review
    */
   public boolean isReviewLiker(String email) {

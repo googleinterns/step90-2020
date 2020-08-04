@@ -54,22 +54,8 @@ public class ReviewController {
   }
 
   /**
-   * Delete review (Only review's author can delete review)
-   * @param reviewId review's datastore id
-   */
-  @PostMapping("delete-review")
-  public void deleteReview(
-          CurrentUser user,
-          @RequestParam("reviewId") Long reviewId) throws IOException{
-
-    Review review = this.reviewRepository.findById(reviewId).get();
-    if (review.individualEmail.equals(user.getEmail())) {
-      this.reviewRepository.delete(review);
-    }
-  }
-
-  /**
    * Set review's text (Only review's author can edit review)
+   * @param user current user
    * @param newText text to replace prev. text content
    * @param reviewId review's datastore id
    */

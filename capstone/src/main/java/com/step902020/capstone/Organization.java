@@ -184,9 +184,17 @@ public class Organization implements Comparable {
 
   /**
    * Add new review to list
-   * @param review Review object
+   * @param review review object
    */
   public void addReview(Review review) {
     reviews.add(review);
+  }
+
+  /**
+   * Remove review from list
+   * @param review review object
+   */
+  public void removeReview(Review review) {
+    reviews.remove(review);
   }
 }

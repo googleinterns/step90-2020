@@ -1,12 +1,12 @@
 /**
  * Create event's review submission elements and formats review listing
  * Only individuals will see review submission option
+ * @param reviewContainer container for review functions and reviews
  * @param reviewedObject event or organization object
  * @param isIndividual if user is an individual user
- * @reviewedObjectedType object type review is attached to
  * @param userEmail current user's email
  */
-function createReviewElement(reviewContainer, reviewedObject, isIndividual, reviewedObjectType, userEmail) {
+function createReviewElement(reviewContainer, reviewedObject, isIndividual, userEmail) {
   const reviewTitleElement = createElement(reviewContainer, 'h1', 'Reviews');
 
   if (isIndividual) {
@@ -20,16 +20,16 @@ function createReviewElement(reviewContainer, reviewedObject, isIndividual, revi
 
     reviewButtonElement.addEventListener('click', () => {
       if (reviewInputElement.value != '') {
-        newReview(reviewedObject.datastoreId, reviewInputElement.value, reviewedObjectType).then((reviews) => {
+        newReview(reviewContainer.id, reviewedObject.datastoreId, reviewInputElement.value).then((reviewedObject) => {
           reviewElementsContainer.innerHTML = '';
-          createReviewContainerElement(reviewElementsContainer, reviews, userEmail);
+          createReviewContainerElement(reviewElementsContainer, reviewedObject, userEmail);
         });
       }
     });
   }
   const reviewElementsContainer = createElement(reviewContainer, 'div', '');
   reviewElementsContainer.id = 'review-list-container';
-  createReviewContainerElement(reviewElementsContainer, reviewedObject.reviews, userEmail);
+  createReviewContainerElement(reviewElementsContainer, reviewedObject, userEmail);
 }
 
 /**
@@ -37,12 +37,11 @@ function createReviewElement(reviewContainer, reviewedObject, isIndividual, revi
  * Users can like each review once
  * Individuals can edit/delete their reviews
  * @param reviewsContainer container for event's review list
- * @param reviews event's reviews
+ * @param reviewedObject event or organization object
  * @param userEmail current user's email
-
  */
-function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
-  reviews.forEach((review) => {
+function createReviewContainerElement(reviewsContainer, reviewedObject, userEmail) {
+  reviewedObject.reviews.forEach((review) => {
     const reviewContainer = createElement(reviewsContainer, 'div', '');
     reviewContainer.className = 'review';
 
@@ -66,7 +65,7 @@ function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
     });
     if (review.individualEmail == userEmail) {
       createReviewEditButton(reviewContainer, reviewTextElement, review.datastoreId);
-      createReviewDeleteButton(reviewContainer, review.datastoreId);
+      createReviewDeleteButton(reviewContainer, review.datastoreId, reviewedObject.datastoreId);
     }
   })
 }
@@ -75,11 +74,12 @@ function createReviewContainerElement(reviewsContainer, reviews, userEmail) {
  * Add delete functionality for review's author
  * @param reviewContainer review's container
  * @param reviewId review's datastore id
+ * @param reviewedObjectId object datastore id review is attached to
  */
-function createReviewDeleteButton(reviewContainer, reviewId) {
+function createReviewDeleteButton(reviewContainer, reviewId, reviewedObjectId) {
   const deleteButton = createElement(reviewContainer, 'button', 'Delete');
   deleteButton.addEventListener('click', () => {
-    deleteReview(reviewId);
+    deleteReview(reviewContainer.parentElement.parentElement.id, reviewId, reviewedObjectId);
     reviewContainer.remove();
   });
 }
@@ -107,35 +107,66 @@ function createReviewEditButton(reviewContainer, reviewTextElement, reviewId) {
 
 /**
  * Create new review to add to event's list
- * @param eventId event's datastoreId
+ * @param reviewContainerId review container's element's id
+ * @param reviewedObjectId event or organization review will be attached to
  * @param text review's text content
- * @reviewedObjectType object type review is attached to
- * @return update list of reviews
+ * @return updated reviewed object
  */
-async function newReview(reviewedObjectId, text, reviewedObjectType) {
+async function newReview(reviewContainerId, reviewedObjectId, text) {
   const params = new URLSearchParams();
   params.append('text', text);
   params.append('reviewedObjectId', reviewedObjectId);
   var response;
-  if (reviewedObjectType == "event") {
-    response = await fetch('new-event-review', {method:'POST', body: params});
-  } else if (reviewedObjectType == "org"){
-    response = await fetch('new-org-review', {method:'POST', body: params});
+  // Event reviews
+  if (reviewContainerId == 'event-review-container') {
+    response = await fetch('add-event-review', {method:'POST', body: params});
+    // Reload event container or page
+    var windowPathName = window.location.pathname;
+    if (windowPathName == '/savedevents.html') {
+       getIndividualEventsOrOrganizations(true);
+     } else if (windowPathName == '/publicprofile.html') {
+       getPublicProfile(true);
+     } else {
+       getEvents();
+     }
   }
-  const reviews = response.json();
-  getEvents();
-  return reviews;
+
+  // Organization reviews (no need for reload because review will stay appended)
+  if (reviewContainerId == 'org-review-container') {
+    response = await fetch('add-org-review', {method:'POST', body: params});
+  }
+  const updatedReviewedObject = response.json();
+  return updatedReviewedObject;
 }
 
 /**
  * Remove a review from event's list
+ * @param reviewContainerId review container's element's id
  * @param reviewId review's datastoreId
+ * @param reviewedObjectId object datastore id review is attached to
  */
-function deleteReview(reviewId) {
+function deleteReview(reviewContainerId, reviewId, reviewedObjectId) {
   const params = new URLSearchParams();
   params.append('reviewId', reviewId);
-  fetch('delete-review', {method:'POST', body: params});
-  getEvents();
+  params.append('reviewedObjectId', reviewedObjectId);
+  // Event reviews
+  if (reviewContainerId == 'event-review-container') {
+    fetch('remove-event-review', {method:'POST', body: params});
+    // Reload event container or page
+    var windowPathName = window.location.pathname;
+    if (windowPathName == '/savedevents.html') {
+       getIndividualEventsOrOrganizations(true);
+    } else if (windowPathName == '/publicprofile.html') {
+       getPublicProfile(true);
+    } else {
+       getEvents();
+    }
+  }
+  // Organization reviews
+  if (reviewContainerId == 'org-review-container') {
+    fetch('remove-org-review', {method:'POST', body: params});
+    window.location.href = window.location.href;
+  }
 }
 
 /**

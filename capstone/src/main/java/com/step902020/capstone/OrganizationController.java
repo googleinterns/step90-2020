@@ -3,15 +3,11 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-import com.google.gson.Gson;
-import java.io.IOException;
 
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
@@ -26,6 +22,9 @@ public class OrganizationController {
 
   @Autowired
   private IndividualRepository individualRepository;
+
+  @Autowired
+  private ReviewRepository reviewRepository;
 
   @Autowired
   private UniversityRepository universityRepository;
@@ -150,12 +149,12 @@ public class OrganizationController {
   /**
    * Add new review to event
    * @param user current user
-   * @param text Review's text
-   * @param orgId Organization's datastore id
-   * @return Updated review list
+   * @param text review's text
+   * @param orgId organization's datastore id
+   * @return updated review list
    */
-  @PostMapping("/new-org-review")
-  public List<Review> addReview(
+  @PostMapping("/add-org-review")
+  public Organization addReview(
           CurrentUser user,
           @RequestParam("text") String text,
           @RequestParam("reviewedObjectId") Long orgId) throws IOException {
@@ -167,6 +166,29 @@ public class OrganizationController {
     Review review = new Review(individualName, individualEmail, text);
     organization.addReview(review);
     this.organizationRepository.save(organization);
-    return organization.reviews;
+    return organization;
+  }
+
+  /**
+   * Remove review the event
+   * Only author of review can delete review
+   * @param user current user
+   * @param reviewId review's datastore id
+   * @param orgId organization's datastore id
+   * @return updated review list
+   */
+  @PostMapping("/remove-org-review")
+  public void removeReview(
+          CurrentUser user,
+          @RequestParam("reviewId") Long reviewId,
+          @RequestParam("reviewedObjectId") Long orgId) throws IOException {
+
+    Review review = this.reviewRepository.findById(reviewId).get();
+    if (review.individualEmail.equals(user.getEmail())) {
+      this.reviewRepository.delete(review);
+      Organization organization = this.organizationRepository.findById(orgId).get();
+      organization.removeReview(review);
+      this.organizationRepository.save(organization);
+    }
   }
 }
