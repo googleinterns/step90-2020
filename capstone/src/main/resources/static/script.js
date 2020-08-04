@@ -19,7 +19,7 @@ function setElementInnerText(elementId, innerText){
 
 /**
  * Create new element with inner text and appended to an element
- * @param elementElement element to append
+ * @param appendElement element to append
  * @param elementType element to create
  * @param innerText text for inner text
  * @return created element
@@ -48,8 +48,8 @@ function showMore() {
 }
 
 /*
- * If element is selected, border will change from white to green
- * @param element id
+ * If element is selected, border will change colors to show selection
+ * @param elementID element id to add selected class
  */
 function toggleBorderSelection(elementId) {
   var element = document.getElementById(elementId);

@@ -8,7 +8,7 @@
  */
 function createReviewElement(reviewContainer, reviewedObject, isIndividual, userEmail) {
   const reviewTitleElement = createElement(reviewContainer, 'h1', 'Reviews');
-
+console.log("hey");
   if (isIndividual) {
     const reviewInputElement = createElement(reviewContainer, 'input', '');
     reviewInputElement.className = 'review-submission';

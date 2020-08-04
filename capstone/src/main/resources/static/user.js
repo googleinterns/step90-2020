@@ -152,6 +152,7 @@ function createOrgProfile(data, fillForm) {
     document.getElementById("org-university-form-display").innerText = data.university.name;
     document.getElementById("org-description").value = data.description;
     document.getElementById("org-uni").value = data.university.name;
+    document.getElementById("org-type").value = data.orgType;
   }
 }
 
@@ -433,7 +434,7 @@ function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, u
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
     var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
     const generalDateDiv = document.getElementById("date" + diff);
-    createEventElement(generalDateDiv, event, false, false, userEmail);
+    createEventElement(generalDateDiv, event, true, true, userEmail);
   }
 }
 /**

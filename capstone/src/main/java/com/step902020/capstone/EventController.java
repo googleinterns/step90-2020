@@ -80,12 +80,12 @@ public class EventController {
           Example.of(new Event(null, 0, null, null, null,
                           0, 0,  eventType, energyLevel, location,
                           foodAvailable, free, visitorAllowed),
-          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "rank")),
-          Sort.by(Sort.Direction.DESC, "rank"));
+          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "rank")));
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
     }
-    return getValidEvents(events, university.datastoreId);
+
+    return getSortedValidEvents(events, university.datastoreId);
   }
 
   @GetMapping("get-map-events")
@@ -210,7 +210,7 @@ public class EventController {
    * @return valid events
    * * FILTER UNIVERSITY MANUALLY DUE TO SMALL EVENT VOLUME*
    */
-  private List<Event> getValidEvents(Iterable<Event> events, long universityId) {
+  private List<Event> getSortedValidEvents(Iterable<Event> events, long universityId) {
     List<Event> validEvents = new ArrayList<Event>();
     LocalDateTime now = LocalDateTime.now();
     for (Event e : events) {
@@ -221,6 +221,7 @@ public class EventController {
         }
       }
     }
+    Collections.sort(validEvents, (a, b) -> Integer.compare(b.rank, a.getRank()));
     return validEvents;
   }
 }
