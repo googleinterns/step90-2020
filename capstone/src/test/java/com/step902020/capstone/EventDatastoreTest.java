@@ -113,11 +113,11 @@ public class EventDatastoreTest {
 
   @Test
   public void testAddReview() throws URISyntaxException {
-    String url = "/new-review";
+    String url = "/add-event-review";
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-    map.add("eventId", expectedEvent.datastoreId);
+    map.add("reviewedObjectId", expectedEvent.datastoreId);
     map.add("text", expectedReview.text);
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
     ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
@@ -129,5 +129,24 @@ public class EventDatastoreTest {
     assertEquals("Wrong number of reviews",  2, result.reviews.size());
     assertTrue("Wrong review -- text", expectedReview.text.equals(result.reviews.get(0).text) ||
             expectedReview.text.equals(result.reviews.get(1).text));
+  }
+
+  @Test
+  public void testRemoveReview() throws URISyntaxException {
+    String url = "/remove-event-review";
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    map.add("reviewedObjectId", expectedEvent.datastoreId);
+    map.add("reviewId", expectedReview.datastoreId);
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
+
+    // getting the actual result
+    final String baseUrl = "/get-event?event-id=" + expectedEvent.datastoreId;
+    URI uri = new URI(baseUrl);
+    Event result = authRestTemplate.getForObject(uri, Event.class);
+    assertEquals("Wrong number of reviews",  1, result.reviews.size());
+    assertFalse("Deleted wrong review -- text", expectedReview.text.equals(result.reviews.get(0).text));
   }
 }
