@@ -1,7 +1,6 @@
 package com.step902020.capstone;
 
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Id;
 
@@ -18,33 +17,36 @@ public class Event implements Comparable{
 
   Long organizationId;
 
-  @Field(name="eventTitle")
   String eventTitle;
 
-  @Field(name="eventDateTime")
   String eventDateTime;
 
-  @Field(name="eventDescription")
   String eventDescription;
 
-  @Field(name="eventLatitude")
   double eventLatitude;
 
-  @Field(name="eventLongitude")
   double eventLongitude;
 
-  @Field(name="foodAvailable")
+  String eventType;
+
+  String energyLevel;
+
+  String location; // Indoor/Outdoor
+
   Boolean foodAvailable;
 
-  @Field(name="requiredFee")
-  Boolean requiredFee;
+  Boolean free;
+
+  Boolean visitorAllowed;
   
   @Reference
   List<Review> reviews;
 
   Integer rank;
 
-  public Event(University university, long organizationId, String eventTitle,String eventDateTime, String eventDescription, double eventLatitude, double eventLongitude, Boolean foodAvailable, Boolean requiredFee) {
+  public Event(University university, long organizationId, String eventTitle,String eventDateTime, String eventDescription, 
+               double eventLatitude, double eventLongitude, String eventType, String energyLevel, String location, 
+               Boolean foodAvailable, Boolean free, Boolean visitorAllowed) {
     this.university = university;
     this.organizationId = organizationId;
     this.eventTitle = eventTitle;
@@ -52,8 +54,12 @@ public class Event implements Comparable{
     this.eventDescription = eventDescription;
     this.eventLatitude = eventLatitude;
     this.eventLongitude = eventLongitude;
+    this.eventType = eventType;
+    this.energyLevel = energyLevel;
+    this.location = location;
     this.foodAvailable = foodAvailable;
-    this.requiredFee = requiredFee;
+    this.free = free;
+    this.visitorAllowed = visitorAllowed;
     this.reviews = new ArrayList();
     rank = 0;
   }
@@ -91,12 +97,28 @@ public class Event implements Comparable{
     return eventDescription;
   }
 
+  public String getEventType() {
+    return eventType;
+  }
+
+  public String getEnergyLevel() {
+    return energyLevel;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
   public Boolean getFoodAvailable() {
     return foodAvailable;
   }
 
-  public Boolean getRequiredFee() {
-    return requiredFee;
+  public Boolean getFree() {
+    return free;
+  }
+
+  public Boolean getVisitorAllowed() {
+    return visitorAllowed;
   }
 
   public Integer getRank() {
@@ -124,11 +146,23 @@ public class Event implements Comparable{
   public void setEventLongitude(double eventLongitude) {
     this.eventLongitude = eventLongitude;
   }
+  public void setEventType(String eventType) {
+    this.eventType = eventType;
+  }
+  public void setEnergyLevel(String energyLevel) {
+    this.energyLevel = energyLevel;
+  }
+  public void setLocation(String location) {
+    this.location = location;
+  }
   public void setFoodAvailable(Boolean foodAvailable) {
     this.foodAvailable = foodAvailable;
   }
-  public void setRequiredFee(Boolean requiredFee) {
-    this.requiredFee = requiredFee;
+  public void setFree(Boolean free) {
+    this.free = free;
+  }
+  public void setVisitorAllowed(Boolean visitorAllowed) {
+    this.visitorAllowed = visitorAllowed;
   }
   public void setOrganizationId(Long organizationId) {
     this.organizationId = organizationId;
@@ -136,10 +170,18 @@ public class Event implements Comparable{
 
   /**
    * Add new review to list
-   * @param review Review object
+   * @param review review object
    */
   public void addReview(Review review) {
     reviews.add(review);
+  }
+
+  /**
+   * Remove review from list
+   * @param review review object
+   */
+  public void removeReview(Review review) {
+    reviews.remove(review);
   }
 
   /**

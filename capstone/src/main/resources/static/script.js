@@ -19,7 +19,7 @@ function setElementInnerText(elementId, innerText){
 
 /**
  * Create new element with inner text and appended to an element
- * @param elementElement element to append
+ * @param appendElement element to append
  * @param elementType element to create
  * @param innerText text for inner text
  * @return created element
@@ -48,20 +48,35 @@ function showMore() {
 }
 
 /*
- * If element is selected, border will change from white to green
- * @param element id
+ * If element is selected, border will change colors to show selection
+ * @param elementID element id to add selected class
  */
 function toggleBorderSelection(elementId) {
   var element = document.getElementById(elementId);
-  if (element.nodeName == 'BUTTON') {
-    element.classList.toggle('selected');
-  } else if (element.nodeName == 'SELECT') {
+  if (element.nodeName == 'SELECT' || element.nodeName == 'INPUT' ) {
     if (element.value != '') {
       element.classList.add('selected');
     } else {
       element.classList.remove('selected');
     }
+  } else {
+    element.classList.toggle('selected');
   }
+}
+
+/*
+ * Create elements from list of event types
+ * @param appendElementId id of DOM element
+ * @param elementType type of element to create
+ */
+function createEventTypeElements(appendElementId, elementType) {
+  var eventTypeValues = ["forum", "game", "movie", "party", "performance", "speaker", "volunteer", "workshop", "other"];
+  var appendElement = document.getElementById(appendElementId);
+
+  eventTypeValues.forEach(function (item, index) {
+    var element = createElement(appendElement, elementType, item);
+    element.value = item;
+    });
 }
 
 /*

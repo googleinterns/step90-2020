@@ -31,7 +31,10 @@ public class Organization implements Comparable {
 
   @Reference
   TreeSet<Event> events;
-
+  
+  @Reference
+  List<Review> reviews;
+  
   public Organization() {
   }
 
@@ -43,8 +46,9 @@ public class Organization implements Comparable {
     this.university = university;
     this.userType = userType;
     this.description = description;
+    this.events = new TreeSet<Event>();
+    this.reviews = new ArrayList();
     this.orgType = orgType;
-    events = new TreeSet<Event>();
     rank = 0;
   }
   
@@ -82,6 +86,10 @@ public class Organization implements Comparable {
   
   public TreeSet<Event> getEvents() {
     return events;
+  }
+
+  public List<Review> getReviews() {
+    return reviews;
   }
 
   public Integer getRank() {
@@ -172,5 +180,21 @@ public class Organization implements Comparable {
       return -1;
     }
     return this.getName().toLowerCase().compareTo(other.getName().toLowerCase());
+  }
+
+  /**
+   * Add new review to list
+   * @param review review object
+   */
+  public void addReview(Review review) {
+    reviews.add(review);
+  }
+
+  /**
+   * Remove review from list
+   * @param review review object
+   */
+  public void removeReview(Review review) {
+    reviews.remove(review);
   }
 }

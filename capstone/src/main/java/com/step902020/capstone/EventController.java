@@ -1,16 +1,11 @@
 package com.step902020.capstone;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDateTime;
 
 import com.step902020.capstone.security.CurrentUser;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import com.step902020.capstone.security.IdentityController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
 import org.springframework.data.domain.Example;
@@ -18,16 +13,15 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-import java.time.LocalDateTime;
 import java.lang.Double;
-
-import java.io.IOException;
 
 /**
  * Event functionalities
  *   - Add new reviews
  *   - List reviews
- * TODO: filtering, creating event with front end input
+ *   - Filters events
+ *   - Create event
+ *   - Update event
  */
  
 @RestController
@@ -40,6 +34,9 @@ public class EventController {
   private IndividualRepository individualRepository;
 
   @Autowired
+  private ReviewRepository reviewRepository;
+
+  @Autowired
   private OrganizationRepository organizationRepository;
 
   @Autowired
@@ -48,30 +45,47 @@ public class EventController {
   @Autowired
   private DatastoreTemplate datastoreTemplate;
 
+  /**
+   * Find events that fit filters, have not happened, belong to user's university
+   * @param universityName university name
+   * @param eventTitle name of event
+   * @param eventType event type
+   * @param energyLevel amount of energy/excitement/work suggest for event
+   * @param location is event indoors or outddors
+   * @param foodAvailable if event provides food
+   * @param free if event is free
+   * @param visitorAllowed if visitors can attend event
+   * @return list of valid events that fit selected filters
+   */
   @GetMapping("get-filtered-events")
   public List<Event> getFilteredEvents(
+          @RequestParam("universityName") String universityName,
+          @RequestParam("eventTitle") String eventTitle,
+          @RequestParam("eventType") String eventType,
+          @RequestParam("energyLevel") String energyLevel,
+          @RequestParam("location") String location,
           @RequestParam("foodAvailable") Boolean foodAvailable,
-          @RequestParam("requiredFee") Boolean requiredFee) throws IOException {
-    // False values changed to null for matching
-    foodAvailable = foodAvailable == false ? null: foodAvailable;
-    requiredFee = requiredFee == false ? null: requiredFee;
+          @RequestParam("free") Boolean free,
+          @RequestParam("visitorAllowed") Boolean visitorAllowed) throws IOException {
+    Iterable<Event> events;
+    University university = this.universityRepository.findFirstByName(universityName);
 
-    Iterable<Event> events = this.eventRepository.findAll(
-      Example.of(new Event(null, 0, null,
-                null, null, 0,
-                0, foodAvailable, requiredFee),
-      ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "rank")
-      ), Sort.by(Sort.Direction.DESC, "rank")
-    );
-    List<Event> noPastEvents = new ArrayList<Event>();
-    LocalDateTime now = LocalDateTime.now();
-    for (Event e : events) {
-      LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
-      if (eventDate.compareTo(now) >= 0) {
-        noPastEvents.add(e);
-      }
+    // Can search with filters or by name -- cannot combine
+    if (eventTitle.equals("")) {
+      eventType = eventType.equals("") ? null: eventType;
+      energyLevel = energyLevel.equals("") ? null: energyLevel;
+      location = location.equals("") ? null: location;
+
+      events = this.eventRepository.findAll(
+          Example.of(new Event(null, 0, null, null, null,
+                          0, 0,  eventType, energyLevel, location,
+                          foodAvailable, free, visitorAllowed),
+          ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "rank")));
+    } else {
+      events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
     }
-    return noPastEvents;
+
+    return getSortedValidEvents(events, university.datastoreId);
   }
 
   @GetMapping("get-map-events")
@@ -107,8 +121,12 @@ public class EventController {
      @RequestParam("eventDescription") String eventDescription,
      @RequestParam("eventLatitude") String eventLatitude,
      @RequestParam("eventLongitude") String eventLongitude,
+     @RequestParam("eventType") String eventType,
+     @RequestParam("energyLevel") String energyLevel,
+     @RequestParam("location") String location,
      @RequestParam("foodAvailable") Optional<Boolean> foodAvailable,
-     @RequestParam("requiredFee") Optional<Boolean> requiredFee,
+     @RequestParam("free") Optional<Boolean> free,
+     @RequestParam("visitorAllowed") Optional<Boolean> visitorAllowed,
      @RequestParam("event-id") String eventId
     ) throws IOException {
       Organization organization = organizationRepository.findFirstByEmail(user.getEmail());
@@ -120,13 +138,18 @@ public class EventController {
         event.setEventLongitude(Double.parseDouble(eventLongitude));
         event.setEventTitle(eventTitle);
         event.setOrganizationId(organization.getDatastoreId());
+        event.setEventType(eventType);
+        event.setEnergyLevel(energyLevel);
+        event.setLocation(location);
         event.setFoodAvailable(foodAvailable.orElse(false));
-        event.setRequiredFee(requiredFee.orElse(false));
+        event.setFree(free.orElse(false));
+        event.setVisitorAllowed(visitorAllowed.orElse(false));
         this.eventRepository.save(event);
       } else {
-        Event newEvent = new Event(organization.getUniversity(), organization.getDatastoreId(), eventTitle, eventDateTime,
-                eventDescription, Double.parseDouble(eventLatitude), Double.parseDouble(eventLongitude),
-                foodAvailable.orElse(false), requiredFee.orElse(false));
+        Event newEvent = new Event(organization.getUniversity(), organization.getDatastoreId(),
+                eventTitle, eventDateTime, eventDescription, Double.parseDouble(eventLatitude),
+                Double.parseDouble(eventLongitude), eventType, energyLevel, location,
+                foodAvailable.orElse(false), free.orElse(false), visitorAllowed.orElse(false));
         this.eventRepository.save(newEvent);
         organization.addEvent(newEvent);
         this.organizationRepository.save(organization);
@@ -137,15 +160,15 @@ public class EventController {
   /**
    * Add new review to event
    * @param user current user
-   * @param eventId Event's datastore id
-   * @param text Review's text
-   * @return Updated review list
+   * @param eventId event's datastore id
+   * @param text review's text
+   * @return updated review list
    */
-  @PostMapping("/new-review")
-  public List<Review> addReview(
+  @PostMapping("/add-event-review")
+  public Event addReview(
           CurrentUser user,
           @RequestParam("text") String text,
-          @RequestParam("eventId") Long eventId) throws IOException {
+          @RequestParam("reviewedObjectId") Long eventId) throws IOException {
 
     Event event = this.eventRepository.findById(eventId).get();
     Individual individual = this.individualRepository.findFirstByEmail(user.getEmail());
@@ -154,6 +177,51 @@ public class EventController {
     Review review = new Review(individualName, individualEmail, text);
     event.addReview(review);
     this.eventRepository.save(event);
-    return event.reviews;
+    return event;
+  }
+
+  /**
+   * Remove review from event list
+   * Only author of review can delete review
+   * @param user current user
+   * @param reviewId reviews's datastore id
+   * @param eventId event's datastore id   *
+   * @return updated review list
+   */
+  @PostMapping("/remove-event-review")
+  public void removeReview(
+          CurrentUser user,
+          @RequestParam("reviewId") Long reviewId,
+          @RequestParam("reviewedObjectId") Long eventId) throws IOException {
+
+    Review review = this.reviewRepository.findById(reviewId).get();
+    if (review.individualEmail.equals(user.getEmail())) {
+      this.reviewRepository.delete(review);
+      Event event = this.eventRepository.findById(eventId).get();
+      event.removeReview(review);
+      this.eventRepository.save(event);
+    }
+  }
+
+  /**
+   * Filter out past events and events from other universities
+   * @param events list of events
+   * @param universityId user's university's datastoreId
+   * @return valid events
+   * * FILTER UNIVERSITY MANUALLY DUE TO SMALL EVENT VOLUME*
+   */
+  private List<Event> getSortedValidEvents(Iterable<Event> events, long universityId) {
+    List<Event> validEvents = new ArrayList<Event>();
+    LocalDateTime now = LocalDateTime.now();
+    for (Event e : events) {
+      if (e.university.datastoreId == universityId) {
+        LocalDateTime eventDate = LocalDateTime.parse(e.getEventDateTime());
+        if (eventDate.compareTo(now) >= 0) {
+          validEvents.add(e);
+        }
+      }
+    }
+    Collections.sort(validEvents, (a, b) -> Integer.compare(b.rank, a.getRank()));
+    return validEvents;
   }
 }

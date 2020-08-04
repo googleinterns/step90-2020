@@ -16,7 +16,8 @@
     </script>
     <link rel="stylesheet" href="style.css">
   </head>
-  <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo(); createEventPlacementMap()">
+  <body onload="getUser(false, 'general-profile', 'org-event');loadEventInfo(); createEventPlacementMap();
+        createEventTypeElements('eventType', 'option')">
     <div th:replace="fragments/navbar::navbar"></div>
     <br />
     <div class="container">
@@ -45,25 +46,51 @@
             <input id="eventLongitude" name="eventLongitude" placeholder="Event Longitude" required>
             <br><br>
 
-            <label for="eventDescription"> Event Description: </label> <br>
-            <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
-            <br><br>
-
             <label> Event Map: </label>
             <br>
             <p>Click on the map to add a marker for the event's location.</p>
             <div id="eventMap"></div>
             <br> <br>
 
+            <label for="eventDescription"> Event Description: </label> <br>
+            <textarea id="eventDescription" name="eventDescription" rows="6" cols="60"> </textarea>
+            <br><br>
+
+            <select name="eventType" id="eventType" required>
+              <option value="">Event Type</option>
+            </select>
+            <br><br>
+
+            <select name="energyLevel" id="energyLevel" required>
+              <option value="">Energy Level</option>
+              <option value="1">1 (lowest)</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 (highest)</option>
+            </select>
+            <br><br>
+
+            <select name="location" id="location" required>
+              <option value=''>Indoor/Outdoor</option>
+              <option value="indoors">Indoor</option>
+              <option value="outdoors">Outdoor</option>=
+            </select>
+            <br><br>
+
            <label> Additional Event Details: </label>
            <br><br>
 
            <label for="foodAvailable"> Food Available </label>
            <input type="checkbox" id="foodAvailable" name="foodAvailable">
-
             <br>
-            <label for="requiredFee"> Required Fee </label>
-            <input type="checkbox" id="requiredFee" name="requiredFee">
+            <label for="free"> Free </label>
+            <input type="checkbox" id="free" name="free">
+            <br>
+            <label for="visitorAllowed"> Visitors Allowed </label>
+            <input type="checkbox" id="visitorAllowed" name="visitorAllowed">
+            <br>
+
             <br><br>
 
             <input type="submit" form="event-form" value="submit">

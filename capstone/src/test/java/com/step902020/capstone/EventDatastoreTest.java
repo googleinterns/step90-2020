@@ -68,8 +68,8 @@ public class EventDatastoreTest {
 
     expectedEvent = new Event(expectedUniversity,
             expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST",
-            "Turtles bring pizza", 40.769579, -73.973036,
-            true, false);
+            "Turtles bring pizza",40.769579, -73.973036, "movie",
+            "2", "indoors", true, false, true);
 
     String individualName = individual.firstName + " " + individual.lastName;
     reviewAddedToEvent = new Review(individualName, individual.email, "10/10 Test Review Added to Event");

@@ -1,13 +1,13 @@
 indexes:
-- kind: organization
+- kind: event
   properties:
-  - name: university
-  - name: name
+    - name: university
+    - name: eventTitle
 
 - kind: event
   properties:
-    - name: availableFood
-    - name: requiredFee
+    - name: university
+    - name: eventDateTime
 
 - kind: event
   properties:
@@ -28,3 +28,8 @@ indexes:
     - name: org-type
     - name: rank
       direction: desc
+
+- kind: organization
+  properties:
+    - name: university
+    - name: name

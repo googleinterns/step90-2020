@@ -152,6 +152,7 @@ function createOrgProfile(data, fillForm) {
     document.getElementById("org-university-form-display").innerText = data.university.name;
     document.getElementById("org-description").value = data.description;
     document.getElementById("org-uni").value = data.university.name;
+    document.getElementById("org-type").value = data.orgType;
   }
 }
 
@@ -201,6 +202,7 @@ function getIndividualEventsOrOrganizations(isEvent) {
     if(data.userType == "individual") {
       if (isEvent) {
         const eventDiv = document.getElementById("saved-events");
+        eventDiv.innerHTML = '';
         data.savedEvents.forEach((event) => createEventElement(eventDiv, event, true, true, data.email));
       } else {
         const orgDiv = document.getElementById("saved-orgs");
@@ -432,23 +434,32 @@ function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, u
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
     var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
     const generalDateDiv = document.getElementById("date" + diff);
-    createEventElement(generalDateDiv, event, false, false, userEmail);
+    createEventElement(generalDateDiv, event, true, true, userEmail);
   }
 }
-/* function to create a public profile of an organization */
-function getPublicProfile() {
-  fetch('user-info').then(response => response.json()).then((data) => {
-     if (data.userType != "unknown") {
+/**
+ * function to create a public profile of an organization
+  * @param isEventRefresh true if function refreshes events without updating profile details
+ */
+function getPublicProfile(isEventRefresh) {
+  fetch('user-info').then(response => response.json()).then((userData) => {
+     if (userData.userType != "unknown") {
        var searchParams = new URLSearchParams(location.search);
        var organizationId = searchParams.get("organization-id");
-       var userType = data.userType == "individual";
+       var userType = userData.userType == "individual";
        if (organizationId != null) {
          fetch('get-public-profile?organization-id=' + organizationId).then(response => response.json()).then((data) => {
-           createProfile(data, false, true);
+           if (!isEventRefresh) {
+             createProfile(data, false, true);
+           }
            const eventDiv = document.getElementById("hosted-events");
-           data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, data.email));
+           eventDiv.innerHTML = '';
+           data.events.forEach((event) => createEventElement(eventDiv, event, userType, false, userData.email));
            document.getElementById("public-image-a").setAttribute("href", "get-public-image?email=" + data.email);
            document.getElementById("public-image-img").setAttribute("src", "get-public-image?email=" + data.email);
+           const reviewContainer = document.getElementById("org-review-container");
+           reviewContainer.innerHTML = '';
+           createReviewElement(reviewContainer, data, userType, userData.email);
            hideSpinner();
          }).catch((error) => {
            // log error

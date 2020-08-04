@@ -15,7 +15,7 @@ button, input, select {
   padding: 10px 20px;
 }
 
-button:hover, select:hover {
+button:hover, select:hover, input:hover{
 border-color: purple;
 }
 
@@ -42,6 +42,15 @@ li a {
   text-decoration: none;
 }
 
+/* Change color on hover */
+li a:hover, .active a {
+  background-color: #073763ff;
+  border-style: solid;
+  border-color: #ffffff;
+  border-radius:10px;
+  color: #ffffff;
+}
+
 nav li {
   color: white;
   display: inline-block;
@@ -54,7 +63,7 @@ ul {
   overflow: hidden;
 }
 
-/* Shared Nav Bar */
+/* Nav Bar */
 .active-highlighted {
   background-color: #073763ff;
   border-color: coral;
@@ -63,22 +72,19 @@ ul {
   color: #ffffff;
 }
 
-.home {
-  font-size: 18px;
-}
-
-/* Change color on hover */
-li a:hover, .active a {
-  background-color: #073763ff;
-  color: #ffffff;
-  border-style: solid;
-  border-color: #ffffff;
-  border-radius:10px;
+#logo {
+  width: 150px;
+  margin: -40px 10px -50px 10px;
 }
 
 .nav-bar {
   background-color: #ffffff;
   color: #073763ff;
+  height: 70px;
+}
+
+.nav-bar li a {
+  display: table-cell;
 }
 
 /* Profile Page */
@@ -218,10 +224,6 @@ div.row {
 #events, .events {
   text-align: center;
 }
-  
-#events {
-  text-align: center;
-}
 
 .filters {
  display: block;
@@ -249,7 +251,9 @@ div.row {
   margin-bottom: 30px;
   font-size: 40px;
 }
-  
+
+
+/* Modal */
 #modal {
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
@@ -277,18 +281,38 @@ div.row {
   width: 25%;
 }
 
+.eventDetail {
+  border: 2px solid deepskyblue;
+  border-radius: 20px;
+  display: -webkit-inline-box;
+  margin: 5px;
+  padding: 15px;
+}
+
+.user-function-buttons-container {
+  margin: 10px;
+}
+
 .selected {
   border: 4px solid #caff00;
 }
 
 /* Reviews */
-#review-container {
+#event-review-container {
   text-align: left;
 }
 
-#review-container h1{
+#event-review-container h1{
   font-size: 25px;
   margin-bottom: 10px;
+}
+
+#org-review-container {
+  text-align: center;
+}
+
+#org-review-container .review {
+  margin: auto;
 }
 
 .review {
