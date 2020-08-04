@@ -53,14 +53,14 @@ function showMore() {
  */
 function toggleBorderSelection(elementId) {
   var element = document.getElementById(elementId);
-  if (element.nodeName == 'BUTTON') {
-    element.classList.toggle('selected');
-  } else if (element.nodeName == 'SELECT') {
+  if (element.nodeName == 'SELECT' || element.nodeName == 'INPUT' ) {
     if (element.value != '') {
       element.classList.add('selected');
     } else {
       element.classList.remove('selected');
     }
+  } else {
+    element.classList.toggle('selected');
   }
 }
 

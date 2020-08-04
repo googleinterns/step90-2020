@@ -24,6 +24,7 @@ function loadEvents(data) {
   var isIndividual = data.userType == "individual";
   var universityName = data.university.name;
 
+
    fetch('get-filtered-events?universityName=' + universityName + '&eventTitle=' + selectedFilter('searchEvent') +
     '&eventType=' + selectedFilter('type') + '&energyLevel=' + selectedFilter('energyLevel') +
     '&location=' + selectedFilter('location') + '&foodAvailable=' + selectedFilter('food') + '&free=' + selectedFilter('free') +

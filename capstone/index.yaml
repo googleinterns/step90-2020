@@ -12,7 +12,6 @@ indexes:
 - kind: event
   properties:
     - name: university
-    - name: eventTitle
     - name: rank
       direction: desc
     - name: eventDateTime

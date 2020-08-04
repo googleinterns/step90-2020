@@ -78,7 +78,7 @@ public class EventController {
 
       events = this.eventRepository.findAll(
           Example.of(new Event(null, 0, null, null, null,
-                          0, 0,  eventType, null, location,
+                          0, 0,  eventType, energyLevel, location,
                           foodAvailable, free, visitorAllowed),
           ExampleMatcher.matching().withIgnorePaths("datastoreId", "organizationId", "eventLatitude", "eventLongitude", "rank")),
           Sort.by(Sort.Direction.DESC, "rank"));
