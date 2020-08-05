@@ -28,4 +28,4 @@ mvn package appengine:deploy -Dapp.deploy.version=[your-version]
 
 ### Creating Individual User Account and Manage Individual User Account
 
-![alt text](src/main/resources/static/images/organizationuser.gif)
+![alt text](capstone/src/main/resources/static/images/individualuser.gif?raw=true)
