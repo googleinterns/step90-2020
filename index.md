@@ -4,18 +4,9 @@ Please use the instruction videos below to learn how to use Activity Hall
 
 ## Creating an account profile as an individual and customizing your account
 
-<iframe src="video_resource/individualuser.webm" 
-    width="560" 
-    height="315"
-    frameborder="0" 
-    allowfullscreen>
-</iframe>
+[![text](video_sources/individualuser.webm)](video_sources/individualuser.webm)
 
 ## Creating an account profile as an organization user and customizing your account
 
-<iframe src="video_resources/organizationuser.webm" 
-    width="560" 
-    height="315"
-    frameborder="0" 
-    allowfullscreen>
-</iframe>
+[![text](video_sources/individualuser.webm)](video_sources/organizationuser.webm)
+
