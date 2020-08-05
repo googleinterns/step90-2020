@@ -65,8 +65,8 @@ public class EventDatastoreTest {
                 expectedUniversity, "organization", "hello world!", "service"));
 
     expectedEvent = new Event(expectedUniversity,
-            expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST",
-            "Turtles bring pizza",40.769579, -73.973036, "movie",
+            expectedOrganization.getDatastoreId(), "pizza party", "2020-08-20T12:30",
+            "Turtles bring pizza",40.769579, -73.973036, "party",
             "2", "indoors", true, false, true);
 
     String individualName = individual.firstName + " " + individual.lastName;
@@ -101,15 +101,23 @@ public class EventDatastoreTest {
 
   @Test
   public void testGetFilteredEvents() throws URISyntaxException {
+    String baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
+            "&eventTitle=&eventType=&energyLevel=&location=&foodAvailable=&free=&visitorAllowed=";
+    URI uri = new URI(baseUrl);
+    Event[] resultList = authRestTemplate.getForObject(uri, Event[].class);
+    Event result = resultList[0];
+    assertTrue("Filtered incorrectly", result.equals(expectedEvent));
+
      // All filterable params filled (all but eventTitle)
-     String baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
+     baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
             "&eventTitle=" + "&eventType=" + expectedEvent.eventType +
             "&energyLevel=" + expectedEvent.energyLevel + "&location=" + expectedEvent.location +
             "&foodAvailable=" + expectedEvent.foodAvailable + "&free=" + expectedEvent.free +
             "&visitorAllowed=" +  expectedEvent.visitorAllowed;
-     URI uri = new URI(baseUrl);
-     List<Event> result = authRestTemplate.getForObject(uri, List.class);
-     assertTrue("Filtered incorrectly", result.contains(expectedEvent));
+     uri = new URI(baseUrl);
+     resultList = authRestTemplate.getForObject(uri, Event[].class);
+     result = resultList[0];
+     assertTrue("Filtered incorrectly", result.equals(expectedEvent));
 
      // expectedEvent's filterable params with empty strings (acts as null when sending params from js to java)
     baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
@@ -117,28 +125,30 @@ public class EventDatastoreTest {
             "&energyLevel=&location=" + expectedEvent.location +
             "&foodAvailable=" + expectedEvent.foodAvailable + "&free=&visitorAllowed=";
      uri = new URI(baseUrl);
-     result = authRestTemplate.getForObject(uri, List.class);
-     assertTrue("Filtered incorrectly", result.contains(expectedEvent));
-
-     // evetnTitle param filled (invokes event search by name)
+    resultList = authRestTemplate.getForObject(uri, Event[].class);
+    result = resultList[0];
+    assertTrue("Filtered incorrectly", result.equals(expectedEvent));
+/*
+     // eventTitle param filled (invokes event search by name)
      baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
             "&eventTitle=" + expectedEvent.eventTitle + "&eventType=" + expectedEvent.eventType +
             "&energyLevel=" + expectedEvent.energyLevel + "&location=" + expectedEvent.location +
             "&foodAvailable=" + expectedEvent.foodAvailable + "&free=" + expectedEvent.free +
             "&visitorAllowed=" +  expectedEvent.visitorAllowed;
      uri = new URI(baseUrl);
-     result = authRestTemplate.getForObject(uri, List.class);
-     assertTrue("Filtered incorrectly", result.contains(expectedEvent));
+    resultList = authRestTemplate.getForObject(uri, Event[].class);
+    result = resultList[0];
+    assertTrue("Filtered incorrectly", result.equals(expectedEvent));
 
-     // NOn expectedEvent's filterable param
+     // NOn expectedEvent's filterable*/
      baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
             "&eventTitle=" + "&eventType=" + expectedEvent.eventType +
             "&energyLevel=" + expectedEvent.energyLevel + "&location=" + expectedEvent.location +
             "&foodAvailable=" + false + "&free=" + expectedEvent.free +
             "&visitorAllowed=" +  expectedEvent.visitorAllowed;
      uri = new URI(baseUrl);
-     result = authRestTemplate.getForObject(uri, List.class);
-     assertFalse("Filtered incorrectly", result.contains(expectedEvent));
+    resultList = authRestTemplate.getForObject(uri, Event[].class);
+    assertEquals("Filtered incorrectly", 0, resultList.length);
   }
 
   @Test
@@ -153,11 +163,11 @@ public class EventDatastoreTest {
 
   @Test
   public void testAddReview() throws URISyntaxException {
-    String url = "/new-review";
+    String url = "/add-event-review";
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-    map.add("eventId", expectedEvent.datastoreId);
+    map.add("reviewedObjectId", expectedEvent.datastoreId);
     map.add("text", expectedReview.text);
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
     ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
