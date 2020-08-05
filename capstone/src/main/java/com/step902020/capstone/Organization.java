@@ -135,7 +135,7 @@ public class Organization implements Comparable {
    * @return String
    */
   public String toString() {
-    return name + " " + datastoreId;
+    return name + " " + datastoreId + " " + rank;
   }
 
   /**

@@ -67,7 +67,7 @@ public class EventDatastoreTest {
                 expectedUniversity, "organization", "hello world!", "service"));
 
     expectedEvent = new Event(expectedUniversity,
-            expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00EST",
+            expectedOrganization.getDatastoreId(), "pizza party", "2020-06-01T12:30:00",
             "Turtles bring pizza",40.769579, -73.973036, "movie",
             "2", "indoors", true, false, true);
 

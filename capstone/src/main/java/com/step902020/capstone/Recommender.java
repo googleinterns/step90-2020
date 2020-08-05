@@ -1,20 +1,8 @@
 
 package com.step902020.capstone;
 
-import com.step902020.capstone.security.CurrentUser;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
-import com.google.gson.Gson;
-import java.io.IOException;
 import java.util.function.Function;
 
 public class Recommender {

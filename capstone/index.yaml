@@ -12,9 +12,9 @@ indexes:
 - kind: event
   properties:
     - name: university
+    - name: eventDateTime
     - name: rank
       direction: desc
-    - name: eventDateTime
 
 - kind: organization
   properties:

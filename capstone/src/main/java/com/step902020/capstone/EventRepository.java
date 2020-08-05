@@ -14,8 +14,9 @@ import java.util.List;
 public interface EventRepository extends DatastoreRepository<Event, Long> {
   public Long deleteByEventDateTime(String eventDateTime);
   public List<Event> findByUniversityAndEventDateTimeGreaterThan(University university, String date);
-  public List<Event> findByUniversityAndEventDateTimeGreaterThanOrderByRankDesc(University university, String date);
+  public List<Event> findByUniversityAndEventDateTimeGreaterThanOrderByEventDateTimeAscRankDesc(University university, String date);
 
   @Query("select * from event where eventTitle >= @eventTitle and eventTitle < @endname and university = @university")
   public List<Event> findEventsByNameMatching(@Param("eventTitle") String eventTitle, @Param("endname") String endname, @Param("university") University university);
+
 }

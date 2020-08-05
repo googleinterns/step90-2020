@@ -213,7 +213,6 @@ public class IndividualController {
     int num = (count.equals("All")) ? Integer.MAX_VALUE : Integer.parseInt(count);
     // find recommended events from other users
     List<Event> recommended = recommender.recommend(targetUser, users, u -> u.getSavedEvents(), num);
-
     // filter out the past events
     List<Event> noPastEvents = new ArrayList<Event>();
     LocalDateTime now = LocalDateTime.now();
@@ -223,9 +222,11 @@ public class IndividualController {
         noPastEvents.add(e);
       }
     }
-    // if the list of recommended events is shorter than the list we want, add in more events from general event pool
+
+    /* if the list of recommended events is shorter than the list we want, add in more events from general event pool
+    according to descending popularity */
     if (noPastEvents.size() < num) {
-      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThanOrderByRankDesc(targetUser.getUniversity(), now.toString());
+      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThanOrderByEventDateTimeAscRankDesc(targetUser.getUniversity(), now.toString());
       int i = 0;
       int numAlreadyAdded = 0;
       int targetSize = noPastEvents.size();
@@ -281,6 +282,7 @@ public class IndividualController {
         i++;
       }
     }
+
     return recommended;
   }
 
@@ -303,5 +305,9 @@ public class IndividualController {
   @GetMapping(value = "get-image", produces = MediaType.IMAGE_JPEG_VALUE)
   public @ResponseBody byte[] getImage(CurrentUser user) throws IOException {
     return gcsstore.serveImage("step90-2020", "step90-2020.appspot.com", user.getEmail());
+  }
+
+  public void setRecommender(Recommender newRecommender) {
+    recommender = newRecommender;
   }
 }
