@@ -1,21 +1,36 @@
 package com.step902020.capstone;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.when;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.net.URISyntaxException;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -37,19 +52,22 @@ public class IdentityControllerDatastoreTests {
   @Autowired private UniversityRepository universityRepository;
   @Autowired private TestRestTemplate restTemplate;
   private TestRestTemplate authRestTemplate;
-  private University expectedUniversity;
+
+  University expectedUniversity;
+
   @Before
   public void setUp() {
     // create a university for testing
     expectedUniversity = new University("Test", 40.769579, -73.973036);
     this.universityRepository.save(expectedUniversity);
+    this.authRestTemplate = this.restTemplate.withBasicAuth(currentUserEmail, currentUserPassword);
   }
 
-//  @After
-//  public void tearDown() {
-//    this.organizationRepository.deleteByEmail(currentUserEmail);
-//    this.individualRepository.deleteByEmail(currentUserEmail);
-//  }
+  @After
+  public void tearDown() {
+    this.organizationRepository.deleteByEmail(currentUserEmail);
+    this.individualRepository.deleteByEmail(currentUserEmail);
+  }
 
   @Test
   public void testUserTypeOrganization() throws URISyntaxException {
