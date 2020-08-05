@@ -214,7 +214,7 @@ public class UserDatastoreTest {
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
     map.add("eventTitle", "new event");
-    map.add("eventDateTime", "2020-06-01T12:30:00EST");
+    map.add("eventDateTime", "2020-06-01T12:30:00");
     map.add("eventDescription", "hello");
     map.add("eventLatitude", "0");
     map.add("eventLongitude", "0");

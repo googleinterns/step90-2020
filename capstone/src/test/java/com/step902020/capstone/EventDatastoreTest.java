@@ -6,9 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,6 +97,48 @@ public class EventDatastoreTest {
     final String baseUrl = "/get-event?event-id=" + expectedEvent.datastoreId;
     Event result = authRestTemplate.getForObject(baseUrl, Event.class);
     assertEquals("Wrong event returned -- id", expectedEvent.datastoreId, result.datastoreId);
+  }
+
+  @Test
+  public void testGetFilteredEvents() throws URISyntaxException {
+     // All filterable params filled (all but eventTitle)
+     String baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
+            "&eventTitle=" + "&eventType=" + expectedEvent.eventType +
+            "&energyLevel=" + expectedEvent.energyLevel + "&location=" + expectedEvent.location +
+            "&foodAvailable=" + expectedEvent.foodAvailable + "&free=" + expectedEvent.free +
+            "&visitorAllowed=" +  expectedEvent.visitorAllowed;
+     URI uri = new URI(baseUrl);
+     List<Event> result = authRestTemplate.getForObject(uri, List.class);
+     assertTrue("Filtered incorrectly", result.contains(expectedEvent));
+
+     // expectedEvent's filterable params with empty strings (acts as null when sending params from js to java)
+    baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
+            "&eventTitle=&eventType=" + expectedEvent.eventType +
+            "&energyLevel=&location=" + expectedEvent.location +
+            "&foodAvailable=" + expectedEvent.foodAvailable + "&free=&visitorAllowed=";
+     uri = new URI(baseUrl);
+     result = authRestTemplate.getForObject(uri, List.class);
+     assertTrue("Filtered incorrectly", result.contains(expectedEvent));
+
+     // evetnTitle param filled (invokes event search by name)
+     baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
+            "&eventTitle=" + expectedEvent.eventTitle + "&eventType=" + expectedEvent.eventType +
+            "&energyLevel=" + expectedEvent.energyLevel + "&location=" + expectedEvent.location +
+            "&foodAvailable=" + expectedEvent.foodAvailable + "&free=" + expectedEvent.free +
+            "&visitorAllowed=" +  expectedEvent.visitorAllowed;
+     uri = new URI(baseUrl);
+     result = authRestTemplate.getForObject(uri, List.class);
+     assertTrue("Filtered incorrectly", result.contains(expectedEvent));
+
+     // NOn expectedEvent's filterable param
+     baseUrl = "/get-filtered-events?universityName=" + expectedUniversity.name +
+            "&eventTitle=" + "&eventType=" + expectedEvent.eventType +
+            "&energyLevel=" + expectedEvent.energyLevel + "&location=" + expectedEvent.location +
+            "&foodAvailable=" + false + "&free=" + expectedEvent.free +
+            "&visitorAllowed=" +  expectedEvent.visitorAllowed;
+     uri = new URI(baseUrl);
+     result = authRestTemplate.getForObject(uri, List.class);
+     assertFalse("Filtered incorrectly", result.contains(expectedEvent));
   }
 
   @Test
