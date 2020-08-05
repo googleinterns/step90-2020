@@ -26,6 +26,10 @@ mvn package appengine:deploy -Dapp.deploy.version=[your-version]
 
 ## Using Activity Hall
 
-### Creating Individual User Account and Manage Individual User Account
+### Creating and Managing Individual User Account
 
-![alt text](capstone/src/main/resources/static/images/individualuser.gif?raw=true)
+![Individual User Account](capstone/src/main/resources/static/images/individualuser.gif?raw=true)
+
+### Creating and Managing Organization User Account
+
+![Organization User Account](capstone/src/main/resources/static/images/organizationuser.gif?raw=true)
