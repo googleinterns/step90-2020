@@ -49,7 +49,7 @@ public class ReviewControllerTests {
 
     @Before
     public void setUp() {
-        expectedReview = new Review("John Smith", "jonhsmith@gmail.com", "10/10 Test Expected Review");
+        expectedReview = new Review("John Smith", currentUserEmail, "10/10 Test Expected Review");
         this.reviewRepository.save(expectedReview);
 
         this.authRestTemplate = this.restTemplate
@@ -58,7 +58,7 @@ public class ReviewControllerTests {
 
     @After
     public void tearDown() {
-        this.reviewRepository.deleteByIndividualEmail("johnsmith@gmail.com");
+        this.reviewRepository.deleteByIndividualEmail(currentUserEmail);
     }
 
     @Test
@@ -84,13 +84,13 @@ public class ReviewControllerTests {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("reviewId", expectedReview.datastoreId);
-        map.add("newText", expectedReview.text + "hi");
+        map.add("newText", "10/10 Test Expected Reviewhi");
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
         ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
 
         // getting the actual result
         Review result = reviewRepository.findById(expectedReview.datastoreId).orElse(null);
         assertEquals("Wrong review returned -- id", expectedReview.datastoreId, result.datastoreId);
-        assertEquals("Wrong updated text", expectedReview.text + "hi", result.text);
+        assertEquals("Didn't update text", expectedReview.text + "hi", result.text);
     }
 }

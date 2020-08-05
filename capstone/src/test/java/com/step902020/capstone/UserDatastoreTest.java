@@ -106,6 +106,7 @@ public class UserDatastoreTest {
     this.organizationRepository.deleteByEmail("org@uni.edu");
     this.eventRepository.deleteByEventDateTime(expectedEvent.getEventDateTime());
     this.universityRepository.deleteByName(expectedUniversity.getName());
+    this.reviewRepository.deleteByIndividualEmail(expectedIndividual.getEmail());
   }
 
   @Test
@@ -223,8 +224,11 @@ public class UserDatastoreTest {
     map.add("eventDescription", "hello");
     map.add("eventLatitude", "0");
     map.add("eventLongitude", "0");
+    map.add("eventType", "party");
+    map.add("energyLevel", "3");
+    map.add("location", "indoors");
     map.add("foodAvailable", true);
-    map.add("requiredFee", true);
+    map.add("free", "0");
     map.add("event-id", "");
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
     ResponseEntity<String> response = authRestTemplate.postForEntity(url, request, String.class);
