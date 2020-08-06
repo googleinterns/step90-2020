@@ -2,9 +2,7 @@ package com.step902020.capstone;
 
 import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
 import org.springframework.cloud.gcp.data.datastore.repository.query.Query;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 

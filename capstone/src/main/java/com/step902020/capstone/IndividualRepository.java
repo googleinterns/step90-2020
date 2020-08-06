@@ -1,7 +1,6 @@
 package com.step902020.capstone;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
 

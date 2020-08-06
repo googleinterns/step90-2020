@@ -1,10 +1,7 @@
 package com.step902020.capstone;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import com.google.common.collect.ImmutableList;
 import org.springframework.cloud.gcp.data.datastore.repository.DatastoreRepository;
 import org.springframework.cloud.gcp.data.datastore.repository.query.Query;
 import org.springframework.data.domain.Pageable;

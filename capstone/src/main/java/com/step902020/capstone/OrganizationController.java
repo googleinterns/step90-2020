@@ -1,4 +1,3 @@
-
 package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
@@ -147,11 +146,12 @@ public class OrganizationController {
   }
 
   /**
-   * Add new review to event
+   * Add new review to organization
    * @param user current user
    * @param text review's text
    * @param orgId organization's datastore id
    * @return updated review list
+   * @throws IOException
    */
   @PostMapping("/add-org-review")
   public Organization addReview(
@@ -170,12 +170,13 @@ public class OrganizationController {
   }
 
   /**
-   * Remove review the event
-   * Only author of review can delete review
+   * Remove review the organization
+   * Only the author can delete review
    * @param user current user
    * @param reviewId review's datastore id
    * @param orgId organization's datastore id
    * @return updated review list
+   * @throws IOException
    */
   @PostMapping("/remove-org-review")
   public void removeReview(
