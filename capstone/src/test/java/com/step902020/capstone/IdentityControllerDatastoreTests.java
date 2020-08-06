@@ -75,7 +75,7 @@ public class IdentityControllerDatastoreTests {
             "new organization", currentUserEmail, expectedUniversity, "organization",
             "hello world!", "arts"));
 
-    Object postResult = authRestTemplate.getForObject("user-info", Organization.class);
+    Object postResult = authRestTemplate.getForObject("/user-info", Organization.class);
     assertTrue("User type error", postResult instanceof Organization);
     assertEquals("Wrong organization returned", expectedOrganization, postResult);
   }
@@ -85,14 +85,14 @@ public class IdentityControllerDatastoreTests {
     Individual expectedIndividual = this.individualRepository.save(new Individual(System.currentTimeMillis(),
             "new individual", "ThatExists", currentUserEmail, expectedUniversity, "individual"));
 
-    Object postResult = authRestTemplate.getForObject("user-info", Individual.class);
+    Object postResult = authRestTemplate.getForObject("/user-info", Individual.class);
     assertTrue("User type error", postResult instanceof Individual);
     assertEquals("Wrong individual returned", expectedIndividual, postResult);
   }
 
   @Test
   public void testUserTypeUnknown() throws URISyntaxException {
-    Object postResult = authRestTemplate.getForObject("user-info", Map.class);
+    Object postResult = authRestTemplate.getForObject("/user-info", Map.class);
     assertTrue("User type error", postResult instanceof Map);
     assertEquals("Wrong unknown individual returned", "unknown", ((Map<String, String>) postResult).get("userType"));
   }
