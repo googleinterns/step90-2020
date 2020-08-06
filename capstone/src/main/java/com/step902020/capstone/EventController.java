@@ -88,12 +88,21 @@ public class EventController {
     return getSortedValidEvents(events, university.datastoreId);
   }
 
+  /* Find events that belong on the user's Campus
+   * @param user - current user
+   * @return list of events held on a specific campus
+   */
   @GetMapping("get-map-events")
   public Iterable<Event> getMapEvents(CurrentUser user) {
     University university = this.individualRepository.findFirstByEmail(user.getEmail()).getUniversity();
     return this.eventRepository.findByUniversityAndEventDateTimeGreaterThan(university, LocalDateTime.now().toString());
   }
 
+  /* Finds the user's university based on user type
+   * @param user - current user
+   * @param userType - user type; individual or organization
+   * @return University object of the given user
+   */
   @GetMapping("get-university-map")
   public University getUniversityMap(CurrentUser currentUser, @RequestParam String userType) throws IOException {
 

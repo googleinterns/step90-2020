@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -130,4 +130,30 @@ public class EventDatastoreTest {
     assertTrue("Wrong review -- text", expectedReview.text.equals(result.reviews.get(0).text) ||
             expectedReview.text.equals(result.reviews.get(1).text));
   }
+
+  @Test
+  public void testGetMapEvents() throws  URISyntaxException {
+    final String baseUrl = "/get-map-events";
+    URI uri = new URI(baseUrl);
+    Event[] result = authRestTemplate.getForObject(uri, Event[].class);
+    List<Event> expected = eventRepository.findByUniversityAndEventDateTimeGreaterThan(expectedIndividual.getUniversity(), LocalDateTime.now().toString());
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void testGetOrganizationUniversity() throws  URISyntaxException {
+    final String baseUrl = "/get-university-map?userType=organization";
+    URI uri = new URI(baseUrl);
+    University result = authRestTemplate.getForObject(uri, University.class);
+    assertEquals("Incorrect University Displayed", expectedOrganization.getUniversity().getName(), result.getName());
+  }
+
+  @Test
+  public void testGetIndividualUniversity() throws  URISyntaxException {
+    final String baseUrl = "/get-university-map?userType=individual";
+    URI uri = new URI(baseUrl);
+    University result = authRestTemplate.getForObject(uri, University.class);
+    assertEquals("Incorrect University Displayed", expectedIndividual.getUniversity().getName(), result.getName());
+  }
+
 }
