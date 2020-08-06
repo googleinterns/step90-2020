@@ -1,14 +1,8 @@
 package com.step902020.capstone;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
