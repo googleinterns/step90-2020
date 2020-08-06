@@ -1,29 +1,14 @@
 package com.step902020.capstone;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.when;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.Function;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,6 +16,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -210,7 +204,7 @@ public class OrganizationControllerDatastoreTests {
     expectedSet.add(234L);
     Organization result = authRestTemplate.getForObject(uri, Organization.class);
 
-    assertFalse("Unexpected organization ID",result == null);
+    assertNotNull("Unexpected organization ID",result);
     assertEquals("Unexpected event count", 2, result.getEvents().size());
     assertEquals("Unexpected organization Name", expectedOrganization.getName(), result.getName());
     this.eventRepository.deleteByEventDateTime("2020-06-01T12:30:00");
