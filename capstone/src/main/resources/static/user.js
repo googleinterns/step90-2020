@@ -1,4 +1,7 @@
-/* helper function to highlight active tab for general nav */
+/**
+  * highlights active tab for general nav
+  * @param tab the profile navigation tab that needs to be active
+  */
 function profileNavActive(tab) {
   if (tab == "profile") {
     document.getElementById("ind-profile").setAttribute("class", "active-highlighted");
@@ -8,7 +11,10 @@ function profileNavActive(tab) {
   }
 }
 
-/* helper function to highlight active tab for profile nav */
+/**
+  * highlights active tab for profile nav
+  * @param tab the general navigation tab that needs to be active
+  */
 function generalNavActive(tab) {
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "individual") {
@@ -18,12 +24,20 @@ function generalNavActive(tab) {
   });
 }
 
-/* helper function to highlight active tab for recommendation nav */
+/**
+  * highlights active tab for recommendation nav
+  * @param tab the tab in the recommendation nav that needs to be active
+  */
 function recNavActive(tab) {
   document.getElementById(tab).setAttribute("class", "active");
 }
 
-/* get the user information for the profile page */
+/**
+  * get the user information for the profile page
+  * @param fillForm boolean indicating whether the profile form should be prefilled
+  * @param generalTab the general tab active right now
+  * @param profileTab the profile tab active right now
+  */
 function getUser(fillForm, generalTab, profileTab) {
   generalNavActive(generalTab);
   profileNavActive(profileTab);
@@ -49,13 +63,23 @@ function getUser(fillForm, generalTab, profileTab) {
   });
 }
 
-/* Helper function to setup account page */
-function setUpAccountPage(isOrganization, fillForm, data, hide, display) {
+/**
+  * sets up account page
+  * @param isOrganization boolean indicating whether current user is an organization
+  * @param fillForm boolean indicating whether the profile form should be prefilled
+  * @param data data of current user
+  * @param navToBeHidden the current nav being hidden
+  * @param navToBeDisplayed the current nav being displayed
+  */
+function setUpAccountPage(isOrganization, fillForm, data, navToBeHidden, navToBeDisplayed) {
   createProfile(data, fillForm, isOrganization);
-  displayNavToggle(hide, display);
+  displayNavToggle(navToBeHidden, navToBeDisplayed);
 }
 
-/* Add the image form to the profile page */
+/**
+ * Add the image form to the profile page
+ * @param formName the name of the profile form that the image field is added to
+ */
 function addImageField(formName) {
   fetch('upload-image').then(response => response.text()).then((data) => {
     const form = document.getElementById(formName);
@@ -63,7 +87,9 @@ function addImageField(formName) {
   });
 }
 
-/* upon submission, hide the image form */
+/**
+ * upon submission, hide the image form
+ */
 function closeImageForm() {
   document.getElementById("user-image-form").style.display = "none";
   document.getElementById("user").style.display = "none";
@@ -74,7 +100,10 @@ function closeImageForm() {
     }, 8000);
 }
 
-/* function to toggle between displaying user profile and displaying an error message */
+/**
+ * function to toggle between displaying user profile and displaying an error message
+ * @param display boolean indicator of whether to display the main content of the page
+ */
 function displayMain(display) {
   if (display) {
     document.getElementById("no-profile").style.display = "none";
@@ -83,13 +112,22 @@ function displayMain(display) {
   }
 }
 
-/* toggle between the two nav bars */
-function displayNavToggle(hide, display) {
-  document.getElementById(display).style.display="block";
-  document.getElementById(hide).style.display="none";
+/**
+ * toggle between the two nav bars
+ * @param navToBeHidden the navigation bar that needs to be hidden
+ * @param navToBeDisplayed the navigation bar that needs to be shown
+ */
+function displayNavToggle(navToBeHidden, navToBeDisplayed) {
+  document.getElementById(navToBeDisplayed).style.display="block";
+  document.getElementById(navToBeHidden).style.display="none";
 }
 
-/* creates and populates the user profile */
+/**
+ * creates and populates the user profile
+ * @param data the current user's data
+ * @param fillForm the boolean indicator of whether the profile form needs to be prefilled
+ * @param isOrganization boolean indication of whether current user is an organization
+ */
 function createProfile(data, fillForm, isOrganization) {
   const emailContainer = document.getElementById("email");
   const pElementEmail = document.createElement('p');
@@ -109,7 +147,11 @@ function createProfile(data, fillForm, isOrganization) {
   }
 }
 
-/* populate individual specific fields of the profile */
+/**
+ * populate individual specific fields of the profile
+ * @param data current user's data
+ * @param fillForm boolean indicator of whether the profile form needs to be prefilled
+ */
 function createIndividualProfile(data, fillForm) {
   const nameContainer = document.getElementById("name");
   const pElementName = document.createElement('h1');
@@ -129,7 +171,11 @@ function createIndividualProfile(data, fillForm) {
   }
 }
 
-/* populate organization specific fields of the profile */
+/**
+ * populate organization specific fields of the profile
+ * @param data current user's data
+ * @param fillForm boolean indicator of whether the profile form needs to be prefilled
+ */
 function createOrgProfile(data, fillForm) {
   const nameContainer = document.getElementById("name");
   const pElementName = document.createElement('h1');
@@ -156,14 +202,21 @@ function createOrgProfile(data, fillForm) {
   }
 }
 
-// function used to toggle after a change in the selected user type input
+/**
+ * function used to toggle after a change in the selected user type input
+ * @param formUserType the usertype that the profile form field needs to be preset to
+ */
 function toggleForm(formUserType) {
   var userType = document.getElementById(formUserType).value;
   displayForm(userType, true);
 }
 
-// helper function for displaying forms
-// a new user will be able to toggle, but a returning user will not
+/**
+ * displays form according to user type
+ * a new user will be able to toggle, but a returning user will not
+ * @param userType current user's user type
+ * @param displayBoth boolean indicator of whether both organization and individual forms need to be display-able
+ */
 function displayForm(userType, displayBoth) {
   document.getElementById("user-image-form").style.display = "block";
   if (userType == "individual") {
@@ -183,20 +236,33 @@ function displayForm(userType, displayBoth) {
   }
 }
 
-/* helper function to display the correct form and set user type */
-function updateUserTypeInForm(display, hide, toggleSection, toggleValue) {
-	document.getElementById(display).style.display = "block";
-	document.getElementById(hide).style.display = "none";
+/**
+ * displays the correct form according to specified parameters and set user type
+ * @param formToBeDisplayed form that should be displayed
+ * @param formToBeHidden form that should be hidden
+ * @param toggleSection section of the profile form that needs to be changed
+ * @param toggleValue the value to change to
+ */
+function updateUserTypeInForm(formToBeDisplayed, formToBeHidden, toggleSection, toggleValue) {
+	document.getElementById(formToBeDisplayed).style.display = "block";
+	document.getElementById(formToBeHidden).style.display = "none";
 	document.getElementById(toggleSection).value = toggleValue;
 }
 
-/* helper function to hide/display the correct fields in forms */
-function hideFields(selectField, universityField) {
-	document.getElementById(selectField).style.display = "none";
+/**
+ * hides and displays the specified fields in forms
+ * @param userTypeSelectField the usertype select field in profile form that needs to be hidden
+ * @param universityField the university field that needs to be hidden
+ */
+function hideFields(userTypeSelectField, universityField) {
+	document.getElementById(userTypeSelectField).style.display = "none";
   document.getElementById(universityField).style.display="none";
 }
 
-/* get the saved events or organizations for individual users */
+/**
+ * get the saved events or organizations for individual users
+ * @param isEvent boolean indicator of whether it is fetching events
+ */
 function getIndividualEventsOrOrganizations(isEvent) {
   fetch('user-info').then(response => response.json()).then((data) => {
     if(data.userType == "individual") {
@@ -219,7 +285,13 @@ function getIndividualEventsOrOrganizations(isEvent) {
   });
 }
 
-/* Function to create the individual organization display divs*/
+/**
+ * Function to create the individual organization display divs
+ * @param orgListElement the div that is going to display all the events
+ * @param data data of the organization that we are adding to the display
+ * @param deleteAllowed boolean indicator of whether there should be a delete button displayed
+ * @param displayButton boolean indicator of whether any button should be displayed
+ */
 function createSavedOrgElement(orgListElement, data, deleteAllowed, displayButton) {
   const orgElement = createElement(orgListElement, 'li', '');
   orgElement.className = 'event';
@@ -238,7 +310,10 @@ function createSavedOrgElement(orgListElement, data, deleteAllowed, displayButto
   }
 }
 
-/* create delete buttons for the organization divs */
+/**
+ * create delete buttons for the organization divs
+ * @param datastoreId the id of the organization that is to be deleted from the user list
+ */
 function createDeleteButton(datastoreId) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
@@ -251,7 +326,10 @@ function createDeleteButton(datastoreId) {
   return form;
 }
 
-/* create save buttons for the organization divs */
+/**
+ * create save buttons for the organization divs
+ * @param data data of the organization that is going to be saved to the user's list
+ */
 function createSaveButton(data) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
@@ -264,7 +342,11 @@ function createSaveButton(data) {
   return form;
 }
 
-/* creates an unsave button for event */
+/**
+ * creates an unsave button for event
+ * @param divElement the div that this button is added to
+ * @param event the event that is displayed on the current div
+ */
 function createUnsaveEventButton(divElement, event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
@@ -277,7 +359,11 @@ function createUnsaveEventButton(divElement, event) {
   divElement.appendChild(form);
 }
 
-/* creates a save button for event */
+/**
+ * creates a save button for event
+ * @param divElement the div that this button is added to
+ * @param event the event that is displayed on the current div
+ */
 function createSaveEventButton(divElement, event) {
   const form = document.createElement("form");
   form.setAttribute("method", "POST");
@@ -290,7 +376,11 @@ function createSaveEventButton(divElement, event) {
   divElement.appendChild(form);
 }
 
-/* creates an edit button for events */
+/**
+ * creates an edit button and a delete button for event
+ * @param divElement the div that this button is added to
+ * @param event the event that is displayed on the current div
+ */
 function createEditAndDeleteEventButton(divElement, event) {
   // create edit form
   const editButton = document.createElement('button');
@@ -313,7 +403,9 @@ function createEditAndDeleteEventButton(divElement, event) {
   divElement.appendChild(deleteForm);
 }
 
-/* Function to control form display using button */
+/**
+ * Function to control form display using button
+ */
 function revealForm() {
 	fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "unknown") {
@@ -325,7 +417,9 @@ function revealForm() {
   });
 }
 
-/* Function to close form display after submission */
+/**
+ * Function to close form display after submission
+ */
 function closeForm() {
 	document.getElementById("user").style.display = "none";
 	document.getElementById("organization").style.display = "none";
@@ -348,7 +442,9 @@ function getOrganizationEvents() {
   });
 }
 
-/* Function to support searching for organizations by name */
+/**
+ * Function to support searching for organizations by name
+ */
 function searchOrg() {
   fetch('user-info').then(response => response.json()).then((data) => {
     if (data.userType == "unknown") {
@@ -384,7 +480,9 @@ function searchOrg() {
   });
 }
 
-/* function to generate divs for the calendar */
+/**
+ * function to generate divs for the calendar
+ */
 function createCalendar() {
   fetch('user-info').then(response => response.json()).then((userData) => {
     if (userData.userType == "individual") {
@@ -409,11 +507,11 @@ function createCalendar() {
         calendar.append(eventDiv);
       }
       userData.savedEvents.forEach((event) => {
-        createCalendarEvent(event, today, endDate, "coral", true, userData.email);
+        createCalendarEvent(event, today, endDate, userData.email);
       });
       fetch('get-all-org-events').then(response => response.json()).then((data) => {
         data.forEach((event) => {
-          createCalendarEvent(event, today, endDate, "cyan", false, userData.email);
+          createCalendarEvent(event, today, endDate, userData.email);
         });
         hideSpinner();
       }).catch((error) => {
@@ -427,8 +525,14 @@ function createCalendar() {
   });
 }
 
-/* helper function to create calendar events */
-function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, userEmail) {
+/**
+ * creates calendar events
+ * @param event event that may be added to the calendar
+ * @param today today's date
+ * @param endDate the date that is seven days from today
+ * @param userEmail email of the current user
+ */
+function createCalendarEvent(event, today, endDate, userEmail) {
   var eventDate = new Date(event.eventDateTime);
   // only add events to the container if they are future events
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
@@ -437,6 +541,7 @@ function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, u
     createEventElement(generalDateDiv, event, true, true, userEmail);
   }
 }
+
 /**
  * function to create a public profile of an organization
   * @param isEventRefresh true if function refreshes events without updating profile details
@@ -475,7 +580,10 @@ function getPublicProfile(isEventRefresh) {
      }
   });
 }
-
+/**
+ * find the recommended events or organizations
+ * @param recommendationType either recommending events or recommending organizations
+ */
 function findRecommended(recommendationType) {
   var count = document.getElementById('recommended-input').value;
   fetch('user-info').then(response => response.json()).then((data) => {
@@ -492,6 +600,12 @@ function findRecommended(recommendationType) {
   });
 }
 
+/**
+ * adds the list of recommended events/organizations to the page
+ * @param count the number of recommended items requested
+ * @param recommendationType either recommending events or recommending organizations
+ * @param email email of the current user
+ */
 function recommend(count, recommendationType, email) {
   fetch('get-recommended-'+ recommendationType + '-individual?count=' + count).then(response => response.json()).then((data) => {
     const recDiv = document.getElementById("recommended-section");
@@ -508,12 +622,16 @@ function recommend(count, recommendationType, email) {
   });
 }
 
-/* displays spinner on the page and hide main content */
+/**
+ * displays spinner on the page and hide main content
+ */
 function showSpinner() {
   document.getElementById('load').style.display="block";
 }
 
-/* hide spinner and displays main content */
+/**
+ * hide spinner and displays main content
+ */
 function hideSpinner() {
   document.getElementById('load').style.display="none";
 }
