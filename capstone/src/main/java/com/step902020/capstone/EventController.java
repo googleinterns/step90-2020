@@ -84,7 +84,7 @@ public class EventController {
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
     }
-System.out.println(events);
+
     List<Event> results = getSortedValidEvents(events, university.datastoreId);
     System.out.println(results);
     return results;

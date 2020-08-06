@@ -44,13 +44,15 @@ public class EventControllerTests {
     Individual expectedIndividual;
     Organization expectedOrganization;
     Event expectedEvent;
+    Event incorrectEvent;
+    Event pastEvent;
     Review expectedReview;
     Review reviewAddedToEvent;
     University expectedUniversity;
 
     @Before
     public void setUp() {
-        // append a random number to email to make a new user
+        // Append a random number to email to make a new user
         expectedUniversity = new University("Test", 40.769579, -73.973036);
         this.universityRepository.save(expectedUniversity);
 
@@ -62,8 +64,20 @@ public class EventControllerTests {
                 new Organization(System.currentTimeMillis(),"new organization", currentUserEmail,
                         expectedUniversity, "organization", "hello world!", "service"));
 
+        // Event dates will need to be updated after Aug 20, 2020
         expectedEvent = new Event(expectedUniversity,
                 expectedOrganization.getDatastoreId(), "pizza party", "2020-08-20T12:30",
+                "Turtles bring pizza",40.769579, -73.973036, "party",
+                "2", "indoors", true, false, true);
+
+        incorrectEvent = new Event(expectedUniversity,
+                expectedOrganization.getDatastoreId(), "pizza making", "2020-08-20T12:30",
+                "Turtles bring pizza",40.769579, -73.973036, "workshop",
+                "2", "indoors", true, true, true);
+
+        // Keep old date
+        pastEvent = new Event(expectedUniversity,
+                expectedOrganization.getDatastoreId(), "pizza party", "2020-07-20T12:30",
                 "Turtles bring pizza",40.769579, -73.973036, "party",
                 "2", "indoors", true, false, true);
 
@@ -101,26 +115,30 @@ public class EventControllerTests {
     public void testGetFilteredEvents() throws URISyntaxException {
         // All filterable params filled (all but eventTitle)
         Event[] result = createFilterTests(expectedUniversity.name, "", expectedEvent.eventType,
-                expectedEvent.energyLevel, expectedEvent.location, expectedEvent.foodAvailable,
-                expectedEvent.free, expectedEvent.visitorAllowed);
+                expectedEvent.energyLevel, expectedEvent.location, String.valueOf(expectedEvent.foodAvailable),
+                String.valueOf(expectedEvent.free), String.valueOf(expectedEvent.visitorAllowed));
+
+        assertEquals("Filtered incorrectly", 1, result.length); // Should not include pastEvent
         assertTrue("Filtered incorrectly", result[0].equals(expectedEvent));
 
-        // expectedEvent's filterable params with empty strings (acts as null when sending params from js to java)
+        // Empty string in some expectedEvent's filterable params (acts as null when sending params from js to java)
         result = createFilterTests(expectedUniversity.name, "", expectedEvent.eventType,
-                expectedEvent.energyLevel, expectedEvent.location, expectedEvent.foodAvailable,
-                expectedEvent.free, expectedEvent.visitorAllowed);
+                "", "", String.valueOf(expectedEvent.foodAvailable),
+                String.valueOf(expectedEvent.free), "");
+        assertEquals("Filtered incorrectly", 1, result.length);
         assertTrue("Filtered incorrectly", result[0].equals(expectedEvent));
 
-        // eventTitle param filled (invokes event search by name)
+        // EventTitle param filled (invokes event search by name)
         result = createFilterTests(expectedUniversity.name, "pizza%20party", expectedEvent.eventType,
-                expectedEvent.energyLevel, expectedEvent.location, expectedEvent.foodAvailable,
-                expectedEvent.free, expectedEvent.visitorAllowed);
+                expectedEvent.energyLevel, expectedEvent.location, String.valueOf(expectedEvent.foodAvailable),
+                String.valueOf(expectedEvent.free), String.valueOf(expectedEvent.visitorAllowed));
+        assertEquals("Filtered incorrectly", 1, result.length);
         assertTrue("Filtered incorrectly", result[0].equals(expectedEvent));
 
         // Non expectedEvent's filterable
         result = createFilterTests(expectedUniversity.name, "", "game",
-                expectedEvent.energyLevel, expectedEvent.location, expectedEvent.foodAvailable,
-                expectedEvent.free, expectedEvent.visitorAllowed);
+                expectedEvent.energyLevel, expectedEvent.location, String.valueOf(expectedEvent.foodAvailable),
+                String.valueOf(expectedEvent.free), String.valueOf(expectedEvent.visitorAllowed));
         assertEquals("Filtered incorrectly", 0, result.length);
     }
 
@@ -169,8 +187,8 @@ public class EventControllerTests {
      * @throws URISyntaxException
      */
     private Event[] createFilterTests(String universityName, String eventTitle, String eventType, String energyLevel,
-                                    String location, Boolean foodAvailable, Boolean free,
-                                    Boolean visitorAllowed) throws URISyntaxException {
+                                    String location, String foodAvailable, String free,
+                                    String visitorAllowed) throws URISyntaxException {
         String baseUrl = "/get-filtered-events?universityName=" + universityName + "&eventTitle=" + eventTitle +
                 "&eventType=" + eventType + "&energyLevel=" + energyLevel + "&location=" + location +
                 "&foodAvailable=" + foodAvailable + "&free=" + free + "&visitorAllowed=" + visitorAllowed;
