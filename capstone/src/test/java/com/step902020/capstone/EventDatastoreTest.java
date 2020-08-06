@@ -1,9 +1,5 @@
 package com.step902020.capstone;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
@@ -24,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -131,31 +129,6 @@ public class EventDatastoreTest {
             expectedReview.text.equals(result.reviews.get(1).text));
   }
 
-  @Test
-  public void testGetMapEvents() throws  URISyntaxException {
-    final String baseUrl = "/get-map-events";
-    URI uri = new URI(baseUrl);
-    Event[] result = authRestTemplate.getForObject(uri, Event[].class);
-    List<Event> expected = eventRepository.findByUniversityAndEventDateTimeGreaterThan(expectedIndividual.getUniversity(), LocalDateTime.now().toString());
-    assertEquals(expected, result);
-  }
-
-  @Test
-  public void testGetOrganizationUniversity() throws  URISyntaxException {
-    final String baseUrl = "/get-university-map?userType=organization";
-    URI uri = new URI(baseUrl);
-    University result = authRestTemplate.getForObject(uri, University.class);
-    assertEquals("Incorrect University Displayed", expectedOrganization.getUniversity().getName(), result.getName());
-  }
-
-  @Test
-  public void testGetIndividualUniversity() throws  URISyntaxException {
-    final String baseUrl = "/get-university-map?userType=individual";
-    URI uri = new URI(baseUrl);
-    University result = authRestTemplate.getForObject(uri, University.class);
-    assertEquals("Incorrect University Displayed", expectedIndividual.getUniversity().getName(), result.getName());
-  }
-
   public void testRemoveReview() throws URISyntaxException {
     String url = "/remove-event-review";
     HttpHeaders headers = new HttpHeaders();
@@ -172,5 +145,21 @@ public class EventDatastoreTest {
     Event result = authRestTemplate.getForObject(uri, Event.class);
     assertEquals("Wrong number of reviews",  1, result.reviews.size());
     assertEquals("Deleted wrong review -- text", expectedReview.text, result.reviews.get(0).text);
+  }
+
+  @Test
+  public void testGetOrganizationUniversity() throws  URISyntaxException {
+    final String baseUrl = "/get-university-map?userType=organization";
+    URI uri = new URI(baseUrl);
+    University result = authRestTemplate.getForObject(uri, University.class);
+    assertEquals("Incorrect University Displayed", expectedOrganization.getUniversity().getName(), result.getName());
+  }
+
+  @Test
+  public void testGetIndividualUniversity() throws  URISyntaxException {
+    final String baseUrl = "/get-university-map?userType=individual";
+    URI uri = new URI(baseUrl);
+    University result = authRestTemplate.getForObject(uri, University.class);
+    assertEquals("Incorrect University Displayed", expectedIndividual.getUniversity().getName(), result.getName());
   }
 }
