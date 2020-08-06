@@ -112,13 +112,13 @@ public class EventControllerTests {
         assertTrue("Filtered incorrectly", result[0].equals(expectedEvent));
 
         // eventTitle param filled (invokes event search by name)
-        result = createFilterTests(expectedUniversity.name, "", expectedEvent.eventType,
+        result = createFilterTests(expectedUniversity.name, "pizza%20party", expectedEvent.eventType,
                 expectedEvent.energyLevel, expectedEvent.location, expectedEvent.foodAvailable,
                 expectedEvent.free, expectedEvent.visitorAllowed);
         assertTrue("Filtered incorrectly", result[0].equals(expectedEvent));
 
         // Non expectedEvent's filterable
-        result = createFilterTests(expectedUniversity.name, "", expectedEvent.eventType,
+        result = createFilterTests(expectedUniversity.name, "", "game",
                 expectedEvent.energyLevel, expectedEvent.location, expectedEvent.foodAvailable,
                 expectedEvent.free, expectedEvent.visitorAllowed);
         assertEquals("Filtered incorrectly", 0, result.length);
@@ -154,6 +154,20 @@ public class EventControllerTests {
                 expectedReview.text.equals(result.reviews.get(1).text));
     }
 
+    /**
+     * Helper function for testGetFilteredEvents()
+     * Fetches list of event based on url params
+     * @param universityName university Name
+     * @param eventTitle event title
+     * @param eventType event type
+     * @param energyLevel event energy level
+     * @param location event location (indoors/outdoors)
+     * @param foodAvailable if food available at event
+     * @param free if event is free
+     * @param visitorAllowed if visitors allowed at event
+     * @return list of events from search
+     * @throws URISyntaxException
+     */
     private Event[] createFilterTests(String universityName, String eventTitle, String eventType, String energyLevel,
                                     String location, Boolean foodAvailable, Boolean free,
                                     Boolean visitorAllowed) throws URISyntaxException {
