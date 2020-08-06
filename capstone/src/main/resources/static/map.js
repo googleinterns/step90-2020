@@ -12,7 +12,7 @@
       const jsonUniversity = await universityResponse.json();
       const campusMap = generateCampusMap(jsonUniversity);
 
-      const eventResponse = await fetch('get-map-events');
+      const eventResponse = await fetch('get-map-events?university=' + jsonUser.university.name);
       const jsonEvents = await eventResponse.json();
       jsonEvents.forEach(event => createMarker(event, campusMap));
       hideSpinner();
