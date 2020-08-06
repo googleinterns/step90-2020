@@ -10,18 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.data.datastore.core.DatastoreTemplate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import java.lang.Double;
 
 /**
  * Event functionalities
- *   - Add new reviews
- *   - List reviews
  *   - Filters events
  *   - Create event
  *   - Update event
+ *   - Add/remove reviews
  */
  
 @RestController
@@ -84,10 +82,7 @@ public class EventController {
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
     }
-
-    List<Event> results = getSortedValidEvents(events, university.datastoreId);
-    System.out.println(results);
-    return results;
+    return getSortedValidEvents(events, university.datastoreId);
   }
 
   @GetMapping("get-map-events")
