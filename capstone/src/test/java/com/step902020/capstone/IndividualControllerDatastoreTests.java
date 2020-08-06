@@ -50,18 +50,20 @@ public class IndividualControllerDatastoreTests {
   @Autowired private OrganizationRepository organizationRepository;
   @Autowired private EventRepository eventRepository;
   @Autowired private UniversityRepository universityRepository;
+  @Autowired private ReviewRepository reviewRepository;
   @Autowired private TestRestTemplate restTemplate;
   private TestRestTemplate authRestTemplate;
 
-  Individual expectedIndividual;
-  Organization expectedOrganization;
-  Organization expectedOrganization2;
-  Organization expectedOrganization3;
-  Event expectedEvent;
-  Event expectedEvent2;
-  Event expectedEvent3;
-  Organization organizationSavedByUser;
-  University expectedUniversity;
+  private Individual expectedIndividual;
+  private Organization expectedOrganization;
+  private Organization expectedOrganization2;
+  private Organization expectedOrganization3;
+  private Event expectedEvent;
+  private Event expectedEvent2;
+  private Event expectedEvent3;
+  private  Organization organizationSavedByUser;
+  private University expectedUniversity;
+  private Review expectedReview;
 
   @Before
   public void setUp() {
@@ -133,6 +135,9 @@ public class IndividualControllerDatastoreTests {
 
     this.organizationRepository.save(expectedOrganization);
     this.authRestTemplate = this.restTemplate.withBasicAuth(currentUserEmail, currentUserPassword);
+
+    String individualName = individual.firstName + " " + individual.lastName;
+    expectedReview = new Review(individualName, individual.email, "10/10 Test Expected Review");
   }
 
   @After
@@ -149,6 +154,7 @@ public class IndividualControllerDatastoreTests {
     this.eventRepository.deleteById(expectedEvent2.getDatastoreId());
     this.eventRepository.deleteById(expectedEvent3.getDatastoreId());
     this.universityRepository.deleteByName(expectedUniversity.getName());
+    this.reviewRepository.deleteByIndividualEmail(expectedIndividual.getEmail());
   }
 
   @Test
@@ -372,5 +378,42 @@ public class IndividualControllerDatastoreTests {
     assertEquals("Wrong organizations returned at position 1", expected[1], result[1]);
     assertEquals("Wrong organizations returned at position 2", expected[2], result[2]);
     assertEquals("Wrong organizations returned at position 3", expected[3], result[3]);
+  }
+
+  @Test
+  public void testAddReview() throws URISyntaxException {
+    String url = "/add-org-review";
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    map.add("reviewedObjectId", expectedOrganization.getDatastoreId());
+    map.add("text", expectedReview.getText());
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
+
+    // getting the actual result
+    final String baseUrl = "/get-public-profile?organization-id=" + expectedOrganization.getDatastoreId();
+    URI uri = new URI(baseUrl);
+    Organization result = authRestTemplate.getForObject(uri, Organization.class);
+    assertEquals("Wrong number of reviews",  1, result.getReviews().size());
+    assertTrue("Wrong review -- text", expectedReview.text.equals(result.getReviews().get(0).text));
+  }
+
+  @Test
+  public void testRemoveReview() throws URISyntaxException {
+    String url = "/remove-org-review";
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    map.add("reviewedObjectId", expectedOrganization.getDatastoreId());
+    map.add("reviewId", expectedReview.getDatastoreId());
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
+
+    // getting the actual result
+    final String baseUrl = "/get-public-profile?organization-id=" + expectedOrganization.getDatastoreId();
+    URI uri = new URI(baseUrl);
+    Organization result = authRestTemplate.getForObject(uri, Organization.class);
+    assertEquals("Wrong number of reviews",  0, result.getReviews().size());
   }
 }

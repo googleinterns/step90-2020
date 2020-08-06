@@ -53,9 +53,9 @@ public class OrganizationControllerDatastoreTests {
   @Autowired private TestRestTemplate restTemplate;
   private TestRestTemplate authRestTemplate;
 
-  Organization expectedOrganization;
-  Event expectedEvent;
-  University expectedUniversity;
+  private Organization expectedOrganization;
+  private Event expectedEvent;
+  private University expectedUniversity;
 
   @Before
   public void setUp() {
