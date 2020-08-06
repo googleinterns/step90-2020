@@ -17,11 +17,10 @@ import java.lang.Double;
 
 /**
  * Event functionalities
- * - Add new reviews
- * - List reviews
- * - Filters events
+ * - Filter events
  * - Create event
  * - Update event
+ * - Add/remove reviews
  */
 
 @RestController

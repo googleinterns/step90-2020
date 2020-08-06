@@ -8,8 +8,15 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+/**
+ * Organization functionalities
+ * - Create/update profile
+ * - Filter organizations
+ * - Delete events
+ * - Create organization public profile
+ * - Add/remove reviews
+ */
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @RestController
 public class OrganizationController {
 

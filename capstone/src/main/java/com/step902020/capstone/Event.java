@@ -7,8 +7,7 @@ import org.springframework.data.annotation.Id;
 import java.util.*;
 
 /**
- * Represents an Event. Organizations can create an Event
- * Individuals can add reviews and save event (increases rank)
+ * Represents an Event. Organizations can create an Event. Individuals can add reviews and save event (increases rank)
  */
 @Entity(name = "event")
 public class Event implements Comparable{
