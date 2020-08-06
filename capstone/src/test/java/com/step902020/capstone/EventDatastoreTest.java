@@ -147,6 +147,6 @@ public class EventDatastoreTest {
     URI uri = new URI(baseUrl);
     Event result = authRestTemplate.getForObject(uri, Event.class);
     assertEquals("Wrong number of reviews",  1, result.reviews.size());
-    assertFalse("Deleted wrong review -- text", expectedReview.text.equals(result.reviews.get(0).text));
+    assertEquals("Deleted wrong review -- text", expectedReview.text, result.reviews.get(0).text);
   }
 }
