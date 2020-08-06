@@ -506,7 +506,7 @@ function createCalendar() {
         calendar.append(dateDiv);
         calendar.append(eventDiv);
       }
-      fetch('get-all-org-events').then(response => response.json()).then((data) => {
+      fetch('get-all-calendar-events').then(response => response.json()).then((data) => {
         data.forEach((event) => {
           createCalendarEvent(event, today, endDate, userData.email);
         });
