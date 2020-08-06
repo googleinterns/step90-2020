@@ -184,7 +184,7 @@ public class IndividualController {
     if (current != null) {
       for (Organization org : current.getOrganizations()) {
         for (Event event : org.getEvents()) {
-          if (!current.getSavedEvents().contains(event)) {
+          if (!calendarEvents.contains(event)) {
             calendarEvents.add(event);
           }
         }
