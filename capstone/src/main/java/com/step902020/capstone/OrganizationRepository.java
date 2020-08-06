@@ -24,6 +24,6 @@ public interface OrganizationRepository extends DatastoreRepository<Organization
 
   public List<Organization> findByUniversity(University university, Pageable pageable);
 
-  @Query("select * from organization where name >= @name and name < @endname and university = @university order by rank desc")
+  @Query("select * from organization where name >= @name and name < @endname and university = @university order by name asc, rank desc")
   public List<Organization> findOrganizationsByNameMatchingOrderByRankDesc(@Param("name") String name, @Param("endname") String endname, @Param("university") University university);
 }

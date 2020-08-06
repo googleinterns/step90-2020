@@ -133,6 +133,11 @@ public class EventDatastoreTest {
 
   @Test
   public void testRemoveReview() throws URISyntaxException {
+    // first add a review
+    expectedEvent.addReview(expectedReview);
+    this.eventRepository.save(expectedEvent);
+    this.reviewRepository.save(expectedReview);
+
     String url = "/remove-event-review";
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -147,6 +152,6 @@ public class EventDatastoreTest {
     URI uri = new URI(baseUrl);
     Event result = authRestTemplate.getForObject(uri, Event.class);
     assertEquals("Wrong number of reviews",  1, result.reviews.size());
-    assertEquals("Deleted wrong review -- text", expectedReview.text, result.reviews.get(0).text);
+    assertEquals("Deleted wrong review -- text", reviewAddedToEvent.text, result.reviews.get(0).text);
   }
 }

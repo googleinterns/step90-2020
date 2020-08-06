@@ -3,8 +3,7 @@ package com.step902020.capstone;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
@@ -165,6 +164,32 @@ public class IndividualControllerDatastoreTests {
   }
 
   @Test
+  public void testSaveIndividual() throws URISyntaxException {
+    String url = "/save-individual";
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    String newFirstName = "first name changed";
+    String newLastName = "last name changed";
+    map.add("firstname", newFirstName);
+    map.add("lastname", newLastName);
+    map.add("user-type", expectedIndividual.getUserType());
+    map.add("university", expectedIndividual.getUniversity().getName());
+    HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+    ResponseEntity<String> saveResponse = authRestTemplate.postForEntity(url, request, String.class);
+    assertTrue(saveResponse.getHeaders().containsKey("Location"));
+    String redirectLocation = saveResponse.getHeaders().getFirst("Location");
+    assertTrue(redirectLocation.endsWith("profile.html"));
+
+    // check whether it is saved correctly
+    final String getIndividualUrl = "/get-individual";
+
+    Individual result = authRestTemplate.getForObject(getIndividualUrl, Individual.class);
+    assertEquals("Wrong individual first name", newFirstName, result.getFirstName());
+    assertEquals("Wrong individual last name", newLastName, result.getLastName());
+  }
+
+  @Test
   public void testUserAddSavedEvent() throws URISyntaxException {
     String url = "/add-saved-event";
     HttpHeaders headers = new HttpHeaders();
@@ -253,6 +278,21 @@ public class IndividualControllerDatastoreTests {
   }
 
   @Test
+  public void testGetCalendarEvents() throws URISyntaxException {
+    // add an event and an organization to current individual user for testing
+    expectedIndividual.addSavedEvents(expectedEvent);
+    expectedIndividual.addOrganizations(expectedOrganization);
+    this.individualRepository.save(expectedIndividual);
+
+    List<Event> result = Arrays.asList(authRestTemplate.getForObject("/get-all-org-events", Event[].class));
+    Event[] expected = new Event[]{expectedEvent, expectedEvent2, expectedEvent3};
+    assertEquals("Wrong number returned", 3, result.size());
+    for(int i = 0; i < expected.length; i++) {
+      assertEquals("Event " + expected[i].getEventTitle()  + " not included at position " + i, true, result.contains(expected[i]));
+    }
+  }
+
+  @Test
   public void testGetIndividualRecommendedEventsNoRecommendedEventsReturned() throws URISyntaxException {
     List<Individual> users = this.individualRepository.findByUniversity(expectedIndividual.getUniversity());
     Recommender mockRecommender = Mockito.mock(Recommender.class);
@@ -260,12 +300,11 @@ public class IndividualControllerDatastoreTests {
     context.getBean(IndividualController.class).setRecommender(mockRecommender);
     // getting the actual result
     Event[] result = authRestTemplate.getForObject("/get-recommended-events-individual?count=2", Event[].class);
-    Event[] expected = new Event[2];
-    expected[0] = expectedEvent3;
-    expected[1] = expectedEvent2;
+    Event[] expected = new Event[]{expectedEvent3, expectedEvent2};
     assertEquals("Wrong number returned", 2, result.length);
-    assertEquals("Wrong events returned at position 0", expected[0], result[0]);
-    assertEquals("Wrong events returned at position 1", expected[1], result[1]);
+    for(int i = 0; i < expected.length; i++) {
+      assertEquals("Wrong events returned at position " + i, expected[i], result[i]);
+    }
   }
 
   @Test
@@ -278,12 +317,11 @@ public class IndividualControllerDatastoreTests {
     context.getBean(IndividualController.class).setRecommender(mockRecommender);
     // getting the actual result
     Event[] result = authRestTemplate.getForObject("/get-recommended-events-individual?count=2", Event[].class);
-    Event[] expected = new Event[2];
-    expected[0] = expectedEvent2;
-    expected[1] = expectedEvent3;
+    Event[] expected = new Event[]{expectedEvent2, expectedEvent3};
     assertEquals("Wrong number returned", 2, result.length);
-    assertEquals("Wrong events returned at position 0", expected[0], result[0]);
-    assertEquals("Wrong events returned at position 1", expected[1], result[1]);
+    for(int i = 0; i < expected.length; i++) {
+      assertEquals("Wrong events returned at position " + i, expected[i], result[i]);
+    }
   }
 
   @Test
@@ -297,12 +335,11 @@ public class IndividualControllerDatastoreTests {
     context.getBean(IndividualController.class).setRecommender(mockRecommender);
     // getting the actual result
     Event[] result = authRestTemplate.getForObject("/get-recommended-events-individual?count=4", Event[].class);
-    Event[] expected = new Event[2];
-    expected[0] = expectedEvent2;
-    expected[1] = expectedEvent3;
+    Event[] expected = new Event[]{expectedEvent2, expectedEvent3};
     assertEquals("Wrong number returned", 2, result.length);
-    assertEquals("Wrong events returned at position 0", expected[0], result[0]);
-    assertEquals("Wrong events returned at position 1", expected[1], result[1]);
+    for(int i = 0; i < expected.length; i++) {
+      assertEquals("Wrong events returned at position " + i, expected[i], result[i]);
+    }
   }
 
   @Test
@@ -313,12 +350,11 @@ public class IndividualControllerDatastoreTests {
     context.getBean(IndividualController.class).setRecommender(mockRecommender);
     // getting the actual result
     Event[] result = authRestTemplate.getForObject("/get-recommended-events-individual?count=4", Event[].class);
-    Event[] expected = new Event[2];
-    expected[0] = expectedEvent3;
-    expected[1] = expectedEvent2;
+    Event[] expected = new Event[]{expectedEvent3, expectedEvent2};
     assertEquals("Wrong number returned", 2, result.length);
-    assertEquals("Wrong events returned at position 0", expected[0], result[0]);
-    assertEquals("Wrong events returned at position 1", expected[1], result[1]);
+    for(int i = 0; i < expected.length; i++) {
+      assertEquals("Wrong events returned at position " + i, expected[i], result[i]);
+    }
   }
 
 
@@ -330,12 +366,11 @@ public class IndividualControllerDatastoreTests {
     context.getBean(IndividualController.class).setRecommender(mockRecommender);
     // getting the actual result
     Organization[] result = authRestTemplate.getForObject("/get-recommended-organizations-individual?count=2", Organization[].class);
-    Organization[] expected = new Organization[2];
-    expected[0] = expectedOrganization3;
-    expected[1] = expectedOrganization2;
+    Organization[] expected = new Organization[]{expectedOrganization3, expectedOrganization2};
     assertEquals("Wrong number returned", 2, result.length);
-    assertEquals("Wrong organizations returned at position 0", expected[0], result[0]);
-    assertEquals("Wrong organizations returned at position 1", expected[1], result[1]);
+    for(int i = 0; i < expected.length; i++) {
+      assertEquals("Wrong events returned at position " + i, expected[i], result[i]);
+    }
   }
 
   @Test
@@ -348,12 +383,11 @@ public class IndividualControllerDatastoreTests {
     context.getBean(IndividualController.class).setRecommender(mockRecommender);
     // getting the actual result
     Organization[] result = authRestTemplate.getForObject("/get-recommended-organizations-individual?count=2", Organization[].class);
-    Organization[] expected = new Organization[2];
-    expected[0] = expectedOrganization2;
-    expected[1] = expectedOrganization3;
+    Organization[] expected = new Organization[]{expectedOrganization2, expectedOrganization3};
     assertEquals("Wrong number returned", 2, result.length);
-    assertEquals("Wrong organizations returned at position 0", expected[0], result[0]);
-    assertEquals("Wrong organizations returned at position 1", expected[1], result[1]);
+    for(int i = 0; i < expected.length; i++) {
+      assertEquals("Wrong events returned at position " + i, expected[i], result[i]);
+    }
   }
 
   @Test
@@ -368,16 +402,11 @@ public class IndividualControllerDatastoreTests {
     context.getBean(IndividualController.class).setRecommender(mockRecommender);
     // getting the actual result
     Organization[] result = authRestTemplate.getForObject("/get-recommended-organizations-individual?count=4", Organization[].class);
-    Organization[] expected = new Organization[4];
-    expected[0] = expectedOrganization;
-    expected[1] = expectedOrganization2;
-    expected[2] = expectedOrganization3;
-    expected[3] = organizationSavedByUser;
+    Organization[] expected = new Organization[]{expectedOrganization, expectedOrganization2, expectedOrganization3, organizationSavedByUser};
     assertEquals("Wrong number returned", 4, result.length);
-    assertEquals("Wrong organizations returned at position 0", expected[0], result[0]);
-    assertEquals("Wrong organizations returned at position 1", expected[1], result[1]);
-    assertEquals("Wrong organizations returned at position 2", expected[2], result[2]);
-    assertEquals("Wrong organizations returned at position 3", expected[3], result[3]);
+    for(int i = 0; i < expected.length; i++) {
+      assertEquals("Wrong events returned at position " + i, expected[i], result[i]);
+    }
   }
 
   @Test
@@ -401,6 +430,11 @@ public class IndividualControllerDatastoreTests {
 
   @Test
   public void testRemoveReview() throws URISyntaxException {
+    // first add a review
+    expectedOrganization.addReview(expectedReview);
+    this.organizationRepository.save(expectedOrganization);
+    this.reviewRepository.save(expectedReview);
+    // remove review
     String url = "/remove-org-review";
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

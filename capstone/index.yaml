@@ -24,6 +24,19 @@ indexes:
 
 - kind: organization
   properties:
+    - name: name
+    - name: rank
+      direction: desc
+
+- kind: organization
+  properties:
+    - name: university
+    - name: name
+    - name: rank
+      direction: desc
+
+- kind: organization
+  properties:
     - name: university
     - name: org-type
     - name: rank
