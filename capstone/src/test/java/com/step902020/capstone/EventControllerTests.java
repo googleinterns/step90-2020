@@ -181,6 +181,22 @@ public class EventControllerTests {
                 expectedReview.text.equals(result.reviews.get(1).text));
     }
 
+    @Test
+    public void testGetOrganizationUniversity() throws  URISyntaxException {
+        final String baseUrl = "/get-university-map?userType=organization";
+        URI uri = new URI(baseUrl);
+        University result = authRestTemplate.getForObject(uri, University.class);
+        assertEquals("Incorrect University Displayed", expectedOrganization.getUniversity().getName(), result.getName());
+    }
+
+    @Test
+    public void testGetIndividualUniversity() throws  URISyntaxException {
+        final String baseUrl = "/get-university-map?userType=individual";
+        URI uri = new URI(baseUrl);
+        University result = authRestTemplate.getForObject(uri, University.class);
+        assertEquals("Incorrect University Displayed", expectedIndividual.getUniversity().getName(), result.getName());
+    }
+
     /**
      * Helper function for testGetFilteredEvents()
      * Fetches list of event based on url params
