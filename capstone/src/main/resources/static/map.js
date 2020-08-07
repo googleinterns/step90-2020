@@ -22,13 +22,17 @@
  }
 
 function createMapForASingleEvent(event) {
-  var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
-    const campusMap = new google.maps.Map(
-      document.getElementById('singleEventMap'),
-      {center: princetonLatLng, zoom: 15});
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType != "unknown") {
+      var princetonLatLng = {lat: data.university.latitude, lng: data.university.longitude};
+        const campusMap = new google.maps.Map(
+          document.getElementById('singleEventMap'),
+          {center: princetonLatLng, zoom: 15});
 
-    createMarker(event, campusMap);
-  }
+        createMarker(event, campusMap);
+    }
+  });
+}
 
 /* Function to create Mini Map in event.html page */
   async function createEventPlacementMap() {

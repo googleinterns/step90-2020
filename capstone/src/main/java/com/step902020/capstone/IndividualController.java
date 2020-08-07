@@ -14,6 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+/**
+ * Individual functionalities
+ * - Create/update profile
+ * - List reviews
+ * - Save/unsave events
+ * - Save.unsave organizations
+ * - Gets recommended events/organizations
+ */
 
 @RestController
 public class IndividualController {
@@ -29,6 +37,9 @@ public class IndividualController {
 
   @Autowired
   private UniversityRepository universityRepository;
+
+  @Autowired
+  private ReviewRepository reviewRepository;
 
   @Autowired
   private GcsStore gcsstore;
@@ -173,15 +184,15 @@ public class IndividualController {
    * @return list of events
    * @throws IOException
    */
-  @GetMapping("get-all-org-events")
+  @GetMapping("get-all-calendar-events")
   public Set<Event> getCalendarEvents(CurrentUser user) throws IOException {
     // get saved events and for each of the organizations get their list of saved events
     Individual current = getIndividual(user);
-    Set<Event> calendarEvents = new HashSet<Event>();
+    Set<Event> calendarEvents = new HashSet<Event>(current.getSavedEvents());
     if (current != null) {
       for (Organization org : current.getOrganizations()) {
         for (Event event : org.getEvents()) {
-          if (!current.getSavedEvents().contains(event)) {
+          if (!calendarEvents.contains(event)) {
             calendarEvents.add(event);
           }
         }
@@ -213,7 +224,6 @@ public class IndividualController {
     int num = (count.equals("All")) ? Integer.MAX_VALUE : Integer.parseInt(count);
     // find recommended events from other users
     List<Event> recommended = recommender.recommend(targetUser, users, u -> u.getSavedEvents(), num);
-
     // filter out the past events
     List<Event> noPastEvents = new ArrayList<Event>();
     LocalDateTime now = LocalDateTime.now();
@@ -223,9 +233,11 @@ public class IndividualController {
         noPastEvents.add(e);
       }
     }
-    // if the list of recommended events is shorter than the list we want, add in more events from general event pool
+
+    /* if the list of recommended events is shorter than the list we want, add in more events from general event pool
+    according to descending popularity */
     if (noPastEvents.size() < num) {
-      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThanOrderByRankDesc(targetUser.getUniversity(), now.toString());
+      List<Event> allEvents = this.eventRepository.findByUniversityAndEventDateTimeGreaterThanOrderByEventDateTimeAscRankDesc(targetUser.getUniversity(), now.toString());
       int i = 0;
       int numAlreadyAdded = 0;
       int targetSize = noPastEvents.size();
@@ -281,6 +293,7 @@ public class IndividualController {
         i++;
       }
     }
+
     return recommended;
   }
 
@@ -304,4 +317,14 @@ public class IndividualController {
   public @ResponseBody byte[] getImage(CurrentUser user) throws IOException {
     return gcsstore.serveImage("step90-2020", "step90-2020.appspot.com", user.getEmail());
   }
+
+  /**
+   * sets the recommender to be used for creating recommendations
+   * @param newRecommender recommender to be used
+   */
+  public void setRecommender(Recommender newRecommender) {
+    recommender = newRecommender;
+  }
+
+
 }

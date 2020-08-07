@@ -112,7 +112,7 @@ public class EventControllerTests {
     }
 
     @Test
-    public void testGetFilteredEvents() throws URISyntaxException {
+    public void testGetFilteredEvents_AllParamsFilled() throws URISyntaxException {
         // All filterable params filled (all but eventTitle)
         Event[] result = createFilterTests(expectedUniversity.name, "", expectedEvent.eventType,
                 expectedEvent.energyLevel, expectedEvent.location, String.valueOf(expectedEvent.foodAvailable),
@@ -120,23 +120,32 @@ public class EventControllerTests {
 
         assertEquals("Filtered incorrectly", 1, result.length); // Should not include pastEvent
         assertTrue("Filtered incorrectly", result[0].equals(expectedEvent));
+    }
 
+    @Test
+    public void testGetFilteredEvents_SomeParamsFilled() throws URISyntaxException {
         // Empty string in some expectedEvent's filterable params (acts as null when sending params from js to java)
-        result = createFilterTests(expectedUniversity.name, "", expectedEvent.eventType,
+        Event[] result = createFilterTests(expectedUniversity.name, "", expectedEvent.eventType,
                 "", "", String.valueOf(expectedEvent.foodAvailable),
                 String.valueOf(expectedEvent.free), "");
         assertEquals("Filtered incorrectly", 1, result.length);
         assertTrue("Filtered incorrectly", result[0].equals(expectedEvent));
+    }
 
+    @Test
+    public void testGetFilteredEvents_EventSearchByName() throws URISyntaxException {
         // EventTitle param filled (invokes event search by name)
-        result = createFilterTests(expectedUniversity.name, "pizza%20party", expectedEvent.eventType,
+        Event[] result = createFilterTests(expectedUniversity.name, "pizza%20party", expectedEvent.eventType,
                 expectedEvent.energyLevel, expectedEvent.location, String.valueOf(expectedEvent.foodAvailable),
                 String.valueOf(expectedEvent.free), String.valueOf(expectedEvent.visitorAllowed));
         assertEquals("Filtered incorrectly", 1, result.length);
         assertTrue("Filtered incorrectly", result[0].equals(expectedEvent));
+    }
 
+    @Test
+    public void testGetFilteredEvents_ParamsIncorrectlyFilled() throws URISyntaxException {
         // Non expectedEvent's filterable
-        result = createFilterTests(expectedUniversity.name, "", "game",
+        Event[] result = createFilterTests(expectedUniversity.name, "", "game",
                 expectedEvent.energyLevel, expectedEvent.location, String.valueOf(expectedEvent.foodAvailable),
                 String.valueOf(expectedEvent.free), String.valueOf(expectedEvent.visitorAllowed));
         assertEquals("Filtered incorrectly", 0, result.length);
