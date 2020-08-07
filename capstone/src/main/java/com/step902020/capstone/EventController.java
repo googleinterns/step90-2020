@@ -85,7 +85,6 @@ public class EventController {
     } else {
       events = this.eventRepository.findEventsByNameMatching(eventTitle, eventTitle + "\ufffd", university);
     }
-
     return getSortedValidEvents(events, university.datastoreId);
   }
 
@@ -235,7 +234,7 @@ public class EventController {
    * FILTER UNIVERSITY MANUALLY DUE TO SMALL EVENT VOLUME
    */
   private List<Event> getSortedValidEvents(Iterable<Event> events, long universityId) {
-    List<Event> validEvents = new ArrayList<Event>();
+    List<Event> validEvents = new ArrayList();
     LocalDateTime now = LocalDateTime.now();
     for (Event e : events) {
       if (e.university.datastoreId == universityId) {
