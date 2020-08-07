@@ -31,8 +31,13 @@ mvn package appengine:deploy -Dapp.deploy.version=[your-version]
 ![Individual User Account](capstone/src/main/resources/static/images/individualuser.gif?raw=true)
 
 ### Creating and Managing Organization User Account
-
 ![Organization User Account](capstone/src/main/resources/static/images/organizationuser.gif?raw=true)
+
+### Event Search
+![Event Search](capstone/src/main/resources/static/images/eventModal.gif?raw=true)
+
+### Organization Search
+![Organization_Search](capstone/src/main/resources/static/images/orgSearch.gif?raw=true)
 
 ### Using Event Map
 
