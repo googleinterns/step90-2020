@@ -41,11 +41,9 @@ mvn package appengine:deploy -Dapp.deploy.version=[your-version]
 
 ### Using Event Map
 
-![Event Map]
-(capstone/src/main/resources/static/images/eventmap.gif?raw=true)
+![Event Map](capstone/src/main/resources/static/images/eventmap.gif?raw=true)
 
 ### Using Event Pop-ups
 
-![Event Pop-up]
-(capstone/src/main/resources/static/images/eventpopup.gif?raw=true)
+![Event Pop-up](capstone/src/main/resources/static/images/eventpopup.gif?raw=true)
 
