@@ -434,7 +434,7 @@ function createCalendarEvent(event, today, endDate, borderColor, isSavedEvent, u
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
     var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
     const generalDateDiv = document.getElementById("date" + diff);
-    createEventElement(generalDateDiv, event, true, true, userEmail);
+    createEventElement(generalDateDiv, event, true, null, userEmail);
   }
 }
 /**
