@@ -535,7 +535,7 @@ function createCalendarEvent(event, today, endDate, userEmail) {
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
     var diff = eventDate.getDate() - today.getDate();
     const generalDateDiv = document.getElementById("date" + diff);
-    createEventElement(generalDateDiv, event, true, true, userEmail);
+    createEventElement(generalDateDiv, event, true, null, userEmail);
   }
 }
 

@@ -112,7 +112,7 @@ function showEventPage(event, isIndividual, organizationName, userEvent, userEma
   if (isIndividual) {
     if (userEvent) { // Individual has saved event
       createUnsaveEventButton(userFunctionButtonsContainer, event);
-    } else {
+    } else if (userEvent == false) { // check explicitly for false because we use null as a condition as well
       createSaveEventButton(userFunctionButtonsContainer, event);
     }
   } else {  // Event owners can edit and delete their events
