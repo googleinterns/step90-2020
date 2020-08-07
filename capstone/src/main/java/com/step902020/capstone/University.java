@@ -3,6 +3,10 @@ package com.step902020.capstone;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
 import org.springframework.data.annotation.Id;
 
+/**
+ * Represents an University. Users select an university during profile creation
+ */
+
 @Entity(name = "university")
 public class University {
   @Id

@@ -506,10 +506,7 @@ function createCalendar() {
         calendar.append(dateDiv);
         calendar.append(eventDiv);
       }
-      userData.savedEvents.forEach((event) => {
-        createCalendarEvent(event, today, endDate, userData.email);
-      });
-      fetch('get-all-org-events').then(response => response.json()).then((data) => {
+      fetch('get-all-calendar-events').then(response => response.json()).then((data) => {
         data.forEach((event) => {
           createCalendarEvent(event, today, endDate, userData.email);
         });
@@ -536,15 +533,15 @@ function createCalendarEvent(event, today, endDate, userEmail) {
   var eventDate = new Date(event.eventDateTime);
   // only add events to the container if they are future events
   if (eventDate.getTime() > today.getTime() && eventDate.getTime() < endDate.getTime()) {
-    var diff = Math.floor((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+    var diff = eventDate.getDate() - today.getDate();
     const generalDateDiv = document.getElementById("date" + diff);
-    createEventElement(generalDateDiv, event, true, true, userEmail);
+    createEventElement(generalDateDiv, event, true, null, userEmail);
   }
 }
 
 /**
  * function to create a public profile of an organization
-  * @param isEventRefresh true if function refreshes events without updating profile details
+ * @param isEventRefresh true if function refreshes events without updating profile details
  */
 function getPublicProfile(isEventRefresh) {
   fetch('user-info').then(response => response.json()).then((userData) => {

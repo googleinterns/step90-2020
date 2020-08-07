@@ -12,7 +12,7 @@
       const jsonUniversity = await universityResponse.json();
       const campusMap = generateCampusMap(jsonUniversity);
 
-      const eventResponse = await fetch('get-map-events');
+      const eventResponse = await fetch('get-map-events?university=' + jsonUser.university.name);
       const jsonEvents = await eventResponse.json();
       jsonEvents.forEach(event => createMarker(event, campusMap));
       hideSpinner();
@@ -22,13 +22,17 @@
  }
 
 function createMapForASingleEvent(event) {
-  var princetonLatLng = {lat: 40.3428452, lng: -74.6568153};
-    const campusMap = new google.maps.Map(
-      document.getElementById('singleEventMap'),
-      {center: princetonLatLng, zoom: 15});
+  fetch('user-info').then(response => response.json()).then((data) => {
+    if (data.userType != "unknown") {
+      var princetonLatLng = {lat: data.university.latitude, lng: data.university.longitude};
+        const campusMap = new google.maps.Map(
+          document.getElementById('singleEventMap'),
+          {center: princetonLatLng, zoom: 15});
 
-    createMarker(event, campusMap);
-  }
+        createMarker(event, campusMap);
+    }
+  });
+}
 
 /* Function to create Mini Map in event.html page */
   async function createEventPlacementMap() {

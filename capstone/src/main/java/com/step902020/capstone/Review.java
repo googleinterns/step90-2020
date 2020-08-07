@@ -1,18 +1,13 @@
 package com.step902020.capstone;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.cloud.gcp.data.datastore.core.mapping.Entity;
-import org.springframework.cloud.gcp.data.datastore.core.mapping.Field;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Reference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a Review. A Review is attached to en Event
- * and contains the user who created  it, the text content, and the amt of likes it has received
- * @author lbourret
+ * Represents a Review. A Review is attached to an Event
  */
 @Entity(name = "review")
 public class Review {
@@ -39,10 +34,10 @@ public class Review {
    */
   public Review(String individualName, String individualEmail, String text) {
     this.timestamp = System.currentTimeMillis();
-    this.likes = 0;
     this.individualName = individualName;
     this.individualEmail = individualEmail;
     this.text = text;
+    this.likes = 0;
     this.reviewLikers = new ArrayList();
   }
 
@@ -62,9 +57,7 @@ public class Review {
     return individualName;
   }
 
-  public String getIndividualEmail() {
-    return individualEmail;
-  }
+  public String getIndividualEmail() { return individualEmail; }
 
   public String getText() {
     return text;
@@ -93,7 +86,7 @@ public class Review {
   }
 
   /**
-   * Remove individual who added their like
+   * Add individual who added their like
    * @param email email of individual who liked review
    */
   public void addReviewLiker(String email) {
