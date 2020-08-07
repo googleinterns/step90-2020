@@ -4,6 +4,7 @@ import com.step902020.capstone.Individual;
 import com.step902020.capstone.IndividualRepository;
 import com.step902020.capstone.Organization;
 import com.step902020.capstone.OrganizationRepository;
+import com.step902020.capstone.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
