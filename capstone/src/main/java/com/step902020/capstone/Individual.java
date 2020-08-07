@@ -6,6 +6,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import java.util.*;
 
+/**
+ * Represents an Individual. Users can create an individual profile
+ */
+
 @Entity(name = "individual")
 public class Individual {
   @Id

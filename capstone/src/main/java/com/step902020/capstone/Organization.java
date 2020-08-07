@@ -6,6 +6,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import java.util.*;
 
+/**
+ * Represents an Organization. Users can create an organization profile
+ */
+
 @Entity(name = "organization")
 public class Organization implements Comparable {
   @Id

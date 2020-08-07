@@ -6,6 +6,9 @@ import org.springframework.data.annotation.Id;
 
 import java.util.*;
 
+/**
+ * Represents an Event. Organizations can create an Event. Individuals can add reviews and save event (increases rank)
+ */
 @Entity(name = "event")
 public class Event implements Comparable{
 
@@ -29,9 +32,9 @@ public class Event implements Comparable{
 
   String eventType;
 
-  String energyLevel;
+  String energyLevel; // energy/engagement needed for event
 
-  String location; // Indoor/Outdoor
+  String location; // indoors/outdoors
 
   Boolean foodAvailable;
 
@@ -61,21 +64,18 @@ public class Event implements Comparable{
     this.free = free;
     this.visitorAllowed = visitorAllowed;
     this.reviews = new ArrayList();
-    rank = 0;
+    this.rank = 0;
   }
 
   public Long getDatastoreId() {
     return datastoreId;
   }
-
   public University getUniversity() {
     return university;
   }
-
   public String getEventTitle() {
     return eventTitle;
   }
-
   public String getEventDateTime() {
     return eventDateTime;
   }
@@ -88,39 +88,30 @@ public class Event implements Comparable{
   public List<Review> getReviews() {
     return reviews;
   }
-
   public Long getOrganizationId() {
     return organizationId;
   }
-
   public String getEventDescription() {
     return eventDescription;
   }
-
   public String getEventType() {
     return eventType;
   }
-
   public String getEnergyLevel() {
     return energyLevel;
   }
-
   public String getLocation() {
     return location;
   }
-
   public Boolean getFoodAvailable() {
     return foodAvailable;
   }
-
   public Boolean getFree() {
     return free;
   }
-
   public Boolean getVisitorAllowed() {
     return visitorAllowed;
   }
-
   public Integer getRank() {
     return rank;
   }
@@ -200,7 +191,7 @@ public class Event implements Comparable{
 
   /**
    * returns event information in a string format
-   * @return String
+   * @return Description of event object
    */
   public String toString() {
     return eventTitle + " " + datastoreId + " " + rank;
@@ -209,7 +200,7 @@ public class Event implements Comparable{
   /**
    * implement equality
    * @param o object being compared to
-   * @return boolean
+   * @return true if event objects are equal, false if not
    */
   @Override
   public boolean equals(Object o) {

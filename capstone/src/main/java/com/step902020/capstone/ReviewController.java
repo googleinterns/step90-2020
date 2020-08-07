@@ -2,21 +2,15 @@ package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
 import java.io.IOException;
-import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
-import com.google.gson.Gson;
-import java.io.IOException;
 
 /**
  * Review functionalities
- *   - Like Review
- * Author review functionalities:
+ *   - Like review
+ * Author functionalities:
  *   - Edit reviews
  *   - Delete reviews
  */
@@ -35,11 +29,12 @@ public class ReviewController {
    * @param user current user
    * @param reviewId review's datastore id
    * @return amount of review's likes
+   * @throws IOException
    */
   @PostMapping("toggle-likes")
   public int toggleReviewLikes(
           CurrentUser user,
-         @RequestParam("reviewId") Long reviewId) throws IOException {
+          @RequestParam("reviewId") Long reviewId) throws IOException {
     Review review = this.reviewRepository.findById(reviewId).get();
     String email = user.getEmail();
     if (review.isReviewLiker(email)) {
@@ -58,6 +53,7 @@ public class ReviewController {
    * @param user current user
    * @param newText text to replace prev. text content
    * @param reviewId review's datastore id
+   * @throws IOException
    */
   @PostMapping("set-text")
   public void setText(

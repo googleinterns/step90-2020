@@ -1,4 +1,3 @@
-
 package com.step902020.capstone;
 
 import com.step902020.capstone.security.CurrentUser;
@@ -9,8 +8,15 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+/**
+ * Organization functionalities
+ * - Create/update profile
+ * - Filter organizations
+ * - Delete events
+ * - Create organization public profile
+ * - Add/remove reviews
+ */
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @RestController
 public class OrganizationController {
 
@@ -147,11 +153,12 @@ public class OrganizationController {
   }
 
   /**
-   * Add new review to event
+   * Add new review to organization
    * @param user current user
    * @param text review's text
    * @param orgId organization's datastore id
    * @return updated review list
+   * @throws IOException
    */
   @PostMapping("/add-org-review")
   public Organization addReview(
@@ -170,12 +177,13 @@ public class OrganizationController {
   }
 
   /**
-   * Remove review the event
-   * Only author of review can delete review
+   * Remove review the organization
+   * Only the author can delete review
    * @param user current user
    * @param reviewId review's datastore id
    * @param orgId organization's datastore id
    * @return updated review list
+   * @throws IOException
    */
   @PostMapping("/remove-org-review")
   public void removeReview(

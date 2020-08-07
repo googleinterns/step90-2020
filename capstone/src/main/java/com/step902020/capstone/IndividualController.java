@@ -14,6 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+/**
+ * Individual functionalities
+ * - Create/update profile
+ * - List reviews
+ * - Save/unsave events
+ * - Save.unsave organizations
+ * - Gets recommended events/organizations
+ */
 
 @RestController
 public class IndividualController {
