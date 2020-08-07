@@ -129,6 +129,7 @@ public class EventDatastoreTest {
             expectedReview.text.equals(result.reviews.get(1).text));
   }
 
+  @Test
   public void testRemoveReview() throws URISyntaxException {
     String url = "/remove-event-review";
     HttpHeaders headers = new HttpHeaders();
